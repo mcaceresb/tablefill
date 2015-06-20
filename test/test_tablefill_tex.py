@@ -26,10 +26,10 @@ class testTableFillTeX(unittest.TestCase):
     def testInput(self):
         self.getFileNames()
         with nostderrout():
-            message = tablefill_tex(input    = self.input_appendix,
-                                    template = self.template,
-                                    output   = self.output)
-        self.assertIn('SUCCESS', message.exit)
+            status, msg = tablefill_tex(input    = self.input_appendix,
+                                        template = self.template,
+                                        output   = self.output)
+        self.assertEqual('SUCCESS', status)
         # tag_data    = open(self.template, 'rU').readlines()
         # filled_data = open(self.output, 'rU').readlines()
 
@@ -42,53 +42,53 @@ class testTableFillTeX(unittest.TestCase):
     def testBreaksRoundingString(self):
         self.getFileNames()
         with nostderrout():
-            error = tablefill_tex(input    = self.input_appendix,
-                                  template = self.templatebreaks,
-                                  output   = self.output)
-        self.assertIn('ERROR', error.exit)
-        self.assertIn('InvalidOperation', error.exitmsg)
+            error, msg = tablefill_tex(input    = self.input_appendix,
+                                       template = self.templatebreaks,
+                                       output   = self.output)
+        self.assertEqual('ERROR', error)
+        self.assertIn('InvalidOperation', msg)
 
     def testIllegalSyntax(self):
         self.getFileNames()
 
         # missing arguments
         with nostderrout():
-            error = tablefill_tex(input    = self.input_appendix,
-                                  template = self.template)
-        self.assertIn('ERROR', error.exit)
-        self.assertIn('KeyError', error.exitmsg)
+            error, msg = tablefill_tex(input    = self.input_appendix,
+                                       template = self.template)
+        self.assertEqual('ERROR', error)
+        self.assertIn('KeyError', msg)
 
         # non-existent input 1
         with nostderrout():
-            error = tablefill_tex(input    = self.input_fakeone,
-                                  template = self.template,
-                                  output   = self.output)
-        self.assertIn('ERROR', error.exit)
-        self.assertIn('IOError', error.exitmsg)
+            error, msg = tablefill_tex(input    = self.input_fakeone,
+                                       template = self.template,
+                                       output   = self.output)
+        self.assertEqual('ERROR', error)
+        self.assertIn('IOError', msg)
 
         # non-existent input 2
         with nostderrout():
-            error = tablefill_tex(input    = self.input_faketwo,
-                                  template = self.template,
-                                  output   = self.output)
-        self.assertIn('ERROR', error.exit)
-        self.assertIn('IOError', error.exitmsg)
+            error, msg = tablefill_tex(input    = self.input_faketwo,
+                                       template = self.template,
+                                       output   = self.output)
+        self.assertEqual('ERROR', error)
+        self.assertIn('IOError', msg)
 
     def testArgumentOrder(self):
         self.getFileNames()
 
         with nostderrout():
-            message = tablefill_tex(template = self.template,
-                                    input    = self.input_appendix,
-                                    output   = self.output)
-        self.assertIn('SUCCESS', message.exit)
+            status, msg = tablefill_tex(template = self.template,
+                                        input    = self.input_appendix,
+                                        output   = self.output)
+        self.assertEqual('SUCCESS', status)
         filled_data_args1 = open(self.output, 'rU').readlines()
 
         with nostderrout():
-            message = tablefill_tex(output   = self.output,
-                                    template = self.template,
-                                    input    = self.input_appendix)
-        self.assertIn('SUCCESS', message.exit)
+            status, msg = tablefill_tex(output   = self.output,
+                                        template = self.template,
+                                        input    = self.input_appendix)
+        self.assertEqual('SUCCESS', status)
         filled_data_args2 = open(self.output, 'rU').readlines()
 
         self.assertEqual(filled_data_args1, filled_data_args2)
@@ -102,24 +102,24 @@ class testTableFillTeX(unittest.TestCase):
 
         # Pattern outside of table
         with nostderrout():
-            error = tablefill_tex(input    = self.input_appendix,
-                                  template = self.templatewrong,
-                                  output   = self.output)
-        self.assertIn('WARNINGS', error.exit)
+            warn, msg = tablefill_tex(input    = self.input_appendix,
+                                      template = self.templatewrong,
+                                      output   = self.output)
+        self.assertEqual('WARNING', warn)
 
         # No label in tables
         with nostderrout():
-            error = tablefill_tex(input    = self.input_appendix,
-                                  template = self.templatenolab,
-                                  output   = self.output)
-        self.assertIn('WARNINGS', error.exit)
+            warn, msg = tablefill_tex(input    = self.input_appendix,
+                                      template = self.templatenolab,
+                                      output   = self.output)
+        self.assertEqual('WARNING', warn)
 
         # No label in template
         with nostderrout():
-            error = tablefill_tex(input    = self.input_nolabel,
-                                  template = self.template,
-                                  output   = self.output)
-        self.assertIn('WARNINGS', error.exit)
+            warn, msg = tablefill_tex(input    = self.input_nolabel,
+                                      template = self.template,
+                                      output   = self.output)
+        self.assertEqual('WARNING', warn)
 
 
 if __name__ == '__main__':
