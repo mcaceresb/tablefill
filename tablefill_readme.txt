@@ -1,4 +1,4 @@
-""Fill LaTeX template files with external inputs
+"""Fill LaTeX template files with external inputs
 
 Description
 -----------

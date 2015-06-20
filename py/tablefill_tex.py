@@ -305,7 +305,7 @@ class tablefill_tex_internals:
     def get_exit_message(self):
         if self.warning:
             msg  = ["The following issues were found:"]
-            msg += filter(lambda wm: wm == '', self.warn_msg.values())
+            msg += filter(lambda wm: wm != '', self.warn_msg.values())
             self.exit_msg = linesep.join(msg)
             self.exit     = 'WARNING'
         else:
