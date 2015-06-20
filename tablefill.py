@@ -6,15 +6,18 @@
 Description
 -----------
 
-tablefill_tex.py is a python module designed to fill LaTeX tables
-with output from text files (usually output from Stata or Matlab).
-The original tablefill.py does the same for LyX files.
+tablefill.py is a python module designed to fill LaTeX tables with
+output from text files (usually output from Stata or Matlab). The
+original tablefill.py does the same for LyX files.
 
 
 Usage
 -----
 
-tablefill.py [-h] [-i [INPUT [INPUT ...]]] [-o OUTPUT] [-f] TEMPLATE
+tablefill.py [-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
+             [-t {auto,lyx,tex}] [-f] [-c] TEMPLATE
+
+Fill tagged tables in LaTeX files with external text tables
 
 positional arguments:
   TEMPLATE              Code template
@@ -22,14 +25,19 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         Show current version
-  --help-all            Show additional documentation
   -i [INPUT [INPUT ...]], --input [INPUT [INPUT ...]]
                         Input files with tables (default: INPUT_table)
   -o OUTPUT, --output OUTPUT
                         Processed template file (default: INPUT_filled)
+  -t {auto,lyx,tex}, --type {auto,lyx,tex}
+                        Template file type (default: auto)
+
+flags:
   -f, --force           Name input/output automatically
+  -c, --compile         Compile output
 
 See examples below for details on the files and the replace engine
+
 
 LIMITATIONS
 -----------
@@ -70,6 +78,8 @@ The way the funtion operates is
 
 Examples (input)
 ----------------
+
+Note: This section was adapted from the readme for the original tablefill.py
 
 Input files must be tab-delimited rows of numbers or characters,
 preceded by <label>. The numbers can be arbitrarily long, can be
@@ -115,6 +125,8 @@ Scientific notation is of the form: [numbers].[numbers]e(+/-)[numbers]
 
 Examples (template)
 -------------------
+
+Note: This section was adapted from the readme for the original tablefill.py
 
 The template determines the where the numbers from the input files are
 and how they will be displayed. Every table in the template file (if it
@@ -171,6 +183,8 @@ escaped, so the engine also matches \#. Consider:
 
 Examples (both)
 ---------------
+
+Note: This section was adapted from the readme for the original tablefill.py
 
 Input:
 <tab:Test>
@@ -267,6 +281,8 @@ The program indicates
 Common Mistakes
 ---------------
 
+Note: This section was adapted from the readme for the original tablefill.py
+
 - Missing table tag in the input file or in the template file.
 
 - Mismatch between the length of the template table and corresponding
@@ -286,8 +302,9 @@ from os import linesep, path, access, W_OK
 import argparse
 import re
 
-__program__   = "tablefill"
-__usage__     = "[-h] [-i [INPUT [INPUT ...]]] [-o OUTPUT] [-f] TEMPLATE"
+__program__   = "tablefill.py"
+__usage__     = """[-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
+                    [-t {auto,lyx,tex}] [-f] [-c] TEMPLATE"""
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18"
@@ -298,17 +315,33 @@ __version__   = __program__ + " version 0.1.0 updated " + __updated__
 # tablefill
 
 def tablefill():
-    fill = tablefill_internals()
+    status = 'PARSE ERROR'
+    fill   = tablefill_internals()
     fill.get_input_parser()
     fill.get_parsed_arguments()
-    fill.get_argument_strings(prints = True)
     try:
-        status, msg = tablefill_tex(template = fill.template,
-                                    input    = fill.input,
-                                    output   = fill.output)
+        fill.get_argument_strings(prints = True)
+        fill.get_file_type()
+        fill_ext = tablefill_tex if fill.ext == 'tex' else tablefill_lyx
+        status, msg = fill_ext(template = fill.template,
+                               input    = fill.input,
+                               output   = fill.output)
+        if status == 'WARNING':
+            fill.get_compiled()
+        elif status == 'SUCCESS':
+            fill.get_compiled()
+        elif status == 'ERROR':
+            fillerror_msg  = 'ERROR while filling table.'
+            fillerror_msg += ' Check function call.' + linesep
+            print fillerror_msg
     except:
+        print status + '!'
         print format_exc()
-        print fill.parser.print_usage()
+        if status == 'PARSE ERROR':
+            parserror_msg  = 'ERROR while parsing arguments.'
+            parserror_msg += ' See --help.' + linesep
+            print parserror_msg
+        fill.parser.print_usage()
 
 # ---------------------------------------------------------------------
 # tablefill_tex
@@ -345,11 +378,22 @@ def tablefill_tex(**kwargs):
         return exit, exit_msg
 
 # ---------------------------------------------------------------------
+# tablefill_lyx
+
+def tablefill_lyx(**kwargs):
+    exit     = 'WARNING'
+    exit_msg = "tablefill_lyx not yet implemented. Stay tuned!"
+    print exit + '!'
+    print exit_msg + linesep
+    return exit, exit_msg
+
+# ---------------------------------------------------------------------
 # tablefill_internals
 
 class tablefill_internals:
     def __init__(self):
-        pass
+        self.compiler = {'tex': 'pdflatex ',
+                         'lyx': 'lyx -e pdf2 '}
 
     def get_input_parser(self):
         """
@@ -366,9 +410,6 @@ class tablefill_internals:
                             action   = 'version',
                             version  = parser_version,
                             help     = "Show current version")
-        parser.add_argument('--help-all',
-                            action   = 'help',
-                            help     = "Show additional documentation")
         parser.add_argument('template',
                             nargs    = 1,
                             type     = str,
@@ -392,9 +433,23 @@ class tablefill_internals:
                             help     = "Processed template file" +
                             " (default: INPUT_filled)",
                             required = False)
+        parser.add_argument('-t', '--type',
+                            dest     = 'filetype',
+                            type     = str,
+                            nargs    = 1,
+                            choices  = ['auto', 'lyx', 'tex'],
+                            default  = ['auto'],
+                            help     = "Template file type (default: auto)",
+                            required = False)
         parser.add_argument('-f', '--force',
+                            dest     = 'force',
                             action   = 'store_true',
                             help     = "Name input/output automatically",
+                            required = False)
+        parser.add_argument('-c', '--compile',
+                            dest     = 'compile',
+                            action   = 'store_true',
+                            help     = "Compile output",
                             required = False)
         self.parser = parser
 
@@ -438,6 +493,39 @@ class tablefill_internals:
             print 'input    = %s' % self.input
             print 'output   = %s' % self.output
             print ''
+
+    def get_file_type(self):
+        fname = path.basename(self.template)
+        ext   = path.splitext(fname)[-1].lower().strip('. ')
+        inext = self.args.filetype[0].lower()
+        if inext not in ['auto', 'tex', 'lyx']:
+            unknown_type = "Type '%s' not allowed. Expected {auto,lyx,tex}."
+            unknown_type = unknown_type % inext
+            raise KeyError(unknown_type)
+        elif inext == 'auto':
+            if ext not in ['tex', 'lyx']:
+                unknown_type  = "File type '%s' not known."
+                unknown_type += " Expecting .lyx or .tex file."
+                unknown_type = unknown_type % ext
+                raise KeyError(unknown_type)
+            else:
+                self.ext = ext.lower()
+                print 'NOTE: Automatically detected input type as %s' % ext
+        else:
+            self.ext = inext
+            if ext != inext:
+                mismatch_msg  = "NOTE: Provided template type '%s' "
+                mismatch_msg += "does not match detected template type '%s'"
+                mismatch_msg += linesep + "Will use program associated with '%s'"
+                mismatch_msg  = mismatch_msg % (inext, ext, inext)
+                print mismatch_msg + linesep
+
+    def get_compiled(self):
+        if self.args.compile:
+            compile_program  = self.compiler[self.ext]
+            compile_program += ' ' + self.output
+            print "Compiling not yet implemented. Stay tuned! Would've run:"
+            print compile_program + linesep
 
 # ---------------------------------------------------------------------
 # tablefill_tex_internals

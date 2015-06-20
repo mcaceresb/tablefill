@@ -20,6 +20,7 @@ program = 'python ../tablefill.py '
 os.system('%s %s --input %s --force' % (program, template, input_appendix))
 os.system('%s %s --input %s --output %s' % (program, template, input_appendix, output))
 os.system('%s --input %s -o %s %s' % (program, input_appendix, output, template))
+os.system('%s -h' % program)
 
 # Errors
 os.system('%s %s --input %s --force' % (program, templatebreaks, input_appendix))
