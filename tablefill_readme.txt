@@ -1,40 +1,4 @@
-"""Fill LaTeX template files with external inputs
-
-Description
------------
-
-tablefill_tex.py is a python module designed to fill LaTeX tables
-with output from text files (usually output from Stata or Matlab).
-The original tablefill.py does the same for LyX files.
-
-
-Input
------
-
-See 'Examples' below for details on the format of these files.
-
-template : str
-    Name of user-written document to use as basis for update
-input : str
-    Space-separated list of files with tables to be used in update.
-output : str
-    Filled template to be produced.
-
-Output
-------
-exit : str
-    One of SUCCESS, WARNING, ERROR
-exit_msg : str
-    Details on the exit status
-
-
-Usage
------
-
-status, msg = tablefill_tex(template = 'template_file',
-                            input    = 'input_file(s)',
-                            output   = 'output_file')
-
+Supplementary readme for tablefiil.py; see script for use details
 
 LIMITATIONS
 -----------
@@ -75,6 +39,8 @@ The way the funtion operates is
 
 Examples (input)
 ----------------
+
+Note: This section was adapted from the readme for the original tablefill.py
 
 Input files must be tab-delimited rows of numbers or characters,
 preceded by <label>. The numbers can be arbitrarily long, can be
@@ -121,6 +87,8 @@ Scientific notation is of the form: [numbers].[numbers]e(+/-)[numbers]
 Examples (template)
 -------------------
 
+Note: This section was adapted from the readme for the original tablefill.py
+
 The template determines the where the numbers from the input files are
 and how they will be displayed. Every table in the template file (if it
 is to be filled) must appear within a table environment. There can be
@@ -162,20 +130,22 @@ Note that there can be ANYTHING around the pattern and the engine will
 only match the pattern. Further, in LaTeX, the # character must be
 escaped, so the engine also matches \#. Consider:
 
-3234.43241 + \beta Hi \$(\#\#\#)\%* \alpha   = \beta Hi \$(3234.43241)\%* \alpha
-3234.43241 + & \beta Hi \$(\##\#)\%* \alpha  = \beta Hi \$(3234.43241)\%* \alpha
-3234.43241 + & \beta Hi \$(\#\##)\%* \alpha  = \beta Hi \$(3234.43241)\%* \alpha
-3234.43241 + & \beta Hi \$(#\#\#)\% \alpha   = \beta Hi \$(3234.43241)\% \alpha
-3234.43241 + & \beta Hi \$(\###)*\% \alpha   = \beta Hi \$(3234.43241)*\% \alpha
-3234.43241 + & \beta Hi \$(\#0,\#)\%* \alpha = \beta Hi \$(3,234)\%* \alpha
-3234.43241 + & \beta Hi \$(\#0,\#)\%* \alpha = \beta Hi \$(3,234)\%* \alpha
-3234.43241 + & \beta Hi \$(\#0,#*  \alpha    = \beta Hi \$(3,234*  \alpha
-3234.43241 + & \beta Hi \$(#0,\#*  \alpha    = \beta Hi \$(3,234*  \alpha
-3234.43241 + & \beta Hi \$(\#0,#*  \alpha    = \beta Hi \$(3,234*  \alpha
+3234.43241 + \\beta Hi \$(\#\#\#)\%*    = \\beta Hi \$(3234.43241)\%*
+3234.43241 + & \\beta Hi \$(\##\#)\%*   = \\beta Hi \$(3234.43241)\%*
+3234.43241 + & \\beta Hi \$(\#\##)\%*   = \\beta Hi \$(3234.43241)\%*
+3234.43241 + & \\beta Hi \$(#\#\#)\%    = \\beta Hi \$(3234.43241)\%
+3234.43241 + & \\beta Hi \$(\###)*\%    = \\beta Hi \$(3234.43241)*\%
+3234.43241 + & \\beta Hi \$(\#0,\#)\%*  = \\beta Hi \$(3,234)\%*
+3234.43241 + & \\beta Hi \$(\#0,\#)\%*  = \\beta Hi \$(3,234)\%*
+3234.43241 + & \\beta Hi \$(\#0,#*      = \\beta Hi \$(3,234*
+3234.43241 + & \\beta Hi \$(#0,\#*      = \\beta Hi \$(3,234*
+3234.43241 + & \\beta Hi \$(\#0,#*      = \\beta Hi \$(3,234*
 
 
 Examples (both)
 ---------------
+
+Note: This section was adapted from the readme for the original tablefill.py
 
 Input:
 <tab:Test>
@@ -185,9 +155,9 @@ Input:
 
 Template:
 \label{tab:test}
-\#\#\# & \#\#\# & \#\#\# \\
-\#\#\# & \#\#\# & \#\#\# \\
-\#\#\# & \#\#\# & \#\#\# \\
+\#\#\# & \#\#\# & \#\#\# \\\\
+\#\#\# & \#\#\# & \#\#\# \\\\
+\#\#\# & \#\#\# & \#\#\# \\\\
 
 Output:
 \label{tab:test}
@@ -204,9 +174,9 @@ Input:
 
 Template:
 \label{tab:test}
-(\#\#\#) & 2      & \#\#\# & \\
-\#3\#    & \#\#\# & \#1\#  & \\
-NA       & \#\#\# & \#\#\# & \#\#\# \\
+(\#\#\#) & 2      & \#\#\# & \\\\
+\#3\#    & \#\#\# & \#1\#  & \\\\
+NA       & \#\#\# & \#\#\# & \#\#\# \\\\
 
 Output:
 \label{tab:test}
@@ -224,9 +194,9 @@ Input:
 
 Template:
 \label{tab:test}
-\#\#\# & \#\#\# & abc    \\
-abc    & \#2\#  & \#3\#  \\
-NA     & \#\#\# & \#\#\# \\
+\#\#\# & \#\#\# & abc    \\\\
+abc    & \#2\#  & \#3\#  \\\\
+NA     & \#\#\# & \#\#\# \\\\
 
 Output:
 \label{tab:test}
@@ -243,10 +213,10 @@ Input:
 
 Template:
 \label{tab:test}
-\#\#\# & \#\#\# & \#\#\# \\
-abc    & abc    & abc    \\
-\#\#\# & \#2\#  & \#3\#  \\
-\#\#\# & \#\#\# & \#\#\# \\
+\#\#\# & \#\#\# & \#\#\# \\\\
+abc    & abc    & abc    \\\\
+\#\#\# & \#2\#  & \#3\#  \\\\
+\#\#\# & \#\#\# & \#\#\# \\\\
 
 Output:
 \label{tab:test}
@@ -272,14 +242,15 @@ The program indicates
 Common Mistakes
 ---------------
 
+Note: This section was adapted from the readme for the original tablefill.py
+
 - Missing table tag in the input file or in the template file.
 
 - Mismatch between the length of the template table and corresponding
-  text table. If the template table has more entries to be filled than 
-  the text table has entries to fill from, this will cause an error and
-  the table will not be filled.
+text table. If the template table has more entries to be filled than
+the text table has entries to fill from, this will cause an error and
+the table will not be filled.
 
 - Use of numerical tags (e.g. #1#) to fill non-numerical data. This will
-  cause an error. Non-numerical data can only be filled using "###", as
-  it does not make sense to round or truncate this data.
-"""
+cause an error. Non-numerical data can only be filled using "###", as
+it does not make sense to round or truncate this data.
