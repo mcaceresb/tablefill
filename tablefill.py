@@ -6,15 +6,19 @@
 Description
 -----------
 
-tablefill_tex.py is a python module designed to fill LaTeX tables
-with output from text files (usually output from Stata or Matlab).
-The original tablefill.py does the same for LyX files.
+tablefill.py is a python module designed to fill LaTeX and Lyx tables
+with output from text files (usually output from Stata or Matlab). The
+original tablefill.py does the same for LyX files only, and has fewer
+error checks.
 
 
 Usage
 -----
 
-tablefill.py [-h] [-i [INPUT [INPUT ...]]] [-o OUTPUT] [-f] TEMPLATE
+tablefill.py [-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
+             [-t {auto,lyx,tex}] [FLAGS] TEMPLATE
+
+Fill tagged tables in LaTeX and LyX files with external text tables
 
 positional arguments:
   TEMPLATE              Code template
@@ -22,334 +26,186 @@ positional arguments:
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         Show current version
-  --help-all            Show additional documentation
   -i [INPUT [INPUT ...]], --input [INPUT [INPUT ...]]
                         Input files with tables (default: INPUT_table)
   -o OUTPUT, --output OUTPUT
                         Processed template file (default: INPUT_filled)
+  -t {auto,lyx,tex}, --type {auto,lyx,tex}
+                        Template file type (default: auto)
+
+flags:
   -f, --force           Name input/output automatically
+  -c, --compile         Compile output
+  --verbose             Verbose printing
+  --silent             Verbose printing
 
-See examples below for details on the files and the replace engine
-
-LIMITATIONS
------------
-
-1. New lines of the table must be on new lines of the .tex file
-2. Checks for #(#|\d+,*)# inside tables, not tabular. Sorry!
-3. Currently, soft warnings are given for the following
-    - #(#|\d+,*)# is found on a line outside a table environment
-    - #(#|\d+,*)# is on a table environment with no label
-    - A tabular environment's label has no match in tables.txt
-    The original tablefill.py ignores these cases
-
+See tablefill_readme.txt for details on the files and the replace engine
 
 Notes
 -----
 
-I simplified several steps from tablefill. However, this function is
-more complicated because
-    - The function now checks inputs are correct (names and type)
-    - The function now checks if input files exist
-    - The function gives soft warnings for the cases mentioned above
-    - labels in LaTeX can be anywhere in the table environment
-    - .tex can have several matches of the pattern in the same line
-    - # is a special character in TeX and is escaped by \#; hence I
-        wrote regexps to match both #(#|\d+,*)# and \#(\#|\d+,*)\#
-
-The way the funtion operates is
-    1. Per line, the program searches for a \begin{table}
-    2. If found, it searches for a \label{tab:(.+)} BEFORE an \end{table}
-    3. If a label is found, search the parsed table input(s) for a match
-    4. Find all occurrences of ###, #\d+,*# in the line and replace
-        input value <- output value
-        ###         <- same value
-        #\d+#       <- rounded to \d+ digits
-        #\d+,#      <- rounded to \d+ digits w/thousands comma separator
-    5. Repeat 3 and 4 until an \end{table}
-
-
-Examples (input)
-----------------
-
-Input files must be tab-delimited rows of numbers or characters,
-preceded by <label>. The numbers can be arbitrarily long, can be
-negative, and can also be in scientific notation.
-
-<tab:Test>
-1	2	3
-2	3	1
-3	1	2
-
-
-<tab:FunnyMat>
-1	2	3	23	2
-2	3
-3	1	2	2
-1
-
-(The rows do not need to be of equal length.)
-
-Completely blank (no tab) lines are ignored. If a "cell" is merely "."
-or "[space]", then it is treated as missing. That is, in the program:
-
-<tab:Test>
-1	2	3
-2	.	1	3
-3	    1	2
-
-is equivalent to:
-
-<tab:Test>
-1	2	3
-2	1	3
-3	1	2
-
-This feature is useful as Stata outputs missing values in numerical
-variables as ".", and missing values in string variables as "[space]".
-
-Scientific notation is of the form: [numbers].[numbers]e(+/-)[numbers]
-23.2389e+23
--2.23e-2
--0.922e+3
-
-
-Examples (template)
--------------------
-
-The template determines the where the numbers from the input files are
-and how they will be displayed. Every table in the template file (if it
-is to be filled) must appear within a table environment. There can be
-several tabular environments within the table environment, but only ONE
-label per table environment. This is also a LaTeX limitation.
-
-While label names may appear more than once in both the template and
-input files, only the last instance of the label in the input files will
-be used. This because of the way the system is set up: The last label in
-the input file should be the most up to date version of that table. In
-the template file, repeated labels are filled with the same data.
-
-By design, labels are NOT case-sensitive.
-
-The values in the template file are parsed as follows:
-    ###         <- same value
-    #\d+#       <- rounded to \d+ digits
-    #\d+,#      <- rounded to \d+ digits w/thousands comma separator
-
-Consider the following examples
-
-abc + ### = abc
-2309.2093 + ###     = 2309.2093
-2309.2093 + #4#     = 2309.2093
-2309.2093 + #5#     = 2309.20930
-2309.2093 + #20#    = 2309.20930000000000000000
-2309.2093 + #3#     = 2309.209
-2309.2093 + #2#     = 2309.21
-2309.2093 + #0#     = 2309
-2309.2093 + #0,#    = 2,309
--2.23e-2  + #2#     = -0.0223 + #2#             = -0.02
--2.23e-2  + #7#     = -0.0223 + #7#             = -0.0223000
--2.23e+10 + #7,#    = -22300000000 + #7,#       = -22,300,000,000.000000
-2309.2093 + (#2#)   = (2309.21)
-2309.2093 + #2#**   = 2309.21**
-2309.2093 + ab#2#cd = ab2309.21cd
-
-Note that there can be ANYTHING around the pattern and the engine will
-only match the pattern. Further, in LaTeX, the # character must be
-escaped, so the engine also matches \#. Consider:
-
-3234.43241 + \\beta Hi \$(\#\#\#)\%*    = \\beta Hi \$(3234.43241)\%*
-3234.43241 + & \\beta Hi \$(\##\#)\%*   = \\beta Hi \$(3234.43241)\%*
-3234.43241 + & \\beta Hi \$(\#\##)\%*   = \\beta Hi \$(3234.43241)\%*
-3234.43241 + & \\beta Hi \$(#\#\#)\%    = \\beta Hi \$(3234.43241)\%
-3234.43241 + & \\beta Hi \$(\###)*\%    = \\beta Hi \$(3234.43241)*\%
-3234.43241 + & \\beta Hi \$(\#0,\#)\%*  = \\beta Hi \$(3,234)\%*
-3234.43241 + & \\beta Hi \$(\#0,\#)\%*  = \\beta Hi \$(3,234)\%*
-3234.43241 + & \\beta Hi \$(\#0,#*      = \\beta Hi \$(3,234*
-3234.43241 + & \\beta Hi \$(#0,\#*      = \\beta Hi \$(3,234*
-3234.43241 + & \\beta Hi \$(\#0,#*      = \\beta Hi \$(3,234*
-
-
-Examples (both)
----------------
-
-Input:
-<tab:Test>
-1	2	3
-2	1	3
-3	1	2
-
-Template:
-\label{tab:test}
-\#\#\# & \#\#\# & \#\#\# \\\\
-\#\#\# & \#\#\# & \#\#\# \\\\
-\#\#\# & \#\#\# & \#\#\# \\\\
-
-Output:
-\label{tab:test}
-1	2	3
-2	1	3
-3	1	2
-
-
-Input:
-<tab:Test>
-1	.	3
-2e-5	1	3.023
-.	-1	2	3
-
-Template:
-\label{tab:test}
-(\#\#\#) & 2      & \#\#\# & \\\\
-\#3\#    & \#\#\# & \#1\#  & \\\\
-NA       & \#\#\# & \#\#\# & \#\#\# \\\\
-
-Output:
-\label{tab:test}
-(1)	2	3
-0.000	1	3.0
-NA	-1	2	3
-
-IMPORTANT: Missing values in input and template need not line up.
-
-Input:
-<tab:Test>
-1	.	3
-2e-5	.	3.023
-.	-1	2
-
-Template:
-\label{tab:test}
-\#\#\# & \#\#\# & abc    \\\\
-abc    & \#2\#  & \#3\#  \\\\
-NA     & \#\#\# & \#\#\# \\\\
-
-Output:
-\label{tab:test}
-1	3	abc
-abc	0.00	3.023
-NA	-1	2
-
-
-Input:
-<tab:Test>
-1	1	2
-1	1	3
-2	-1	2
-
-Template:
-\label{tab:test}
-\#\#\# & \#\#\# & \#\#\# \\\\
-abc    & abc    & abc    \\\\
-\#\#\# & \#2\#  & \#3\#  \\\\
-\#\#\# & \#\#\# & \#\#\# \\\\
-
-Output:
-\label{tab:test}
-1	1	2
-abc	abc	abc
-1	1.00	3.000
-2	-1	2
-
-
-Error Logging
--------------
-
-The program indicates
-- When it finds a table environment
-    - If it finds a label within that environment
-    - If the label matches one in the input file(s)
-    - Whether it finds the #(#|\d+,*)# pattern but no label
-    - When it finds the end of the table environment
-    - How many substitutions it made in the table
-- When it finds the #(#|\d+,*)# pattern outside a table environment
-- When it finds an error (and if so it terminates)
-
-Common Mistakes
----------------
-
-- Missing table tag in the input file or in the template file.
-
-- Mismatch between the length of the template table and corresponding
-  text table. If the template table has more entries to be filled than
-  the text table has entries to fill from, this will cause an error and
-  the table will not be filled.
-
-- Use of numerical tags (e.g. #1#) to fill non-numerical data. This will
-  cause an error. Non-numerical data can only be filled using "###", as
-  it does not make sense to round or truncate this data.
+Several try-catch pairs and error checks are redundant because right now
+this may also be run from python and not just from the command line
 """
+
+# NOTE: For all my personal projects I import the print function from
+# the future, but it would break existing code so I don't do it here.rope
 
 from __future__ import division
 from traceback import format_exc
 from decimal import Decimal, ROUND_HALF_UP
 from os import linesep, path, access, W_OK
+from sys import exit as sysexit
 import argparse
 import re
 
-__program__   = "tablefill"
-__usage__     = "[-h] [-i [INPUT [INPUT ...]]] [-o OUTPUT] [-f] TEMPLATE"
+__program__   = "tablefill.py"
+__usage__     = """[-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
+                    [-t {auto,lyx,tex}] [-f] [-c] TEMPLATE"""
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18"
 __updated__   = "Sat Jun 20"
 __version__   = __program__ + " version 0.1.0 updated " + __updated__
 
+def main():
+    """
+    WARNING: This function expects command-line inputs to exist.
+    """
+    fill   = tablefill_internals_cliparse()
+    fill.get_input_parser()
+    fill.get_parsed_arguments()
+    fill.get_argument_strings()
+    fill.get_file_type()
+    print_verbose(fill.verbose, "Arguments look OK. Will run tablefill.")
+
+    exit, exit_msg = tablefill(template = fill.template,
+                               input    = fill.input,
+                               output   = fill.output,
+                               filetype = fill.ext,
+                               verbose  = fill.verbose,
+                               silent   = fill.silent)
+
+    if exit == 'SUCCESS':
+        fill.get_compiled()
+        sysexit(0)
+    elif exit == 'WARNING':
+        print_silent(fill.silent, "Exit status came with a warning")
+        print_silent(fill.silent, "Do you really want to continue?")
+        fill.get_compiled()
+        sysexit(-1)
+    elif exit == 'ERROR':
+        fillerror_msg  = 'ERROR while filling table.'
+        fillerror_msg += ' Check function call.' + linesep
+        print_silent(fill.silent, fillerror_msg)
+        fill.parser.print_usage()
+        sysexit(1)
+
+def print_verbose(prints, stuff):
+    if prints:
+        print stuff
+
+def print_silent(silence, stuff):
+    if not silence:
+        print stuff
+
 # ---------------------------------------------------------------------
 # tablefill
 
-def tablefill():
-    fill = tablefill_internals()
-    fill.get_input_parser()
-    fill.get_parsed_arguments()
-    fill.get_argument_strings(prints = True)
+def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
+    """Fill LaTeX and LyX template files with external inputs
+
+    Description
+    -----------
+
+    tablefill is a python function designed to fill LaTeX and LyX tables
+    with output from text files (usually output from Stata or Matlab).
+    The original tablefill.py does the same but only for LyX files, and
+    has fewer error checks. The regexps are also slightly different.
+
+    Required Input
+    --------------
+
+    See 'tablefill_readme.txt' for details on the format of these files.
+
+    template : str
+        Name of user-written document to use as basis for update
+    input : str
+        Space-separated list of files with tables to be used in update.
+    output : str
+        Filled template to be produced.
+
+    Optional Input
+    --------------
+    verbose : bool
+        print a lot of info
+    silent : bool
+        try to print nothing at all
+    filetype : str
+        auto, lyx, or tex
+
+    Output
+    ------
+    exit : str
+        One of SUCCESS, WARNING, ERROR
+    exit_msg : str
+        Details on the exit status
+
+
+    Usage
+    -----
+    exit, exit_msg = tablefill(template = 'template_file',
+                               input    = 'input_file(s)',
+                               output   = 'output_file')
+    """
     try:
-        status, msg = tablefill_tex(template = fill.template,
-                                    input    = fill.input,
-                                    output   = fill.output)
-    except:
-        print format_exc()
-        print fill.parser.print_usage()
+        verbose = verbose and not silent
+        logmsg  = "Parsing arguments..."
+        print_verbose(verbose, logmsg)
+        fill_engine = tablefill_internals_engine(filetype, verbose, silent)
+        fill_engine.get_parsed_arguments(kwargs)
+        fill_engine.get_file_type()
+        fill_engine.get_regexps()
 
-# ---------------------------------------------------------------------
-# tablefill_tex
+        logmsg = "Parsing tables in '%s' into dictionary." % fill_engine.input
+        print_verbose(verbose, logmsg)
+        fill_engine.get_parsed_tables()
 
-def tablefill_tex(**kwargs):
-    try:
-        print "Parsing arguments..."
-        fill_tex = tablefill_tex_internals()
-        fill_tex.get_parsed_arguments(kwargs)
+        logmsg = "Searching for labels in template '%s'" % fill_engine.template
+        print_verbose(verbose, logmsg + linesep)
+        fill_engine.get_filled_template()
 
-        print "Parsing tables in '%s' into dictionary." % fill_tex.input
-        fill_tex.get_parsed_tables()
+        logmsg = "Adding warning that this was automatically generated..."
+        print_verbose(verbose, logmsg)
+        fill_engine.get_notification_message()
 
-        print "Searching for labels in template '%s'" % fill_tex.template + linesep
-        fill_tex.get_filled_template()
+        logmsg = "Writing to output file '%s'" % fill_engine.output
+        print_verbose(verbose, logmsg)
+        fill_engine.write_to_output(fill_engine.filled_template)
 
-        print "Adding warning that this was automatically generated..."
-        fill_tex.get_notification_message()
-
-        print "Writing to output file '%s'" % fill_tex.output
-        outtext = fill_tex.notification_msg + fill_tex.filled_template
-        fill_tex.write_to_output(outtext)
-
-        print "Wrapping up..." + linesep
-        fill_tex.get_exit_message()
-        print fill_tex.exit + '!'
-        print fill_tex.exit_msg
-        return fill_tex.exit, fill_tex.exit_msg
+        logmsg = "Wrapping up..." + linesep
+        print_verbose(verbose, logmsg)
+        fill_engine.get_exit_message()
+        print_silent(silent, fill_engine.exit + '!')
+        print_silent(silent, fill_engine.exit_msg)
+        return fill_engine.exit, fill_engine.exit_msg
     except:
         exit_msg = format_exc()
         exit     = 'ERROR'
-        print exit + '!'
-        print exit_msg
+        print_silent(silent, exit + '!')
+        print_silent(silent, exit_msg)
         return exit, exit_msg
 
 # ---------------------------------------------------------------------
 # tablefill_internals
 
-class tablefill_internals:
+class tablefill_internals_cliparse:
+    """
+    WARNING: Internal class to parse arguments to pass to tablefill
+    """
     def __init__(self):
-        pass
+        self.compiler = {'tex': "pdflatex ",
+                         'lyx': "lyx -e pdf2 "}
 
     def get_input_parser(self):
         """
@@ -366,9 +222,6 @@ class tablefill_internals:
                             action   = 'version',
                             version  = parser_version,
                             help     = "Show current version")
-        parser.add_argument('--help-all',
-                            action   = 'help',
-                            help     = "Show additional documentation")
         parser.add_argument('template',
                             nargs    = 1,
                             type     = str,
@@ -392,9 +245,33 @@ class tablefill_internals:
                             help     = "Processed template file" +
                             " (default: INPUT_filled)",
                             required = False)
+        parser.add_argument('-t', '--type',
+                            dest     = 'filetype',
+                            type     = str,
+                            nargs    = 1,
+                            choices  = ['auto', 'lyx', 'tex'],
+                            default  = ['auto'],
+                            help     = "Template file type (default: auto)",
+                            required = False)
         parser.add_argument('-f', '--force',
+                            dest     = 'force',
                             action   = 'store_true',
                             help     = "Name input/output automatically",
+                            required = False)
+        parser.add_argument('-c', '--compile',
+                            dest     = 'compile',
+                            action   = 'store_true',
+                            help     = "Compile output",
+                            required = False)
+        parser.add_argument('--verbose',
+                            dest     = 'verbose',
+                            action   = 'store_true',
+                            help     = "Verbose printing",
+                            required = False)
+        parser.add_argument('--silent',
+                            dest     = 'silent',
+                            action   = 'store_true',
+                            help     = "No printing",
                             required = False)
         self.parser = parser
 
@@ -425,34 +302,78 @@ class tablefill_internals:
         add += out[-1] if ext is None else '.' + ext
         return [out[0] + add]
 
-    def get_argument_strings(self, prints = False):
+    def get_argument_strings(self):
         """
-        Get arguments as strings to pass to tablefill_tex
+        Get arguments as strings to pass to tablefill
         """
         self.template = path.abspath(self.args.template[0])
         self.input    = ' '.join([path.abspath(f) for f in self.args.input])
         self.output   = path.abspath(self.args.output[0])
-        if prints:
-            print linesep + "I found these arguments:"
-            print 'template = %s' % self.template
-            print 'input    = %s' % self.input
-            print 'output   = %s' % self.output
-            print ''
+        self.silent   = self.args.silent
+        self.verbose  = self.args.verbose and not self.args.silent
+
+        args_msg  = linesep + "I found these arguments:"
+        args_msg += "template = %s" % self.template
+        args_msg += "input    = %s" % self.input
+        args_msg += "output   = %s" % self.output
+        args_msg += linesep
+        print_verbose(self.verbose, args_msg)
+
+    def get_file_type(self):
+        fname = path.basename(self.template)
+        ext   = path.splitext(fname)[-1].lower().strip('. ')
+        inext = self.args.filetype[0].lower()
+        if inext not in ['auto', 'tex', 'lyx']:
+            unknown_type = "Type '%s' not allowed. Expected {auto,lyx,tex}."
+            unknown_type = unknown_type % inext
+            raise KeyError(unknown_type)
+        elif inext == 'auto':
+            if ext not in ['tex', 'lyx']:
+                unknown_type  = "File type '%s' not known."
+                unknown_type += " Expecting .lyx or .tex file."
+                unknown_type = unknown_type % ext
+                raise KeyError(unknown_type)
+            else:
+                self.ext = ext.lower()
+                logmsg = "NOTE: Automatically detected input type as %s" % ext
+                print_verbose(self.verbose, logmsg)
+        else:
+            self.ext = inext
+            if ext != inext:
+                mismatch_msg  = "NOTE: Provided template type '%s' "
+                mismatch_msg += "does not match detected template type '%s'"
+                mismatch_msg += linesep + "Will use program associated with '%s'"
+                mismatch_msg  = mismatch_msg % (inext, ext, inext)
+                print_verbose(self.verbose, mismatch_msg + linesep)
+
+    def get_compiled(self):
+        if self.args.compile:
+            compile_program  = self.compiler[self.ext]
+            compile_program += ' ' + self.output
+            logmsg = "Compiling not yet implemented. Stay tuned! Would've run:"
+            print_verbose(self.verbose, logmsg)
+            print_verbose(self.verbose, compile_program + linesep)
 
 # ---------------------------------------------------------------------
 # tablefill_tex_internals
 
-class tablefill_tex_internals:
-    def __init__(self):
+class tablefill_internals_engine:
+    """
+    WARNING: Internal class used by tablefill_tex
+    """
+    def __init__(self, filetype = 'auto', verbose = True, silent = False):
+        # Get file type
+        self.filetype     = filetype.lower()
+        if self.filetype not in ['auto', 'lyx', 'tex']:
+            unknown_type  = "File type '%s' not known."
+            unknown_type += " Expecting 'auto' or a .lyx or .tex file."
+            unknown_type  = unknown_type % filetype
+            raise KeyError(unknown_type)
+
         self.warn_msg  = {'nomatch': '', 'notable': '', 'nolabel': ''}
         self.warnings  = {'nomatch': [], 'notable': [], 'nolabel': []}
-        self.tags      = '^<Tab:(.+)>' + linesep
-        self.begin     = r'.*\\begin{table}.*'
-        self.end       = r'.*\\end{table}.*'
-        self.label     = r'.*\\label{tab:(.+)}'
-        self.matcha    = r'\\*#\\*#\\*#'      # Matches ### and \#\#\#
-        self.matchb    = r'\\*#(\d+)(,*)\\*#' # Matches #\d+,*# and \#\d+,*\#
-        self.matchc    = '(-*\d+)(\.*\d*)'    # Matches (-)integer(.decimal)
+        self.verbose   = verbose and not silent
+        self.silent    = silent
 
     def get_parsed_arguments(self, kwargs):
         """
@@ -485,22 +406,57 @@ class tablefill_tex_internals:
         infiles = [self.template] + self.input
         missing_files = filter(lambda f: not path.isfile(f), infiles)
         if missing_files != []:
-            missing_files_msg  = 'Please check the following are available:'
+            missing_files_msg  = "Please check the following are available:"
             missing_files_msg += linesep + linesep.join(missing_files)
             raise IOError(missing_files_msg)
 
         outdir = path.split(self.output)[0]
         missing_path = not path.isdir(outdir)
         if missing_path:
-            missing_outdir_msg  = 'Please check the following directory exists: '
+            missing_outdir_msg  = "Please check the following directory exists:"
             missing_outdir_msg += outdir
             raise IOError(missing_outdir_msg)
 
         cannot_write = not access(outdir, W_OK)
         if cannot_write:
-            cannot_write_msg  = 'Please check you have write access to: '
+            cannot_write_msg  = "Please check you have write access to: "
             cannot_write_msg += outdir
             raise IOError(cannot_write_msg)
+
+    def get_file_type(self):
+        fname = path.basename(self.template)
+        ext   = path.splitext(fname)[-1].lower().strip('. ')
+        inext = self.filetype
+        if inext == 'auto':
+            if ext not in ['tex', 'lyx']:
+                unknown_type  = "Option filetype = 'auto' detected type '%s'"
+                unknown_type += " but was expecting a .lyx or .tex file."
+                unknown_type  = unknown_type % ext
+                raise KeyError(unknown_type)
+            else:
+                self.filetype = ext.lower()
+                logmsg = "NOTE: Automatically detected input type as %s" % ext
+                print_verbose(self.verbose, logmsg)
+        elif ext != inext:
+            mismatch_msg  = "NOTE: Provided template type '%s' "
+            mismatch_msg += "does not match detected template type '%s'"
+            mismatch_msg += linesep + "Will use program associated with '%s'"
+            mismatch_msg  = mismatch_msg % (inext, ext, inext)
+            print_verbose(self.verbose, mismatch_msg + linesep)
+
+    def get_regexps(self):
+        self.tags      = '^<Tab:(.+)>' + linesep
+        self.matcha    = r'\\*#\\*#\\*#'      # Matches ### and \#\#\#
+        self.matchb    = r'\\*#(\d+)(,*)\\*#' # Matches #\d+# and \#\d+,*\#
+        self.matchc    = '(-*\d+)(\.*\d*)'    # Matches (-)integer(.decimal)
+        if self.filetype == 'tex':
+            self.begin = r'.*\\begin{table}.*'
+            self.end   = r'.*\\end{table}.*'
+            self.label = r'.*\\label{tab:(.+)}'
+        elif self.filetype == 'lyx':
+            self.begin = r'.*\\begin_inset Float table.*'
+            self.end   = r'</lyxtabular>'
+            self.label = r'name "tab:(.+)"'
 
     def get_parsed_tables(self):
         """
@@ -539,7 +495,7 @@ class tablefill_tex_internals:
                 table_search, table_tag  = self.search_label(read_template, n)
                 table_start  = n
                 search_msg   = self.get_search_msg(table_search, table_tag, n)
-                print search_msg
+                print_verbose(self.verbose, search_msg)
 
             if re.search(self.matcha, line) or re.search(self.matchb, line):
                 if table_search:
@@ -551,19 +507,19 @@ class tablefill_tex_internals:
                     warn_notable  = "Line %d matches #(#|\d+,*)#"
                     warn_notable += " but is not in begin/end table statements."
                     warn_notable += " Skipping..."
-                    print warn_notable % n
+                    print_verbose(self.verbose, warn_notable % n)
                 elif table_tag == '':
                     self.warnings['nolabel'] += [str(n)]
                     warn_nolabel  = "Line %d matches #(#|\d+,*)#"
-                    warn_nolabel += " but couldn't find \\label{tab:.+}."
+                    warn_nolabel += " but couldn't find " + self.label
                     warn_nolabel += " Skipping..."
-                    print warn_nolabel % n
+                    print_verbose(self.verbose, warn_nolabel % n)
 
-            if re.search(self.end, line):
+            if re.search(self.end, line) and table_search:
                 search_msg   = "Table '%s' in line %d ended in line %d."
                 search_msg  += " %d replacements were made." % table_entry
                 search_msg   = search_msg % (table_tag, table_start, n)
-                print search_msg + linesep
+                print_verbose(self.verbose, search_msg + linesep)
 
                 table_start  = -1
                 table_search = False
@@ -589,7 +545,7 @@ class tablefill_tex_internals:
             searchend   = re.search(self.end, searchline)
         if not searchend and searchmatch:
             label = re.findall(self.label, searchline, flags = re.IGNORECASE)[0]
-            label = label.strip('{}').lower()
+            label = label.strip('{}"').lower()
             return label in self.tables, label
         else:
             return False, ''
@@ -655,15 +611,37 @@ class tablefill_tex_internals:
             - #(#|\d+,*)# is on a table environment with no label
             - A tabular environment's label has no match in tables.txt
         """
+        n   = 0
+        if self.filetype == 'tex':
+            head  = 3 * [72 * '%' + linesep]
+            tail  = head
+            pre   = '% '
+            after = linesep
+        elif self.filetype == 'lyx':
+            pre   = "\\begin_layout Plain Layout" + linesep
+            after = "\\end_layout" + linesep
+            head  = ["\\begin_layout Standard" + linesep]
+            head += ["\\begin_inset Note Note" + linesep]
+            head += ["status open" + linesep + linesep]
+            tail  = ["\\end_inset" + linesep]
+            tail += ["\\end_layout" + linesep]
+            while not self.filled_template[n].startswith('\\begin_body'):
+                n += 1
+            n += 1
+
         for key in self.warnings.keys():
             self.warnings[key] = ','.join(self.warnings[key])
 
         self.warning = True in [v != '' for v in self.warnings.values()]
         if self.warning:
-            fill   = (self.template, self.input)
-            imtags = "WARNING: These tags were in '%s' but not in '%s':" % fill
-            imhead = "WARNING: Lines in '%s' maching #(#|\d+,*)#" % self.template
-            imend  = linesep + "Output '%s' may not compile!" % self.output
+            fillt  = (self.template, self.input)
+            fillh  = self.template
+            fillt  = ("'template' file", "'input' file(s)")
+            fillh  = "'template' file"
+            imtags = "WARNING: These tags were in %s but not in %s:" % fillt
+            imhead = "WARNING: Lines in %s maching '#(#|d+,*)#'" % fillh
+            imend  = linesep + pre if self.filetype == 'tex' else '; '
+            imend += "Output '%s' may not compile!" % self.output
 
         if self.warnings['nomatch'] != '':
             self.warn_msg['nomatch']  = imtags
@@ -679,19 +657,20 @@ class tablefill_tex_internals:
             self.warn_msg['nolabel'] += " but the environment had no label: "
             self.warn_msg['nolabel'] += self.warnings['nolabel'] + imend
 
-        head = 3 * [72 * '%' + linesep]
-        msg  = ["This file was produced by 'tablefill.py'" + linesep]
-        msg += ["    Template file: %s" % self.template + linesep]
-        msg += ["    Input file(s): %s" % self.input + linesep]
-        msg += ["To make changes, edit the input and template files." + linesep]
+        msg  = ["This file was produced by 'tablefill.py'"]
+        msg += ["\tTemplate file: %s" % self.template]
+        msg += ["\tInput file(s): %s" % self.input]
+        msg += ["To make changes, edit the input and template files."]
+        msg += [pre + after]
 
         if self.warning:
-            msg += [linesep + "THERE WAS AN ISSUE CREATING THIS FILE!" + linesep]
-            msg += [s + linesep for s in self.warn_msg.values()]
+            msg += ["THERE WAS AN ISSUE CREATING THIS FILE!"]
+            msg += [s for s in self.warn_msg.values()]
         else:
-            msg += [linesep + "DO NOT EDIT THIS FILE DIRECTLY." + linesep]
-        msg  = linesep.join(msg).split(linesep)
-        self.notification_msg = head + ['% ' + m + linesep for m in msg] + head
+            msg += ["DO NOT EDIT THIS FILE DIRECTLY."]
+
+        msg = [pre + m + after for m in msg]
+        self.filled_template[n:n] = head + msg + tail
 
     def write_to_output(self, text):
         outfile = open(self.output, 'wb')
@@ -711,7 +690,7 @@ class tablefill_tex_internals:
             self.exit     = 'SUCCESS'
 
 # ---------------------------------------------------------------------
-# Run function
+# Run the function
 
 if __name__ == "__main__":
-    tablefill()
+    main()

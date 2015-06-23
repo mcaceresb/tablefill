@@ -1,20 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This file was produced by 'tablefill.py'
-% 	Template file: /home/mauricio/.dropbox-me/Dropbox/doyle/projects/lyx-autoupdate-standalone/test/input/tablefill_template.tex
-% 	Input file(s): ['/home/mauricio/.dropbox-me/Dropbox/doyle/projects/lyx-autoupdate-standalone/test/input/tables_appendix.txt', '/home/mauricio/.dropbox-me/Dropbox/doyle/projects/lyx-autoupdate-standalone/test/input/tables_nolabel.txt']
-% To make changes, edit the input and template files.
-% % 
-
-% THERE WAS AN ISSUE CREATING THIS FILE!
-% 
-% 
-% WARNING: These tags were in 'template' file but not in 'input' file(s):unobservables
-% Output '/home/mauricio/.dropbox-me/Dropbox/doyle/projects/lyx-autoupdate-standalone/test/input/tablefill_template_filled.tex' may not compile!
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% LyX 2.1.3 created this file.  For more info, see http://www.lyx.org/.
 %% Do not edit unless you really know what you are doing.
 \documentclass[english]{article}
@@ -45,19 +28,19 @@ Dependent variable: Dummy for newspaper choosing Republican affiliation
 \hline 
  & (1) & (2) & (3)\tabularnewline
 \hline 
-Republican vote share & 2,000.1355 & 20,000.2353 & 10,000.9424\tabularnewline
- & (10,558,000.0000) & (0.0703) & (0.1021)\tabularnewline
-Number of Republican incumbents & 100 & -0.0813 & -0.0757\tabularnewline
- & (0.0124) & (0.0128) & (0.0123)\tabularnewline[0.005\textheight]
-Number of Democratic incumbents & 0.0644 & 0.0707 & 0.0644\tabularnewline
- & (0.0120) & (0.0124) & (0.0120)\tabularnewline[0.005\textheight]
-Lag Republican vote share &  &  & 0.2034\tabularnewline[0.005\textheight]
- &  &  & (0.0869)\tabularnewline[0.005\textheight]
+Republican vote share & \#4,\# & \#4,\# & \#4,\#\tabularnewline
+ & (\#4,\#) & (\#\#\#) & (\#\#\#)\tabularnewline
+Number of Republican incumbents & \#0\# & \#4\# & \#4\#\tabularnewline
+ & (\#4\#) & (\#4\#) & (\#4\#)\tabularnewline[0.005\textheight]
+Number of Democratic incumbents & \#4\# & \#4\# & \#4\#\tabularnewline
+ & (\#4\#) & (\#4\#) & (\#4\#)\tabularnewline[0.005\textheight]
+Lag Republican vote share &  &  & \#4\#\tabularnewline[0.005\textheight]
+ &  &  & (\#4\#)\tabularnewline[0.005\textheight]
 Instrument with lag vote share? &  & X & \tabularnewline[0.005\textheight]
 \hline 
-R2 & 0.2860 & 0.2854 & 0.2871\tabularnewline
-Number of markets & 1336 & 1336 & 1336\tabularnewline
-Number of newspapers & 3177 & 3177 & 3177\tabularnewline
+R2 & \#4\# & \#4\# & \#4\#\tabularnewline
+Number of markets & \#0\# & \#0\# & \#0\#\tabularnewline
+Number of newspapers & \#0\# & \#0\# & \#0\#\tabularnewline
 \hline 
 \end{tabular}
 \par\end{raggedright}
@@ -117,17 +100,17 @@ Supply parameters &  & \tabularnewline
  & papers & diverse papers & diverse papers\tabularnewline
 \hline 
 \noalign{\vskip0.01\textheight}
-Baseline & 140 & 0.22 & 0.036\tabularnewline[0.01\textheight]
+Baseline & \#0\# & \#2\# & \#3\#\tabularnewline[0.01\textheight]
 When choosing affiliation, newspapers: &  &  & \tabularnewline
 \noalign{\vskip\doublerulesep}
-\quad{}Ignore competitors' choices & 87 & 0.14 & 0.022\tabularnewline[\doublerulesep]
+\quad{}Ignore competitors' choices & \#0\# & \#2\# & \#3\#\tabularnewline[\doublerulesep]
 \noalign{\vskip\doublerulesep}
-\quad{}Ignore household ideology & 208 & 0.30 & 0.048\tabularnewline[\doublerulesep]
+\quad{}Ignore household ideology & \#0\# & \#2\# & \#3\#\tabularnewline[\doublerulesep]
 \noalign{\vskip\doublerulesep}
-\quad{}Ignore idiosyncratic cost shocks ($\xi$) & 106 & 0.17 & 0.030\tabularnewline[0.015\textheight]
+\quad{}Ignore idiosyncratic cost shocks ($\xi$) & \#0\# & \#2\# & \#3\#\tabularnewline[0.015\textheight]
 Owners chosen at random from &  &  & \tabularnewline
 local households and newspaper &  &  & \tabularnewline
-type equals owner type & 150 & 0.23 & 0.038\tabularnewline[\doublerulesep]
+type equals owner type & \#0\# & \#2\# & \#3\#\tabularnewline[\doublerulesep]
 \hline 
 \noalign{\vskip0.01\textheight}
 \end{tabular}
