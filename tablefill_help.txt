@@ -25,7 +25,7 @@ more complicated because
     - # is a special character in TeX and is escaped by \#; hence I
         wrote regexps to match both #(#|\d+,*)# and \#(\#|\d+,*)\#
 
-The way the funtion operates is
+The way the function operates is
     1. Per line, the program searches for a \begin{table}
     2. If found, it searches for a \label{tab:(.+)} BEFORE an \end{table}
     3. If a label is found, search the parsed table input(s) for a match

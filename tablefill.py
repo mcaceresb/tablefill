@@ -37,9 +37,9 @@ flags:
   -f, --force           Name input/output automatically
   -c, --compile         Compile output
   --verbose             Verbose printing
-  --silent             Verbose printing
+  --silent              Try to say nothing
 
-See tablefill_readme.txt for details on the files and the replace engine
+See tablefill_help.txt for details on the files and the replace engine
 
 Notes
 -----
@@ -49,7 +49,7 @@ this may also be run from python and not just from the command line
 """
 
 # NOTE: For all my personal projects I import the print function from
-# the future, but it would break existing code so I don't do it here.rope
+# the future, but it would break existing code so I don't do it here.
 
 from __future__ import division
 from traceback import format_exc
@@ -64,15 +64,15 @@ __usage__     = """[-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
                     [-t {auto,lyx,tex}] [-f] [-c] TEMPLATE"""
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
-__created__   = "Thu Jun 18"
-__updated__   = "Sat Jun 20"
+__created__   = "Thu Jun 18, 2015"
+__updated__   = "Sat Jun 20, 2015"
 __version__   = __program__ + " version 0.1.0 updated " + __updated__
 
 def main():
     """
     WARNING: This function expects command-line inputs to exist.
     """
-    fill   = tablefill_internals_cliparse()
+    fill = tablefill_internals_cliparse()
     fill.get_input_parser()
     fill.get_parsed_arguments()
     fill.get_argument_strings()
@@ -126,7 +126,7 @@ def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
     Required Input
     --------------
 
-    See 'tablefill_readme.txt' for details on the format of these files.
+    See 'tablefill_help.txt' for details on the format of these files.
 
     template : str
         Name of user-written document to use as basis for update
@@ -197,7 +197,7 @@ def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
         return exit, exit_msg
 
 # ---------------------------------------------------------------------
-# tablefill_internals
+# tablefill_internals_cliparse
 
 class tablefill_internals_cliparse:
     """
@@ -355,7 +355,7 @@ class tablefill_internals_cliparse:
             print_verbose(self.verbose, compile_program + linesep)
 
 # ---------------------------------------------------------------------
-# tablefill_tex_internals
+# tablefill_internals_engine
 
 class tablefill_internals_engine:
     """
