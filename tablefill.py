@@ -11,7 +11,6 @@ with output from text files (usually output from Stata or Matlab). The
 original tablefill.py does the same for LyX files only, and has fewer
 error checks.
 
-
 Usage
 -----
 
@@ -41,6 +40,21 @@ flags:
 
 See tablefill_help.txt for details on the files and the replace engine
 
+Examples
+--------
+
+$ ls
+tablefill.py
+test.tex
+test_table.txt
+$ python tablefill.py test.tex --force --silent
+$ ls
+tablefill.py
+test.tex
+test_table.txt
+test_filled.txt
+$ python tablefill.py test.tex -i test_table.txt -o output.tex --verbose
+
 Notes
 -----
 
@@ -53,8 +67,8 @@ this may also be run from python and not just from the command line
 
 from __future__ import division
 from traceback import format_exc
+from os import linesep, path, access, W_OK, system
 from decimal import Decimal, ROUND_HALF_UP
-from os import linesep, path, access, W_OK
 from sys import exit as sysexit
 import argparse
 import re
@@ -67,6 +81,7 @@ __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Sat Jun 20, 2015"
 __version__   = __program__ + " version 0.1.0 updated " + __updated__
+
 
 def main():
     """
@@ -101,9 +116,11 @@ def main():
         fill.parser.print_usage()
         sysexit(1)
 
+
 def print_verbose(prints, stuff):
     if prints:
         print stuff
+
 
 def print_silent(silence, stuff):
     if not silence:
@@ -111,6 +128,7 @@ def print_silent(silence, stuff):
 
 # ---------------------------------------------------------------------
 # tablefill
+
 
 def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
     """Fill LaTeX and LyX template files with external inputs
@@ -198,6 +216,7 @@ def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
 
 # ---------------------------------------------------------------------
 # tablefill_internals_cliparse
+
 
 class tablefill_internals_cliparse:
     """
@@ -292,7 +311,8 @@ class tablefill_internals_cliparse:
             else:
                 template_name = path.basename(args.template[0])
                 if 'INPUT' in missing_args:
-                    args.input = self.rename_file(template_name, '_table', 'txt')
+                    args.input = self.rename_file(template_name,
+                                                  '_table', 'txt')
                 if 'OUTPUT' in missing_args:
                     args.output = self.rename_file(template_name, '_filled')
         self.args = args
@@ -341,8 +361,8 @@ class tablefill_internals_cliparse:
             self.ext = inext
             if ext != inext:
                 mismatch_msg  = "NOTE: Provided template type '%s' "
-                mismatch_msg += "does not match detected template type '%s'"
-                mismatch_msg += linesep + "Will use program associated with '%s'"
+                mismatch_msg += "does not match detected template type '%s'. "
+                mismatch_msg += linesep + "Using program associated with '%s'"
                 mismatch_msg  = mismatch_msg % (inext, ext, inext)
                 print_verbose(self.verbose, mismatch_msg + linesep)
 
@@ -350,12 +370,14 @@ class tablefill_internals_cliparse:
         if self.args.compile:
             compile_program  = self.compiler[self.ext]
             compile_program += ' ' + self.output
-            logmsg = "Compiling not yet implemented. Stay tuned! Would've run:"
+            logmsg = "Compiling in beta! Use with caution. Running"
             print_verbose(self.verbose, logmsg)
             print_verbose(self.verbose, compile_program + linesep)
+            system(compile_program + linesep)
 
 # ---------------------------------------------------------------------
 # tablefill_internals_engine
+
 
 class tablefill_internals_engine:
     """
@@ -395,7 +417,8 @@ class tablefill_internals_engine:
         mismatched_types = m
         if mismatched_types != []:
             msg = "Expected str for '%s' but got type '%s'"
-            msg = [msg % (k, v.__class__.__name__) for k, v in mismatched_types]
+            msg = [msg % (k, v.__class__.__name__)
+                   for k, v in mismatched_types]
             mismatched_msg = linesep.join(msg)
             raise TypeError(mismatched_msg)
 
@@ -413,7 +436,7 @@ class tablefill_internals_engine:
         outdir = path.split(self.output)[0]
         missing_path = not path.isdir(outdir)
         if missing_path:
-            missing_outdir_msg  = "Please check the following directory exists:"
+            missing_outdir_msg  = "Please check the directory exists:"
             missing_outdir_msg += outdir
             raise IOError(missing_outdir_msg)
 
@@ -446,9 +469,10 @@ class tablefill_internals_engine:
 
     def get_regexps(self):
         self.tags      = '^<Tab:(.+)>' + linesep
-        self.matcha    = r'\\*#\\*#\\*#'      # Matches ### and \#\#\#
-        self.matchb    = r'\\*#(\d+)(,*)\\*#' # Matches #\d+# and \#\d+,*\#
-        self.matchc    = '(-*\d+)(\.*\d*)'    # Matches (-)integer(.decimal)
+        self.matcha    = r'\\*#\\*#\\*#'       # Matches ### and \#\#\#
+        self.matchb    = r'\\*#(\d+)(,*)\\*#'  # Matches #\d+# and \#\d+,*\#
+        self.matchc    = '(-*\d+)(\.*\d*)'     # Matches (-)integer(.decimal)
+        self.comments  = '^%'                  # Matches comment
         if self.filetype == 'tex':
             self.begin = r'.*\\begin{table}.*'
             self.end   = r'.*\\end{table}.*'
@@ -472,7 +496,7 @@ class tablefill_internals_engine:
                 tag = tag[0].lower()
                 tables[tag] = []
             else:
-                clean_row_entries = [entry.strip() for entry in row.split('\t')]
+                clean_row_entries = [e.strip() for e in row.split('\t')]
                 tables[tag] += clean_row_entries
         self.tables = {k: self.filter_missing(v) for k, v in tables.items()}
 
@@ -498,14 +522,19 @@ class tablefill_internals_engine:
                 print_verbose(self.verbose, search_msg)
 
             if re.search(self.matcha, line) or re.search(self.matchb, line):
-                if table_search:
+                if re.search(self.comments, line.strip()):
+                    warn_incomments  = "Line %d matches #(#|\d+,*)#"
+                    warn_incomments += " but it appears to be commented out."
+                    warn_incomments += " Skipping..."
+                    print_verbose(self.verbose, warn_incomments % n)
+                elif table_search:
                     table  = self.tables[table_tag]
                     update = self.replace_line(line, table, table_entry)
                     read_template[n], table_entry = update
                 elif table_start == -1:
                     self.warnings['notable'] += [str(n)]
-                    warn_notable  = "Line %d matches #(#|\d+,*)#"
-                    warn_notable += " but is not in begin/end table statements."
+                    warn_notable  = "Line %d matches #(#|\d+,*)# but"
+                    warn_notable += " is not in begin/end table statements."
                     warn_notable += " Skipping..."
                     print_verbose(self.verbose, warn_notable % n)
                 elif table_tag == '':
@@ -536,15 +565,18 @@ class tablefill_internals_engine:
         """
         N = start
         searchline  = intext[N]
-        searchmatch = re.search(self.label, searchline, flags = re.IGNORECASE)
+        searchmatch = re.search(self.label, searchline,
+                                flags = re.IGNORECASE)
         searchend   = re.search(self.end, searchline)
         while not searchmatch and not searchend:
             N += 1
             searchline  = intext[N]
-            searchmatch = re.search(self.label, searchline, flags = re.IGNORECASE)
+            searchmatch = re.search(self.label, searchline,
+                                    flags = re.IGNORECASE)
             searchend   = re.search(self.end, searchline)
         if not searchend and searchmatch:
-            label = re.findall(self.label, searchline, flags = re.IGNORECASE)[0]
+            label = re.findall(self.label, searchline,
+                               flags = re.IGNORECASE)[0]
             label = label.strip('{}"').lower()
             return label in self.tables, label
         else:
@@ -597,7 +629,8 @@ class tablefill_internals_engine:
         precision = int(precision)
         roundas   = 0 if precision == 0 else pow(10, -precision)
         roundas   = Decimal(str(roundas))
-        rounded   = str(Decimal(entry).quantize(roundas, rounding = ROUND_HALF_UP))
+        rounded   = str(Decimal(entry).quantize(roundas,
+                                                rounding = ROUND_HALF_UP))
         if ',' in comma:
             integer_part, decimal_part = re.findall(self.matchc, rounded)[0]
             rounded = format(int(integer_part), ',d') + decimal_part
@@ -606,7 +639,7 @@ class tablefill_internals_engine:
     def get_notification_message(self):
         """
         Inserts a message atop the LaTeX file that this was created by
-        Intablefill_tex. cludes the following warnings, when applicable
+        tablefill_tex. includes the following warnings, when applicable
             - #(#|\d+,*)# is found on a line outside a table environment
             - #(#|\d+,*)# is on a table environment with no label
             - A tabular environment's label has no match in tables.txt
@@ -639,7 +672,7 @@ class tablefill_internals_engine:
             fillt  = ("'template' file", "'input' file(s)")
             fillh  = "'template' file"
             imtags = "WARNING: These tags were in %s but not in %s:" % fillt
-            imhead = "WARNING: Lines in %s maching '#(#|d+,*)#'" % fillh
+            imhead = "WARNING: Lines in %s matching '#(#|d+,*)#'" % fillh
             imend  = linesep + pre if self.filetype == 'tex' else '; '
             imend += "Output '%s' may not compile!" % self.output
 
@@ -649,7 +682,7 @@ class tablefill_internals_engine:
 
         if self.warnings['notable'] != '':
             self.warn_msg['notable']  = imhead
-            self.warn_msg['notable'] += " but were not in a table environment: "
+            self.warn_msg['notable'] += " were not in a table environment: "
             self.warn_msg['notable'] += self.warnings['notable'] + imend
 
         if self.warnings['nolabel'] != '':
