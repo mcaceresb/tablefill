@@ -9,6 +9,7 @@ LIMITATIONS
     - #(#|\d+,*)# is found on a line outside a table environment
     - #(#|\d+,*)# is on a table environment with no label
     - A tabular environment's label has no match in tables.txt
+    - More placeholders found in table than table entries in input
     The original tablefill.py ignores these cases
 
 
