@@ -87,6 +87,11 @@ __created__   = "Thu Jun 18, 2015"
 __updated__   = "Wed Mar 30, 2016"
 __version__   = __program__ + " version 0.3.0 updated " + __updated__
 
+# Define basestring in a backwards-compatible way
+try:
+    "" is basestring
+except NameError:
+    basestring = str
 
 def main():
     """
