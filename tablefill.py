@@ -9,7 +9,12 @@ Description
 tablefill.py is a python module designed to fill LaTeX and Lyx tables
 with output from text files (usually output from Stata or Matlab). The
 original tablefill.py does the same for LyX files only, and has fewer
-error checks.
+error checks. Note this is intended both for command line _AND_ script
+usage. Hence both the following are valid
+
+>>> from tablefill import tablefill
+
+$ python tablefill.py
 
 Usage
 -----
@@ -577,11 +582,11 @@ class tablefill_internals_engine:
                     ntable = len(table)
                     update = self.replace_line(line, table, table_entry)
                     read_template[n], table_entry, entry_start = update
-                    if ntable <= table_entry:
+                    if ntable < table_entry:
                         self.warnings['toolong'] += [str(n)]
 
-                        nstart        = entry_start
-                        nend          = table_entry - 1
+                        nstart        = entry_start + 1
+                        nend          = table_entry
                         aux_toolong   = (n, nstart, nend, table_tag, ntable)
 
                         warn_toolong  = "Line %d has matches %d-%d for table"
@@ -671,19 +676,22 @@ class tablefill_internals_engine:
         starts  = tablen
         linesep = line.split('&')
         for i in range(len(linesep)):
+            cell   = linesep[i]
+            matcha = re.search(self.matcha, cell)
+            matchb = re.search(self.matchb, cell)
             if len(table) > tablen:
-                cell = linesep[i]
-                if re.search(self.matcha, cell):
+                if matcha:
                     entry      = table[tablen]
                     linesep[i] = re.sub(self.matcha, entry, cell)
                     tablen    += 1
-                elif re.search(self.matchb, cell):
+                elif matchb:
                     entry      = table[tablen]
                     linesep[i] = self.round_and_format(cell, entry)
                     tablen    += 1
             else:
-                starts  = tablen if tablen - starts == i + 1 else starts
-                tablen += 1
+                if matcha or matchb:
+                    starts  = tablen if tablen - starts == i + 1 else starts
+                    tablen += 1
 
         line = '&'.join(linesep)
         return line, tablen, starts
