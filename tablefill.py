@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # encoding: utf-8
 
 """Fill LaTeX template files with external inputs
@@ -9,12 +9,15 @@ Description
 tablefill.py is a python module designed to fill LaTeX and Lyx tables
 with output from text files (usually output from Stata or Matlab). The
 original tablefill.py does the same for LyX files only, and has fewer
-error checks. Note this is intended both for command line _AND_ script
-usage. Hence both the following are valid
+error checks. For backwards compatibility, this also works as a python
+module, meaning
 
 >>> from tablefill import tablefill
 
-$ python tablefill.py
+Will allow usage of tablefill wherever currently in use. However, it
+can also be called like any command-line tool
+
+$ python tablefill.py --help
 
 Usage
 -----
@@ -64,7 +67,8 @@ Notes
 -----
 
 Several try-catch pairs and error checks are redundant because right now
-this may also be run from python and not just from the command line
+as this is meant to be backwards-compatible and can be called from other
+python scripts or used directly from the command line.
 """
 
 # NOTE: For all my personal projects I import the print function from
@@ -155,7 +159,7 @@ def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
     tablefill is a python function designed to fill LaTeX and LyX tables
     with output from text files (usually output from Stata or Matlab).
     The original tablefill.py does the same but only for LyX files, and
-    has fewer error checks. The regexps are also slightly different.
+    has fewer error checks. The regexps are also slightly improved.
 
     Required Input
     --------------
