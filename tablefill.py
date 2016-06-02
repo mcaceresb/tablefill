@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # encoding: utf-8
 
 """Fill LaTeX template files with external inputs
@@ -9,7 +9,15 @@ Description
 tablefill.py is a python module designed to fill LaTeX and Lyx tables
 with output from text files (usually output from Stata or Matlab). The
 original tablefill.py does the same for LyX files only, and has fewer
-error checks.
+error checks. For backwards compatibility, this also works as a python
+module, meaning
+
+>>> from tablefill import tablefill
+
+Will allow usage of tablefill wherever currently in use. However, it
+can also be called like any command-line tool
+
+$ python tablefill.py --help
 
 Usage
 -----
@@ -59,7 +67,8 @@ Notes
 -----
 
 Several try-catch pairs and error checks are redundant because right now
-this may also be run from python and not just from the command line
+as this is meant to be backwards-compatible and can be called from other
+python scripts or used directly from the command line.
 """
 
 # NOTE: For all my personal projects I import the print function from
@@ -82,6 +91,11 @@ __created__   = "Thu Jun 18, 2015"
 __updated__   = "Wed Mar 30, 2016"
 __version__   = __program__ + " version 0.3.0 updated " + __updated__
 
+# Define basestring in a backwards-compatible way
+try:
+    "" is basestring
+except NameError:
+    basestring = str
 
 def main():
     """
@@ -145,7 +159,7 @@ def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
     tablefill is a python function designed to fill LaTeX and LyX tables
     with output from text files (usually output from Stata or Matlab).
     The original tablefill.py does the same but only for LyX files, and
-    has fewer error checks. The regexps are also slightly different.
+    has fewer error checks. The regexps are also slightly improved.
 
     Required Input
     --------------
@@ -577,11 +591,11 @@ class tablefill_internals_engine:
                     ntable = len(table)
                     update = self.replace_line(line, table, table_entry)
                     read_template[n], table_entry, entry_start = update
-                    if ntable <= table_entry:
+                    if ntable < table_entry:
                         self.warnings['toolong'] += [str(n)]
 
-                        nstart        = entry_start
-                        nend          = table_entry - 1
+                        nstart        = entry_start + 1
+                        nend          = table_entry
                         aux_toolong   = (n, nstart, nend, table_tag, ntable)
 
                         warn_toolong  = "Line %d has matches %d-%d for table"
@@ -671,19 +685,22 @@ class tablefill_internals_engine:
         starts  = tablen
         linesep = line.split('&')
         for i in range(len(linesep)):
+            cell   = linesep[i]
+            matcha = re.search(self.matcha, cell)
+            matchb = re.search(self.matchb, cell)
             if len(table) > tablen:
-                cell = linesep[i]
-                if re.search(self.matcha, cell):
+                if matcha:
                     entry      = table[tablen]
                     linesep[i] = re.sub(self.matcha, entry, cell)
                     tablen    += 1
-                elif re.search(self.matchb, cell):
+                elif matchb:
                     entry      = table[tablen]
                     linesep[i] = self.round_and_format(cell, entry)
                     tablen    += 1
             else:
-                starts  = tablen if tablen - starts == i + 1 else starts
-                tablen += 1
+                if matcha or matchb:
+                    starts  = tablen if tablen - starts == i + 1 else starts
+                    tablen += 1
 
         line = '&'.join(linesep)
         return line, tablen, starts

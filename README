@@ -13,6 +13,7 @@ This tablefill.py
     - Soft warning when placeholder outside proper environment
     - Soft warning when placeholder in environment with no label
     - Soft warning when placeholder in environment with unmatched label
+    - Soft warning when more placeholders than table entries
 - Implements the same idea for LaTeX
     - There can be several placeholders in one line
     - However, there must be at most one table line per code line
