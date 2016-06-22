@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # encoding: utf-8
 
 """Fill LaTeX template files with external inputs
@@ -9,15 +9,12 @@ Description
 tablefill.py is a python module designed to fill LaTeX and Lyx tables
 with output from text files (usually output from Stata or Matlab). The
 original tablefill.py does the same for LyX files only, and has fewer
-error checks. For backwards compatibility, this also works as a python
-module, meaning
+error checks. Note this is intended both for command line _AND_ script
+usage. Hence both the following are valid
 
 >>> from tablefill import tablefill
 
-Will allow usage of tablefill wherever currently in use. However, it
-can also be called like any command-line tool
-
-$ python tablefill.py --help
+$ python tablefill.py
 
 Usage
 -----
@@ -67,8 +64,7 @@ Notes
 -----
 
 Several try-catch pairs and error checks are redundant because right now
-as this is meant to be backwards-compatible and can be called from other
-python scripts or used directly from the command line.
+this may also be run from python and not just from the command line
 """
 
 # NOTE: For all my personal projects I import the print function from
@@ -159,7 +155,7 @@ def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
     tablefill is a python function designed to fill LaTeX and LyX tables
     with output from text files (usually output from Stata or Matlab).
     The original tablefill.py does the same but only for LyX files, and
-    has fewer error checks. The regexps are also slightly improved.
+    has fewer error checks. The regexps are also slightly different.
 
     Required Input
     --------------
@@ -512,10 +508,10 @@ class tablefill_internals_engine:
         the start/end of a table, etc. based on the file type.
         """
         self.tags      = '^<Tab:(.+)>' + linesep
-        self.matcha    = r'\\*#\\*#\\*#'       # Matches ### and \#\#\#
-        self.matchb    = r'\\*#(\d+)(,*)\\*#'  # Matches #\d+# and \#\d+,*\#
-        self.matchc    = '(-*\d+)(\.*\d*)'     # Matches (-)integer(.decimal)
-        self.comments  = '^%'                  # Matches comment
+        self.matcha    = r'\\*#\\*#\\*#'            # ### and \#\#\#
+        self.matchb    = r'\\*#(\d+)(,*|\\?%)\\*#'  # #\d+#, \#\d+,*\#
+        self.matchc    = '(-*\d+)(\.*\d*)'          # (-)integer(.decimal)
+        self.comments  = '^%'                       # Comment
         if self.filetype == 'tex':
             self.begin = r'.*\\begin{table}.*'
             self.end   = r'.*\\end{table}.*'
@@ -710,14 +706,14 @@ class tablefill_internals_engine:
         Rounds entry according to the format in cell. Note Decimal's
         quantize makes the object have the same number of significant
         digits as the input passed. format(str, ',d') returns str with
-        comma as thousands separator
+        comma as thousands separator.
         """
         precision, comma = re.findall(self.matchb, cell)[0]
         precision = int(precision)
         roundas   = 0 if precision == 0 else pow(10, -precision)
         roundas   = Decimal(str(roundas))
-        rounded   = str(Decimal(entry).quantize(roundas,
-                                                rounding = ROUND_HALF_UP))
+        dentry    = 100 * Decimal(entry) if '%' in comma else Decimal(entry)
+        rounded   = str(dentry.quantize(roundas, rounding = ROUND_HALF_UP))
         if ',' in comma:
             integer_part, decimal_part = re.findall(self.matchc, rounded)[0]
             rounded = format(int(integer_part), ',d') + decimal_part
