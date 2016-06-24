@@ -241,8 +241,10 @@ class tablefill_internals_cliparse:
     WARNING: Internal class to parse arguments to pass to tablefill
     """
     def __init__(self):
-        self.compiler = {'tex': "pdflatex ",
+        self.compiler = {'tex': "xelatex ",
                          'lyx': "lyx -e pdf2 "}
+        self.bibtex   = {'tex': "bibtex ",
+                         'lyx': "echo Not sure how to run BiBTeX via LyX on "}
 
     def get_input_parser(self):
         """
@@ -299,6 +301,11 @@ class tablefill_internals_cliparse:
                             dest     = 'compile',
                             action   = 'store_true',
                             help     = "Compile output",
+                            required = False)
+        parser.add_argument('-b', '--bibtex',
+                            dest     = 'bibtex',
+                            action   = 'store_true',
+                            help     = "Compile BiBTeX",
                             required = False)
         parser.add_argument('--verbose',
                             dest     = 'verbose',
@@ -394,10 +401,16 @@ class tablefill_internals_cliparse:
         if self.args.compile:
             compile_program  = self.compiler[self.ext]
             compile_program += ' ' + self.output
+            bibtex_program   = self.bibtex[self.ext]
+            bibtex_program  += ' ' + path.splitext(self.output)[0] + '.aux'
             logmsg = "Compiling in beta! Use with caution. Running"
             print_verbose(self.verbose, logmsg)
             print_verbose(self.verbose, compile_program + linesep)
             system(compile_program + linesep)
+            if self.args.bibtex:
+                system(bibtex_program + linesep)
+                system(compile_program + linesep)
+                system(compile_program + linesep)
 
 # ---------------------------------------------------------------------
 # tablefill_internals_engine
