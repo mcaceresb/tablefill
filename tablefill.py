@@ -398,6 +398,10 @@ class tablefill_internals_cliparse:
         """
         Compile the filled template with the corresponding program.
         """
+
+        if not self.args.compile and self.args.bibtex:
+            print("NOTE: Cannot run BiBTeX without compiling." + linesep)
+
         if self.args.compile:
             compile_program  = self.compiler[self.ext]
             compile_program += ' ' + self.output
