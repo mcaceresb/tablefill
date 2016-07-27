@@ -8,6 +8,7 @@ LIMITATIONS
 3. Currently, soft warnings are given for the following
     - #(#|\d+,*)# is found on a line outside a table environment
     - #(#|\d+,*)# is on a table environment with no label
+    - More #(#|\d+,*)# are found than entries in the table
     - A tabular environment's label has no match in tables.txt
     - More placeholders found in table than table entries in input
     The original tablefill.py ignores these cases
@@ -238,6 +239,7 @@ The program indicates
     - When it finds the end of the table environment
     - How many substitutions it made in the table
 - When it finds the #(#|\d+,*)# pattern outside a table environment
+- When it finds more #(#|\d+,*)# than entries in the corresponding table
 - When it finds an error (and if so it terminates)
 
 Common Mistakes

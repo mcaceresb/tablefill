@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # encoding: utf-8
 
 """Fill LaTeX template files with external inputs
@@ -9,15 +9,14 @@ Description
 tablefill.py is a python module designed to fill LaTeX and Lyx tables
 with output from text files (usually output from Stata or Matlab). The
 original tablefill.py does the same for LyX files only, and has fewer
-error checks. For backwards compatibility, this also works as a python
-module, meaning
+error checks. Note this is intended both for command line _AND_ script
+usage. Hence both the following are valid
 
 >>> from tablefill import tablefill
 
-Will allow usage of tablefill wherever currently in use. However, it
-can also be called like any command-line tool
-
-$ python tablefill.py --help
+$ python tablefill.py
+$ chmod +x tablefill.py
+$ tablefill.py
 
 Usage
 -----
@@ -43,6 +42,7 @@ optional arguments:
 flags:
   -f, --force           Name input/output automatically
   -c, --compile         Compile output
+  -b, --bibtex          Compile output
   --verbose             Verbose printing
   --silent              Try to say nothing
 
@@ -66,9 +66,13 @@ $ python tablefill.py test.tex -i test_table.txt -o output.tex --verbose
 Notes
 -----
 
-Several try-catch pairs and error checks are redundant because right now
-as this is meant to be backwards-compatible and can be called from other
-python scripts or used directly from the command line.
+Several try-catch pairs and error checks are redundant because right
+now this may also be run from python and not just from the command line
+(done for backwards compatibility's sake).
+
+I also specify python 2 because I use python 3 on my local machine (as
+everyone should) but am forced to use python 2 over ssh (as MIT servers
+available to me come with python 2.6).
 """
 
 # NOTE: For all my personal projects I import the print function from
@@ -84,7 +88,7 @@ import re
 
 __program__   = "tablefill.py"
 __usage__     = """[-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
-                    [-t {auto,lyx,tex}] [-f] [-c] TEMPLATE"""
+                    [-t {auto,lyx,tex}] [-f] [-c] [-b] TEMPLATE"""
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
@@ -159,7 +163,7 @@ def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
     tablefill is a python function designed to fill LaTeX and LyX tables
     with output from text files (usually output from Stata or Matlab).
     The original tablefill.py does the same but only for LyX files, and
-    has fewer error checks. The regexps are also slightly improved.
+    has fewer error checks. The regexps are also slightly different.
 
     Required Input
     --------------
@@ -245,8 +249,10 @@ class tablefill_internals_cliparse:
     WARNING: Internal class to parse arguments to pass to tablefill
     """
     def __init__(self):
-        self.compiler = {'tex': "pdflatex ",
+        self.compiler = {'tex': "xelatex ",
                          'lyx': "lyx -e pdf2 "}
+        self.bibtex   = {'tex': "bibtex ",
+                         'lyx': "echo Not sure how to run BiBTeX via LyX on "}
 
     def get_input_parser(self):
         """
@@ -303,6 +309,11 @@ class tablefill_internals_cliparse:
                             dest     = 'compile',
                             action   = 'store_true',
                             help     = "Compile output",
+                            required = False)
+        parser.add_argument('-b', '--bibtex',
+                            dest     = 'bibtex',
+                            action   = 'store_true',
+                            help     = "Compile BiBTeX",
                             required = False)
         parser.add_argument('--verbose',
                             dest     = 'verbose',
@@ -395,13 +406,23 @@ class tablefill_internals_cliparse:
         """
         Compile the filled template with the corresponding program.
         """
+
+        if not self.args.compile and self.args.bibtex:
+            print("NOTE: Cannot run BiBTeX without compiling." + linesep)
+
         if self.args.compile:
             compile_program  = self.compiler[self.ext]
             compile_program += ' ' + self.output
+            bibtex_program   = self.bibtex[self.ext]
+            bibtex_program  += ' ' + path.splitext(self.output)[0] + '.aux'
             logmsg = "Compiling in beta! Use with caution. Running"
             print_verbose(self.verbose, logmsg)
             print_verbose(self.verbose, compile_program + linesep)
             system(compile_program + linesep)
+            if self.args.bibtex:
+                system(bibtex_program + linesep)
+                system(compile_program + linesep)
+                system(compile_program + linesep)
 
 # ---------------------------------------------------------------------
 # tablefill_internals_engine
@@ -512,10 +533,10 @@ class tablefill_internals_engine:
         the start/end of a table, etc. based on the file type.
         """
         self.tags      = '^<Tab:(.+)>' + linesep
-        self.matcha    = r'\\*#\\*#\\*#'       # Matches ### and \#\#\#
-        self.matchb    = r'\\*#(\d+)(,*)\\*#'  # Matches #\d+# and \#\d+,*\#
-        self.matchc    = '(-*\d+)(\.*\d*)'     # Matches (-)integer(.decimal)
-        self.comments  = '^%'                  # Matches comment
+        self.matcha    = r'\\*#\\*#\\*#'            # ### and \#\#\#
+        self.matchb    = r'\\*#(\d+)(,*|\\?%)\\*#'  # #\d+#, \#\d+,*\#
+        self.matchc    = '(-*\d+)(\.*\d*)'          # (-)integer(.decimal)
+        self.comments  = '^%'                       # Comment
         if self.filetype == 'tex':
             self.begin = r'.*\\begin{table}.*'
             self.end   = r'.*\\end{table}.*'
@@ -710,14 +731,14 @@ class tablefill_internals_engine:
         Rounds entry according to the format in cell. Note Decimal's
         quantize makes the object have the same number of significant
         digits as the input passed. format(str, ',d') returns str with
-        comma as thousands separator
+        comma as thousands separator.
         """
         precision, comma = re.findall(self.matchb, cell)[0]
         precision = int(precision)
         roundas   = 0 if precision == 0 else pow(10, -precision)
         roundas   = Decimal(str(roundas))
-        rounded   = str(Decimal(entry).quantize(roundas,
-                                                rounding = ROUND_HALF_UP))
+        dentry    = 100 * Decimal(entry) if '%' in comma else Decimal(entry)
+        rounded   = str(dentry.quantize(roundas, rounding = ROUND_HALF_UP))
         if ',' in comma:
             integer_part, decimal_part = re.findall(self.matchc, rounded)[0]
             rounded = format(int(integer_part), ',d') + decimal_part
