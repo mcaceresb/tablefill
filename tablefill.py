@@ -15,6 +15,8 @@ usage. Hence both the following are valid
 >>> from tablefill import tablefill
 
 $ python tablefill.py
+$ chmod +x tablefill.py
+$ tablefill.py
 
 Usage
 -----
@@ -40,6 +42,7 @@ optional arguments:
 flags:
   -f, --force           Name input/output automatically
   -c, --compile         Compile output
+  -b, --bibtex          Compile output
   --verbose             Verbose printing
   --silent              Try to say nothing
 
@@ -63,8 +66,13 @@ $ python tablefill.py test.tex -i test_table.txt -o output.tex --verbose
 Notes
 -----
 
-Several try-catch pairs and error checks are redundant because right now
-this may also be run from python and not just from the command line
+Several try-catch pairs and error checks are redundant because right
+now this may also be run from python and not just from the command line
+(done for backwards compatibility's sake).
+
+I also specify python 2 because I use python 3 on my local machine (as
+everyone should) but am forced to use python 2 over ssh (as MIT servers
+available to me come with python 2.6).
 """
 
 # NOTE: For all my personal projects I import the print function from
@@ -80,7 +88,7 @@ import re
 
 __program__   = "tablefill.py"
 __usage__     = """[-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
-                    [-t {auto,lyx,tex}] [-f] [-c] TEMPLATE"""
+                    [-t {auto,lyx,tex}] [-f] [-c] [-b] TEMPLATE"""
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
