@@ -709,19 +709,30 @@ class tablefill_internals_engine:
             cell   = linesep[i]
             matcha = re.search(self.matcha, cell)
             matchb = re.search(self.matchb, cell)
+
+            # Replace all pattern A matches (simply replace the text)
             if len(table) > tablen:
-                if matcha:
-                    entry      = table[tablen]
-                    linesep[i] = re.sub(self.matcha, entry, cell)
-                    tablen    += 1
-                elif matchb:
-                    entry      = table[tablen]
-                    linesep[i] = self.round_and_format(cell, entry)
-                    tablen    += 1
+                for a in re.findall(self.matcha, cell):
+                    entry   = table[tablen]
+                    cell    = re.sub(self.matcha, entry, cell, count = 1)
+                    tablen += 1
             else:
                 if matcha or matchb:
                     starts  = tablen if tablen - starts == i + 1 else starts
                     tablen += 1
+
+            # Replace all pattern B matches (round, comma and % format)
+            if len(table) > tablen:
+                for b in re.findall(self.matchb, cell):
+                    entry   = table[tablen]
+                    cell    = self.round_and_format(cell, entry)
+                    tablen += 1
+            else:
+                if matcha or matchb:
+                    starts  = tablen if tablen - starts == i + 1 else starts
+                    tablen += 1
+
+            linesep[i] = cell
 
         line = '&'.join(linesep)
         return line, tablen, starts
@@ -742,7 +753,7 @@ class tablefill_internals_engine:
         if ',' in comma:
             integer_part, decimal_part = re.findall(self.matchc, rounded)[0]
             rounded = format(int(integer_part), ',d') + decimal_part
-        return re.sub(self.matchb, rounded, cell)
+        return re.sub(self.matchb, rounded, cell, count = 1)
 
     def get_notification_message(self):
         """
