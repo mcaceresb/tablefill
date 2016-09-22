@@ -42,11 +42,18 @@ optional arguments:
 flags:
   -f, --force           Name input/output automatically
   -c, --compile         Compile output
-  -b, --bibtex          Compile output
-  --verbose             Verbose printing
+  -b, --bibtex          Run bibtex on .aux file and re-compile
+  --verbose             Verbose printing (for debugging)
   --silent              Try to say nothing
 
 See tablefill_help.txt for details on the files and the replace engine
+
+WARNING
+-------
+
+The program currently does not handle trailing comments. If a line
+doesn't start with a comment, it will replace everything in that line,
+even if there is a comment halfway through.
 
 Examples
 --------
@@ -83,6 +90,7 @@ from traceback import format_exc
 from os import linesep, path, access, W_OK, system
 from decimal import Decimal, ROUND_HALF_UP
 from sys import exit as sysexit
+from sys import version_info
 import argparse
 import re
 
@@ -94,6 +102,15 @@ __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Wed Mar 30, 2016"
 __version__   = __program__ + " version 0.3.0 updated " + __updated__
+
+# Backwards-compatible string formatting
+def compat_format(x):
+    if version_info >= (2, 7):
+        return format(x, ',d')
+    else:
+        import locale
+        locale.setlocale(locale.LC_ALL, 'en_US')
+        return locale.format("%d", x, grouping = True)
 
 # Define basestring in a backwards-compatible way
 try:
@@ -411,7 +428,9 @@ class tablefill_internals_cliparse:
             print("NOTE: Cannot run BiBTeX without compiling." + linesep)
 
         if self.args.compile:
-            compile_program  = self.compiler[self.ext]
+            compile_path     = path.dirname(path.abspath(self.output))
+            compile_program  = 'cd "%s" && ' % compile_path
+            compile_program += self.compiler[self.ext]
             compile_program += ' ' + self.output
             bibtex_program   = self.bibtex[self.ext]
             bibtex_program  += ' ' + path.splitext(self.output)[0] + '.aux'
@@ -533,10 +552,10 @@ class tablefill_internals_engine:
         the start/end of a table, etc. based on the file type.
         """
         self.tags      = '^<Tab:(.+)>' + linesep
-        self.matcha    = r'\\*#\\*#\\*#'            # ### and \#\#\#
-        self.matchb    = r'\\*#(\d+)(,*|\\?%)\\*#'  # #\d+#, \#\d+,*\#
-        self.matchc    = '(-*\d+)(\.*\d*)'          # (-)integer(.decimal)
-        self.comments  = '^%'                       # Comment
+        self.matcha    = r'\\?#\\?#\\?#'            # ### and \#\#\#
+        self.matchb    = r'\\?#(\d+)(,?|\\?%)\\?#'  # #\d+#, \#\d+,*\#
+        self.matchc    = '(-?\d+)(\.?\d*)'          # (-)integer(.decimal)
+        self.comments  = '^\s*%'                    # Comment
         if self.filetype == 'tex':
             self.begin = r'.*\\begin{table}.*'
             self.end   = r'.*\\end{table}.*'
@@ -562,6 +581,7 @@ class tablefill_internals_engine:
             else:
                 clean_row_entries = [e.strip() for e in row.split('\t')]
                 tables[tag] += clean_row_entries
+
         # self.tables = {k: self.filter_missing(v) for k, v in tables.items()}
         self.tables = dict((k, self.filter_missing(v))
                            for (k, v) in tables.items())
@@ -671,6 +691,7 @@ class tablefill_internals_engine:
             searchmatch = re.search(self.label, searchline,
                                     flags = re.IGNORECASE)
             searchend   = re.search(self.end, searchline)
+
         if not searchend and searchmatch:
             label = re.findall(self.label, searchline,
                                flags = re.IGNORECASE)[0]
@@ -695,6 +716,7 @@ class tablefill_internals_engine:
                 warn_nomatch += (linesep + '\t').join(self.input)
                 warn_nomatch += linesep + "Please check input file(s)"
                 warn_nomatch  = warn_nomatch % tag + linesep
+
         return search_msg + warn_nomatch
 
     def replace_line(self, line, table, tablen):
@@ -752,7 +774,7 @@ class tablefill_internals_engine:
         rounded   = str(dentry.quantize(roundas, rounding = ROUND_HALF_UP))
         if ',' in comma:
             integer_part, decimal_part = re.findall(self.matchc, rounded)[0]
-            rounded = format(int(integer_part), ',d') + decimal_part
+            rounded = compat_format(int(integer_part)) + decimal_part
         return re.sub(self.matchb, rounded, cell, count = 1)
 
     def get_notification_message(self):
