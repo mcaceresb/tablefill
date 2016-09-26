@@ -22,6 +22,7 @@ Usage
 -----
 
 tablefill.py [-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
+             --pvals [PVALS [PVALS ...]] --stars [STARS [STARS ...]]
              [-t {auto,lyx,tex}] [FLAGS] TEMPLATE
 
 Fill tagged tables in LaTeX and LyX files with external text tables
@@ -38,15 +39,26 @@ optional arguments:
                         Processed template file (default: INPUT_filled)
   -t {auto,lyx,tex}, --type {auto,lyx,tex}
                         Template file type (default: auto)
+  --pvals [PVALS [PVALS ...]]
+                        Significance thresholds
+  --stars [STARS [STARS ...]]
+                        Stars for sig thresholds (enclose each entry in quotes)
 
 flags:
   -f, --force           Name input/output automatically
   -c, --compile         Compile output
-  -b, --bibtex          Compile output
-  --verbose             Verbose printing
+  -b, --bibtex          Run bibtex on .aux file and re-compile
+  --verbose             Verbose printing (for debugging)
   --silent              Try to say nothing
 
 See tablefill_help.txt for details on the files and the replace engine
+
+WARNING
+-------
+
+The program currently does not handle trailing comments. If a line
+doesn't start with a comment, it will replace everything in that line,
+even if there is a comment halfway through.
 
 Examples
 --------
@@ -83,6 +95,7 @@ from traceback import format_exc
 from os import linesep, path, access, W_OK, system
 from decimal import Decimal, ROUND_HALF_UP
 from sys import exit as sysexit
+from sys import version_info
 import argparse
 import re
 
@@ -94,6 +107,15 @@ __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Wed Mar 30, 2016"
 __version__   = __program__ + " version 0.3.0 updated " + __updated__
+
+# Backwards-compatible string formatting
+def compat_format(x):
+    if version_info >= (2, 7):
+        return format(x, ',d')
+    else:
+        import locale
+        locale.setlocale(locale.LC_ALL, 'en_US')
+        return locale.format("%d", x, grouping = True)
 
 # Define basestring in a backwards-compatible way
 try:
@@ -118,7 +140,9 @@ def main():
                                output   = fill.output,
                                filetype = fill.ext,
                                verbose  = fill.verbose,
-                               silent   = fill.silent)
+                               silent   = fill.silent,
+                               pvals    = fill.pvals,
+                               stars    = fill.stars)
 
     if exit == 'SUCCESS':
         fill.get_compiled()
@@ -154,7 +178,12 @@ def print_silent(silence, stuff):
 # tablefill
 
 
-def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
+def tablefill(silent   = False,
+              verbose  = True,
+              filetype = 'auto',
+              pvals    = [0.1, 0.05, 0.01],
+              stars    = ['*', '**', '***'],
+              **kwargs):
     """Fill LaTeX and LyX template files with external inputs
 
     Description
@@ -204,7 +233,8 @@ def tablefill(silent = False, verbose = True, filetype = 'auto', **kwargs):
         verbose = verbose and not silent
         logmsg  = "Parsing arguments..."
         print_verbose(verbose, logmsg)
-        fill_engine = tablefill_internals_engine(filetype, verbose, silent)
+        fill_engine = tablefill_internals_engine(filetype, verbose, silent,
+                                                 pvals, stars)
         fill_engine.get_parsed_arguments(kwargs)
         fill_engine.get_file_type()
         fill_engine.get_regexps()
@@ -300,6 +330,21 @@ class tablefill_internals_cliparse:
                             default  = ['auto'],
                             help     = "Template file type (default: auto)",
                             required = False)
+        parser.add_argument('--pvals',
+                            dest     = 'pvals',
+                            type     = str,
+                            nargs    = '*',
+                            default  = ['0.1', '0.05', '0.01'],
+                            help     = "Significance thresholds",
+                            required = False)
+        parser.add_argument('--stars',
+                            dest     = 'stars',
+                            type     = str,
+                            nargs    = '*',
+                            default  = ['*', '**', '***'],
+                            help     = "Stars for sig thresholds " +
+                                       "(enclose each in quotes)",
+                            required = False)
         parser.add_argument('-f', '--force',
                             dest     = 'force',
                             action   = 'store_true',
@@ -367,6 +412,12 @@ class tablefill_internals_cliparse:
         self.output   = path.abspath(self.args.output[0])
         self.silent   = self.args.silent
         self.verbose  = self.args.verbose and not self.args.silent
+        self.stars    = self.args.stars
+        try:
+            self.pvals = [float(p) for p in self.args.pvals]
+            assert all([(0 < p < 1) for p in self.pvals])
+        except:
+            raise ValueError("--pvals only takes numbers between 0 and 1")
 
         args_msg  = linesep + "I found these arguments:"
         args_msg += linesep + "template = %s" % self.template
@@ -411,7 +462,9 @@ class tablefill_internals_cliparse:
             print("NOTE: Cannot run BiBTeX without compiling." + linesep)
 
         if self.args.compile:
-            compile_program  = self.compiler[self.ext]
+            compile_path     = path.dirname(path.abspath(self.output))
+            compile_program  = 'cd "%s" && ' % compile_path
+            compile_program += self.compiler[self.ext]
             compile_program += ' ' + self.output
             bibtex_program   = self.bibtex[self.ext]
             bibtex_program  += ' ' + path.splitext(self.output)[0] + '.aux'
@@ -432,7 +485,12 @@ class tablefill_internals_engine:
     """
     WARNING: Internal class used by tablefill_tex
     """
-    def __init__(self, filetype = 'auto', verbose = True, silent = False):
+    def __init__(self,
+                 filetype = 'auto',
+                 verbose  = True,
+                 silent   = False,
+                 pvals    = [0.1, 0.05, 0.01],
+                 stars    = ['*', '**', '***']):
         # Get file type
         self.filetype     = filetype.lower()
         if self.filetype not in ['auto', 'lyx', 'tex']:
@@ -452,6 +510,18 @@ class tablefill_internals_engine:
         self.warn_pre  = ""
         self.verbose   = verbose and not silent
         self.silent    = silent
+
+        while len(pvals) > len(stars):
+            i = 1
+            while '*' * i in stars:
+                i += 1
+            stars += ['*' * i]
+
+        stars          = stars[:len(pvals)]
+        starlist       = [(p, s) for (p, s) in zip(pvals, stars)]
+        starlist.sort(key = lambda p: p[0], reverse = True)
+        self.pvals     = [p for (p, s) in starlist]
+        self.stars     = [s for (p, s) in starlist]
 
     def get_parsed_arguments(self, kwargs):
         """
@@ -533,10 +603,11 @@ class tablefill_internals_engine:
         the start/end of a table, etc. based on the file type.
         """
         self.tags      = '^<Tab:(.+)>' + linesep
-        self.matcha    = r'\\*#\\*#\\*#'            # ### and \#\#\#
-        self.matchb    = r'\\*#(\d+)(,*|\\?%)\\*#'  # #\d+#, \#\d+,*\#
-        self.matchc    = '(-*\d+)(\.*\d*)'          # (-)integer(.decimal)
-        self.comments  = '^%'                       # Comment
+        self.match0    = r'\\?#((\d+)(,?|\\?%)?|\\?(#|\*))\\?#'
+        self.matcha    = r'\\?#\\?(#|\*)\\?#'       # ### and \#\#\#
+        self.matchb    = r'\\?#(\d+)(,?|\\?%)\\?#'  # #\d+#, \#\d+,*\#
+        self.matchc    = '(-?\d+)(\.?\d*)'          # (-)integer(.decimal)
+        self.comments  = '^\s*%'                    # Comment
         if self.filetype == 'tex':
             self.begin = r'.*\\begin{table}.*'
             self.end   = r'.*\\end{table}.*'
@@ -562,6 +633,7 @@ class tablefill_internals_engine:
             else:
                 clean_row_entries = [e.strip() for e in row.split('\t')]
                 tables[tag] += clean_row_entries
+
         # self.tables = {k: self.filter_missing(v) for k, v in tables.items()}
         self.tables = dict((k, self.filter_missing(v))
                            for (k, v) in tables.items())
@@ -671,6 +743,7 @@ class tablefill_internals_engine:
             searchmatch = re.search(self.label, searchline,
                                     flags = re.IGNORECASE)
             searchend   = re.search(self.end, searchline)
+
         if not searchend and searchmatch:
             label = re.findall(self.label, searchline,
                                flags = re.IGNORECASE)[0]
@@ -695,6 +768,7 @@ class tablefill_internals_engine:
                 warn_nomatch += (linesep + '\t').join(self.input)
                 warn_nomatch += linesep + "Please check input file(s)"
                 warn_nomatch  = warn_nomatch % tag + linesep
+
         return search_msg + warn_nomatch
 
     def replace_line(self, line, table, tablen):
@@ -703,27 +777,41 @@ class tablefill_internals_engine:
         how LaTeX delimits tables. Returns how many values it replaced
         because LaTeX can have any number of entries per line.
         """
-        starts  = tablen
-        linesep = line.split('&')
-        for i in range(len(linesep)):
-            cell   = linesep[i]
+        i = 0
+        starts = tablen
+        match0 = re.search(self.match0, line)
+        while match0:
+            s, e = match0.span()
+            cell = line[s:e]
             matcha = re.search(self.matcha, cell)
             matchb = re.search(self.matchb, cell)
+
             if len(table) > tablen:
+                # Replace all pattern A matches (simply replace the text)
                 if matcha:
-                    entry      = table[tablen]
-                    linesep[i] = re.sub(self.matcha, entry, cell)
-                    tablen    += 1
-                elif matchb:
-                    entry      = table[tablen]
-                    linesep[i] = self.round_and_format(cell, entry)
-                    tablen    += 1
+                    entry   = table[tablen]
+                    if '*' in matcha.groups():
+                        cell = self.parse_pval_to_stars(cell, entry)
+                    else:
+                        cell = re.sub(self.matcha, entry, cell, count = 1)
+
+                    line    = re.sub(self.matcha, cell, line, count = 1)
+                    tablen += 1
+
+                # Replace all pattern B matches (round, comma and % format)
+                if matchb:
+                    entry  = table[tablen]
+                    cell   = self.round_and_format(cell, entry)
+                    line   = re.sub(self.matchb, cell, line, count = 1)
+                    tablen += 1
             else:
                 if matcha or matchb:
                     starts  = tablen if tablen - starts == i + 1 else starts
                     tablen += 1
 
-        line = '&'.join(linesep)
+            match0 = re.search(self.match0, line)
+            i += 1
+
         return line, tablen, starts
 
     def round_and_format(self, cell, entry):
@@ -741,8 +829,18 @@ class tablefill_internals_engine:
         rounded   = str(dentry.quantize(roundas, rounding = ROUND_HALF_UP))
         if ',' in comma:
             integer_part, decimal_part = re.findall(self.matchc, rounded)[0]
-            rounded = format(int(integer_part), ',d') + decimal_part
-        return re.sub(self.matchb, rounded, cell)
+            rounded = compat_format(int(integer_part)) + decimal_part
+        return re.sub(self.matchb, rounded, cell, count = 1)
+
+    def parse_pval_to_stars(self, cell, entry):
+        """
+        Parse a p-value to significance symbols. The default is to
+        parse 0.1, 0.05, 0.01 to *, **, ***, but the user can specify
+        arbitrary thresholds and symbols.
+        """
+        pos  = sum([float(entry) < p for p in self.pvals]) - 1
+        star = '' if pos < 0 else self.stars[pos]
+        return re.sub(self.matcha, star, cell, count = 1)
 
     def get_notification_message(self):
         """
