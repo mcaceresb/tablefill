@@ -105,8 +105,8 @@ __usage__     = """[-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
-__updated__   = "Wed Mar 30, 2016"
-__version__   = __program__ + " version 0.3.0 updated " + __updated__
+__updated__   = "Wed Sep 28, 2016"
+__version__   = __program__ + " version 0.4.0 updated " + __updated__
 
 # Backwards-compatible string formatting
 def compat_format(x):
@@ -639,7 +639,7 @@ class tablefill_internals_engine:
                            for (k, v) in tables.items())
 
     def filter_missing(self, string_list):
-        return filter(lambda a: a != '.' and a != '', string_list)
+        return filter(lambda a: a not in ['.', '', 'NA'], string_list)
 
     def get_filled_template(self):
         """
@@ -778,9 +778,10 @@ class tablefill_internals_engine:
         because LaTeX can have any number of entries per line.
         """
         i = 0
+        force_stop = False
         starts = tablen
         match0 = re.search(self.match0, line)
-        while match0:
+        while match0 and not force_stop:
             s, e = match0.span()
             cell = line[s:e]
             matcha = re.search(self.matcha, cell)
@@ -808,6 +809,8 @@ class tablefill_internals_engine:
                 if matcha or matchb:
                     starts  = tablen if tablen - starts == i + 1 else starts
                     tablen += 1
+
+                force_stop = True
 
             match0 = re.search(self.match0, line)
             i += 1
