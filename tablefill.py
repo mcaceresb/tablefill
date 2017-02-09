@@ -91,11 +91,14 @@ available to me come with python 2.6).
 # the future. You should do that also. Seriously (:
 
 from __future__ import division, print_function
-from traceback import format_exc
-from os import linesep, path, access, W_OK, system
+from os import linesep, path, access, W_OK, system, chdir
 from decimal import Decimal, ROUND_HALF_UP
+from collections import Iterable as Iter
+from traceback import format_exc
+from operator import itemgetter
 from sys import exit as sysexit
 from sys import version_info
+import xml.etree.ElementTree as xml
 import argparse
 import re
 
@@ -105,8 +108,8 @@ __usage__     = """[-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
-__updated__   = "Wed Sep 28, 2016"
-__version__   = __program__ + " version 0.4.0 updated " + __updated__
+__updated__   = "Thu Feb 09, 2017"
+__version__   = __program__ + " version 0.8.0 updated " + __updated__
 
 # Backwards-compatible string formatting
 def compat_format(x):
@@ -116,6 +119,26 @@ def compat_format(x):
         import locale
         locale.setlocale(locale.LC_ALL, 'en_US')
         return locale.format("%d", x, grouping = True)
+
+
+# Backwards-compatible list flattening
+# http://stackoverflow.com/questions/2158395/
+def flatten(l):
+    if version_info >= (3, 0):
+        for el in l:
+            if isinstance(el, Iter) and not isinstance(el, (str, bytes)):
+                for sub in flatten(el):
+                    yield sub
+            else:
+                yield el
+    else:
+        for el in l:
+            if isinstance(el, Iter) and not isinstance(el, basestring):
+                for sub in flatten(el):
+                    yield sub
+            else:
+                yield el
+
 
 # Define basestring in a backwards-compatible way
 try:
@@ -142,7 +165,8 @@ def main():
                                verbose  = fill.verbose,
                                silent   = fill.silent,
                                pvals    = fill.pvals,
-                               stars    = fill.stars)
+                               stars    = fill.stars,
+                               fillc    = fill.fillc)
 
     if exit == 'SUCCESS':
         fill.get_compiled()
@@ -183,6 +207,7 @@ def tablefill(silent   = False,
               filetype = 'auto',
               pvals    = [0.1, 0.05, 0.01],
               stars    = ['*', '**', '***'],
+              fillc    = False,
               **kwargs):
     """Fill LaTeX and LyX template files with external inputs
 
@@ -234,7 +259,7 @@ def tablefill(silent   = False,
         logmsg  = "Parsing arguments..."
         print_verbose(verbose, logmsg)
         fill_engine = tablefill_internals_engine(filetype, verbose, silent,
-                                                 pvals, stars)
+                                                 pvals, stars, fillc)
         fill_engine.get_parsed_arguments(kwargs)
         fill_engine.get_file_type()
         fill_engine.get_regexps()
@@ -355,6 +380,24 @@ class tablefill_internals_cliparse:
                             action   = 'store_true',
                             help     = "Compile output",
                             required = False)
+        parser.add_argument('-fc', '--fillcomments',
+                            dest     = 'fillcomments',
+                            action   = 'store_true',
+                            help     = "Fill in comments",
+                            required = False)
+    # parser.add_argument('-xml', '--parse-xml',
+    #                     dest     = 'parse_xml',
+    #                     action   = 'store_true',
+    #                     help     = "Parse commented XML to custom tables",
+    #                     required = False)
+    # parser.add_argument('--xml-tables',
+    #                     dest     = 'xml_tables',
+    #                     type     = str,
+    #                     nargs    = '*',
+    #                     metavar  = 'INPUT',
+    #                     default  = None,
+    #                     help     = "Files with custom xml combinations",
+    #                     required = False),
         parser.add_argument('-b', '--bibtex',
                             dest     = 'bibtex',
                             action   = 'store_true',
@@ -413,6 +456,7 @@ class tablefill_internals_cliparse:
         self.silent   = self.args.silent
         self.verbose  = self.args.verbose and not self.args.silent
         self.stars    = self.args.stars
+        self.fillc    = self.args.fillcomments
         try:
             self.pvals = [float(p) for p in self.args.pvals]
             assert all([(0 < p < 1) for p in self.pvals])
@@ -462,12 +506,14 @@ class tablefill_internals_cliparse:
             print("NOTE: Cannot run BiBTeX without compiling." + linesep)
 
         if self.args.compile:
-            compile_path     = path.dirname(path.abspath(self.output))
-            compile_program  = 'cd "%s" && ' % compile_path
-            compile_program += self.compiler[self.ext]
+            chdir(path.dirname(path.abspath(self.output)))
+            compile_program  = self.compiler[self.ext]
             compile_program += ' ' + self.output
+
+            bibtex_auxfile   = path.splitext(path.basename(self.output))[0]
             bibtex_program   = self.bibtex[self.ext]
-            bibtex_program  += ' ' + path.splitext(self.output)[0] + '.aux'
+            bibtex_program  += ' ' + bibtex_auxfile + '.aux'
+
             logmsg = "Compiling in beta! Use with caution. Running"
             print_verbose(self.verbose, logmsg)
             print_verbose(self.verbose, compile_program + linesep)
@@ -490,7 +536,8 @@ class tablefill_internals_engine:
                  verbose  = True,
                  silent   = False,
                  pvals    = [0.1, 0.05, 0.01],
-                 stars    = ['*', '**', '***']):
+                 stars    = ['*', '**', '***'],
+                 fillc    = False):
         # Get file type
         self.filetype     = filetype.lower()
         if self.filetype not in ['auto', 'lyx', 'tex']:
@@ -522,6 +569,7 @@ class tablefill_internals_engine:
         starlist.sort(key = lambda p: p[0], reverse = True)
         self.pvals     = [p for (p, s) in starlist]
         self.stars     = [s for (p, s) in starlist]
+        self.fillc     = fillc
 
     def get_parsed_arguments(self, kwargs):
         """
@@ -602,12 +650,22 @@ class tablefill_internals_engine:
         Define the regular expressions to use to find a token to fill,
         the start/end of a table, etc. based on the file type.
         """
+        # The regexes are looking for
+        #   - matche:   strings to escape (&, %)
+        #   - match0:   either matcha or matchb
+        #   - matcha:   ### for non-numeric matches or #*# for p-val parsing
+        #   - matchb:   numeric matches (#\d+%?#, \#\d+,?\#)
+        #   - matchc:   (-?)integer(.decimal)?
+        #   - matchd:   absolute value
+        #   - comments: comment
         self.tags      = '^<Tab:(.+)>' + linesep
-        self.match0    = r'\\?#((\d+)(,?|\\?%)?|\\?(#|\*))\\?#'
-        self.matcha    = r'\\?#\\?(#|\*)\\?#'       # ### and \#\#\#
-        self.matchb    = r'\\?#(\d+)(,?|\\?%)\\?#'  # #\d+#, \#\d+,*\#
-        self.matchc    = '(-?\d+)(\.?\d*)'          # (-)integer(.decimal)
-        self.comments  = '^\s*%'                    # Comment
+        self.matche    = r'[^\\](%|&)'
+        self.match0    = r'\\?#\|?((\d+)(,?|\\?%)?|\\?(#|\*))\|?\\?#'
+        self.matcha    = r'\\?#\\?(#|\*)\\?#'
+        self.matchb    = r'\\?#\|?(\d+)(,?|\\?%)\|?\\?#'
+        self.matchc    = '(-?\d+)(\.?\d*)'
+        self.matchd    = r'\\?#\|.{1,4}\|\\?#'
+        self.comments  = '^\s*%'
         if self.filetype == 'tex':
             self.begin = r'.*\\begin{table}.*'
             self.end   = r'.*\\end{table}.*'
@@ -622,18 +680,85 @@ class tablefill_internals_engine:
         Parse table file(s) into a dictionary with tags as keys and
         lists of table entries as values
         """
+
+        # Read in all the tables
         read_data  = [open(file, 'rU').readlines() for file in self.input]
         parse_data = sum(read_data, [])
-        tables = {}
+
+        tables  = {}
+        ctables = {}
+
         for row in parse_data:
             if re.match(self.tags, row, flags = re.IGNORECASE):
                 tag = re.findall(self.tags, row, flags = re.IGNORECASE)
                 tag = tag[0].lower()
-                tables[tag] = []
+                tables[tag]  = []
+                ctables[tag] = []
             else:
                 clean_row_entries = [e.strip() for e in row.split('\t')]
-                tables[tag] += clean_row_entries
+                tables[tag]  += clean_row_entries
+                ctables[tag] += [clean_row_entries]
 
+        # Read in all the custom tables
+        read_template = open(self.template, 'rU').readlines()
+        self.custom = "^%\s*<tablefill-custom\s+tag\s*=\s*['\"](.+)\s*['\"]>"
+
+        ctags  = ()
+        custom = []
+
+        i = 0
+        for line in read_template:
+            s = re.search(self.custom, line)
+            if s:
+                ctags += s.groups(0)
+                j = i
+                search = True
+                while search and j <= len(read_template):
+                    if re.search('</tablefill-custom\s*>', read_template[j]):
+                        search = False
+                    j += 1
+
+                if not search:
+                    custom += [range(i, j)]
+
+            i += 1
+
+        cdict = {}
+        for t, c in zip(ctags, custom):
+            chtml    = []
+            cobj     = itemgetter(*c)(read_template)
+            for obj in cobj:
+                chtml += [re.sub('^%\s*', '', obj)]
+
+            cdict[t] = chtml
+
+        tdict = dict((k, self.filter_missing(v)) for (k, v) in ctables.items())
+
+        # Create all the custom tables
+        for tag in cdict:
+            print_verbose(self.verbose, "\tcreating custom tab:%s" % (tag))
+            cxml = xml.fromstring(''.join(cdict[tag]))
+            tables[tag] = table_tag = []
+            for combine in cxml.findall('combine'):
+                ctag  = combine.get('tag')
+                clist = eval("tdict['%s']" % (ctag))
+                for subset in combine.text.split(';'):
+                    clean_subset = subset.strip(linesep).replace(' ', '')
+                    try:
+                        table_tag += [eval("clist%s" % (clean_subset))]
+                    except:
+                        warn_tuple   = (tag, clean_subset, ctag)
+                        warn_custom  = "custom 'tab:%s' failed to subset '%s'"
+                        warn_custom += " from 'tab:%s'; will continue..."
+                        print_verbose(self.verbose, warn_custom % warn_tuple)
+                        continue
+
+            self.clist  = clist
+            tables[tag] = [l for l in flatten(table_tag)]
+
+        self.tdict = tdict
+
+        # Read in actual and custom tables
         # self.tables = {k: self.filter_missing(v) for k, v in tables.items()}
         self.tables = dict((k, self.filter_missing(v))
                            for (k, v) in tables.items())
@@ -674,7 +799,7 @@ class tablefill_internals_engine:
                 print_verbose(self.verbose, search_msg)
 
             if re.search(self.matcha, line) or re.search(self.matchb, line):
-                if re.search(self.comments, line.strip()):
+                if re.search(self.comments, line.strip()) and not self.fillc:
                     warn_incomments  = "Line %d matches #(#|\d+,*)#"
                     warn_incomments += " but it appears to be commented out."
                     warn_incomments += " Skipping..."
@@ -790,7 +915,7 @@ class tablefill_internals_engine:
             if len(table) > tablen:
                 # Replace all pattern A matches (simply replace the text)
                 if matcha:
-                    entry   = table[tablen]
+                    entry    = re.sub(self.matche, '\\\\\\1', table[tablen])
                     if '*' in matcha.groups():
                         cell = self.parse_pval_to_stars(cell, entry)
                     else:
@@ -801,9 +926,9 @@ class tablefill_internals_engine:
 
                 # Replace all pattern B matches (round, comma and % format)
                 if matchb:
-                    entry  = table[tablen]
-                    cell   = self.round_and_format(cell, entry)
-                    line   = re.sub(self.matchb, cell, line, count = 1)
+                    entry   = re.sub(self.matche, '\\\\\\1', table[tablen])
+                    cell    = self.round_and_format(cell, entry)
+                    line    = re.sub(self.matchb, cell, line, count = 1)
                     tablen += 1
             else:
                 if matcha or matchb:
@@ -829,10 +954,12 @@ class tablefill_internals_engine:
         roundas   = 0 if precision == 0 else pow(10, -precision)
         roundas   = Decimal(str(roundas))
         dentry    = 100 * Decimal(entry) if '%' in comma else Decimal(entry)
+        dentry    = abs(dentry) if re.search(self.matchd, cell) else dentry
         rounded   = str(dentry.quantize(roundas, rounding = ROUND_HALF_UP))
         if ',' in comma:
             integer_part, decimal_part = re.findall(self.matchc, rounded)[0]
-            rounded = compat_format(int(integer_part)) + decimal_part
+            neg      = '-' if re.match('^-0', integer_part) else ''
+            rounded  = neg + compat_format(int(integer_part)) + decimal_part
         return re.sub(self.matchb, rounded, cell, count = 1)
 
     def parse_pval_to_stars(self, cell, entry):
@@ -936,6 +1063,7 @@ class tablefill_internals_engine:
             msg += linesep + "Output can be found in '%s'" + linesep
             self.exit_msg = msg % (self.template, self.output)
             self.exit     = 'SUCCESS'
+
 
 # ---------------------------------------------------------------------
 # Run the function
