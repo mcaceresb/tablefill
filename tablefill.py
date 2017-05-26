@@ -21,9 +21,10 @@ $ tablefill.py
 Usage
 -----
 
-tablefill.py [-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
-             --pvals [PVALS [PVALS ...]] --stars [STARS [STARS ...]]
-             [-t {auto,lyx,tex}] [FLAGS] TEMPLATE
+tablefill.py [-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
+             [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
+             [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex}]
+             TEMPLATE
 
 Fill tagged tables in LaTeX and LyX files with external text tables
 
@@ -43,11 +44,17 @@ optional arguments:
                         Significance thresholds
   --stars [STARS [STARS ...]]
                         Stars for sig thresholds (enclose each entry in quotes)
+  --xml-tables [INPUT [INPUT ...]]
+                        Files with custom xml combinations.
 
 flags:
   -f, --force           Name input/output automatically
   -c, --compile         Compile output
   -b, --bibtex          Run bibtex on .aux file and re-compile
+  -fc, --fill-comments  Fill in commented out placeholders.
+  --numpy-syntax        Numpy syntax for custom XML tables.
+  --use-floats          Force floats when passing objects to custom XML python.
+  --ignore-xml          Ignore XML in template comments.
   --verbose             Verbose printing (for debugging)
   --silent              Try to say nothing
 
@@ -91,25 +98,84 @@ available to me come with python 2.6).
 # the future. You should do that also. Seriously (:
 
 from __future__ import division, print_function
-from os import linesep, path, access, W_OK, system, chdir
+from os import linesep, path, access, W_OK, system, chdir, remove
 from decimal import Decimal, ROUND_HALF_UP
 from collections import Iterable as Iter
 from traceback import format_exc
 from operator import itemgetter
 from sys import exit as sysexit
 from sys import version_info
+from tempfile import mktemp
 import xml.etree.ElementTree as xml
 import argparse
+import math
 import re
+try:
+    import numpy
+    numpyok = True
+except:
+    numpyok = False
 
 __program__   = "tablefill.py"
-__usage__     = """[-h] [-v] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
-                    [-t {auto,lyx,tex}] [-f] [-c] [-b] TEMPLATE"""
+__usage__     = """[-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
+                    [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
+                    [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex}]
+                    TEMPLATE"""
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
-__updated__   = "Thu Feb 09, 2017"
+__updated__   = "Tue Apr 12, 2017"
 __version__   = __program__ + " version 0.8.0 updated " + __updated__
+
+# Define basestring in a backwards-compatible way
+try:
+    "" is basestring
+except NameError:
+    basestring = str
+
+def main():
+    """
+    WARNING: This function expects command-line inputs to exist.
+    """
+
+    fill = tablefill_internals_cliparse()
+    fill.get_input_parser()
+    fill.get_parsed_arguments()
+    fill.get_argument_strings()
+    fill.get_file_type()
+    print_verbose(fill.verbose, "Arguments look OK. Will run tablefill.")
+
+    exit, exit_msg = tablefill(template       = fill.template,
+                               input          = fill.input,
+                               output         = fill.output,
+                               filetype       = fill.ext,
+                               verbose        = fill.verbose,
+                               silent         = fill.silent,
+                               pvals          = fill.pvals,
+                               stars          = fill.stars,
+                               fillc          = fill.fillc,
+                               legacy_parsing = fill.legacy_parsing,
+                               numpy_syntax   = fill.numpy_syntax,
+                               use_floats     = fill.use_floats,
+                               ignore_xml     = fill.ignore_xml,
+                               xml_tables     = fill.xml_tables)
+
+    if exit == 'SUCCESS':
+        fill.get_compiled()
+        sysexit(0)
+    elif exit == 'WARNING':
+        print_silent(fill.silent, "Exit status came with a warning")
+        print_silent(fill.silent, "Output might not be as expected!")
+        print_silent(fill.silent, "Rerun program with --verbose option.")
+        fill.get_compiled()
+        sysexit(-1)
+    elif exit == 'ERROR':
+        fillerror_msg  = 'ERROR while filling table.'
+        fillerror_msg += ' Check function call.' + linesep
+        print_silent(fill.silent, fillerror_msg)
+        fill.parser.print_usage()
+        sysexit(1)
+
 
 # Backwards-compatible string formatting
 def compat_format(x):
@@ -140,53 +206,12 @@ def flatten(l):
                 yield el
 
 
-# Define basestring in a backwards-compatible way
-try:
-    "" is basestring
-except NameError:
-    basestring = str
-
-def main():
-    """
-    WARNING: This function expects command-line inputs to exist.
-    """
-
-    fill = tablefill_internals_cliparse()
-    fill.get_input_parser()
-    fill.get_parsed_arguments()
-    fill.get_argument_strings()
-    fill.get_file_type()
-    print_verbose(fill.verbose, "Arguments look OK. Will run tablefill.")
-
-    exit, exit_msg = tablefill(template = fill.template,
-                               input    = fill.input,
-                               output   = fill.output,
-                               filetype = fill.ext,
-                               verbose  = fill.verbose,
-                               silent   = fill.silent,
-                               pvals    = fill.pvals,
-                               stars    = fill.stars,
-                               fillc    = fill.fillc)
-
-    if exit == 'SUCCESS':
-        fill.get_compiled()
-        sysexit(0)
-    elif exit == 'WARNING':
-        print_silent(fill.silent, "Exit status came with a warning")
-        print_silent(fill.silent, "Output might not be as expected!")
-        print_silent(fill.silent, "Rerun program with --verbose option.")
-        fill.get_compiled()
-        sysexit(-1)
-    elif exit == 'ERROR':
-        fillerror_msg  = 'ERROR while filling table.'
-        fillerror_msg += ' Check function call.' + linesep
-        print_silent(fill.silent, fillerror_msg)
-        fill.parser.print_usage()
-        sysexit(1)
-
-
 def tolist(anything):
     return anything if isinstance(anything, list) else [anything]
+
+
+def tolist2(anything):
+    return list(anything) if hasattr(anything, '__iter__') else [anything]
 
 
 def print_verbose(prints, stuff):
@@ -198,16 +223,39 @@ def print_silent(silence, stuff):
     if not silence:
         print(stuff)
 
+
+def custom_convert(x, func):
+    if isinstance(x, func):
+        return x
+    else:
+        try:
+            return func(x)
+        except:
+            return None
+
+
+def nested_convert(item, func):
+    # if isinstance(item, list):
+    if hasattr(item, '__iter__'):
+        return [nested_convert(x, func) for x in item]
+
+    return custom_convert(item, func)
+
+
 # ---------------------------------------------------------------------
 # tablefill
 
-
-def tablefill(silent   = False,
-              verbose  = True,
-              filetype = 'auto',
-              pvals    = [0.1, 0.05, 0.01],
-              stars    = ['*', '**', '***'],
-              fillc    = False,
+def tablefill(silent         = False,
+              verbose        = True,
+              filetype       = 'auto',
+              pvals          = [0.1, 0.05, 0.01],
+              stars          = ['*', '**', '***'],
+              fillc          = False,
+              legacy_parsing = False,
+              numpy_syntax   = False,
+              use_floats     = False,
+              ignore_xml     = False,
+              xml_tables     = None,
               **kwargs):
     """Fill LaTeX and LyX template files with external inputs
 
@@ -258,8 +306,18 @@ def tablefill(silent   = False,
         verbose = verbose and not silent
         logmsg  = "Parsing arguments..."
         print_verbose(verbose, logmsg)
-        fill_engine = tablefill_internals_engine(filetype, verbose, silent,
-                                                 pvals, stars, fillc)
+        fill_engine = tablefill_internals_engine(filetype,
+                                                 verbose,
+                                                 silent,
+                                                 pvals,
+                                                 stars,
+                                                 fillc,
+                                                 legacy_parsing,
+                                                 numpy_syntax,
+                                                 use_floats,
+                                                 ignore_xml,
+                                                 xml_tables)
+
         fill_engine.get_parsed_arguments(kwargs)
         fill_engine.get_file_type()
         fill_engine.get_regexps()
@@ -315,11 +373,10 @@ class tablefill_internals_cliparse:
         """
         parser_desc    = __purpose__
         parser_prog    = __program__
-        parser_use     = __program__ + ' ' + __usage__
+        # parser_use     = __program__ + ' ' + __usage__
         parser_version = __version__
         parser = argparse.ArgumentParser(prog  = parser_prog,
-                                         description = parser_desc,
-                                         usage = parser_use)
+                                         description = parser_desc)
         parser.add_argument('-v', '--version',
                             action   = 'version',
                             version  = parser_version,
@@ -380,29 +437,44 @@ class tablefill_internals_cliparse:
                             action   = 'store_true',
                             help     = "Compile output",
                             required = False)
-        parser.add_argument('-fc', '--fillcomments',
-                            dest     = 'fillcomments',
-                            action   = 'store_true',
-                            help     = "Fill in comments",
-                            required = False)
-    # parser.add_argument('-xml', '--parse-xml',
-    #                     dest     = 'parse_xml',
-    #                     action   = 'store_true',
-    #                     help     = "Parse commented XML to custom tables",
-    #                     required = False)
-    # parser.add_argument('--xml-tables',
-    #                     dest     = 'xml_tables',
-    #                     type     = str,
-    #                     nargs    = '*',
-    #                     metavar  = 'INPUT',
-    #                     default  = None,
-    #                     help     = "Files with custom xml combinations",
-    #                     required = False),
         parser.add_argument('-b', '--bibtex',
                             dest     = 'bibtex',
                             action   = 'store_true',
                             help     = "Compile BiBTeX",
                             required = False)
+        parser.add_argument('-fc', '--fill-comments',
+                            dest     = 'fill_comments',
+                            action   = 'store_true',
+                            help     = "Fill placeholders in comments",
+                            required = False)
+        parser.add_argument('--ignore-xml',
+                            dest     = 'ignore_xml',
+                            action   = 'store_true',
+                            help     = "Ignore XML in template comments.",
+                            required = False)
+        parser.add_argument('--legacy-parsing',
+                            dest     = 'legacy_parsing',
+                            action   = 'store_true',
+                            help     = "Legacy parsing for XML tables.",
+                            required = False)
+        parser.add_argument('--numpy-syntax',
+                            dest     = 'numpy_syntax',
+                            action   = 'store_true',
+                            help     = "Numpy syntax for custom XML tables.",
+                            required = False)
+        parser.add_argument('--use-floats',
+                            dest     = 'use_floats',
+                            action   = 'store_true',
+                            help     = "Use floats for custom XML python.",
+                            required = False)
+        parser.add_argument('--xml-tables',
+                            dest     = 'xml_tables',
+                            type     = str,
+                            nargs    = '*',
+                            metavar  = 'INPUT',
+                            default  = None,
+                            help     = "Files with custom XML combinations.",
+                            required = False),
         parser.add_argument('--verbose',
                             dest     = 'verbose',
                             action   = 'store_true',
@@ -456,7 +528,12 @@ class tablefill_internals_cliparse:
         self.silent   = self.args.silent
         self.verbose  = self.args.verbose and not self.args.silent
         self.stars    = self.args.stars
-        self.fillc    = self.args.fillcomments
+        self.fillc    = self.args.fill_comments
+        self.legacy_parsing = self.args.legacy_parsing
+        self.numpy_syntax   = self.args.numpy_syntax
+        self.use_floats     = self.args.use_floats
+        self.ignore_xml     = self.args.ignore_xml
+        self.xml_tables     = self.args.xml_tables
         try:
             self.pvals = [float(p) for p in self.args.pvals]
             assert all([(0 < p < 1) for p in self.pvals])
@@ -523,21 +600,27 @@ class tablefill_internals_cliparse:
                 system(compile_program + linesep)
                 system(compile_program + linesep)
 
+
 # ---------------------------------------------------------------------
 # tablefill_internals_engine
-
 
 class tablefill_internals_engine:
     """
     WARNING: Internal class used by tablefill_tex
     """
     def __init__(self,
-                 filetype = 'auto',
-                 verbose  = True,
-                 silent   = False,
-                 pvals    = [0.1, 0.05, 0.01],
-                 stars    = ['*', '**', '***'],
-                 fillc    = False):
+                 filetype       = 'auto',
+                 verbose        = True,
+                 silent         = False,
+                 pvals          = [0.1, 0.05, 0.01],
+                 stars          = ['*', '**', '***'],
+                 fillc          = False,
+                 legacy_parsing = False,
+                 numpy_syntax   = False,
+                 use_floats     = False,
+                 ignore_xml     = False,
+                 xml_tables     = None):
+
         # Get file type
         self.filetype     = filetype.lower()
         if self.filetype not in ['auto', 'lyx', 'tex']:
@@ -564,12 +647,17 @@ class tablefill_internals_engine:
                 i += 1
             stars += ['*' * i]
 
-        stars          = stars[:len(pvals)]
-        starlist       = [(p, s) for (p, s) in zip(pvals, stars)]
+        stars               = stars[:len(pvals)]
+        starlist            = [(p, s) for (p, s) in zip(pvals, stars)]
         starlist.sort(key = lambda p: p[0], reverse = True)
-        self.pvals     = [p for (p, s) in starlist]
-        self.stars     = [s for (p, s) in starlist]
-        self.fillc     = fillc
+        self.pvals          = [p for (p, s) in starlist]
+        self.stars          = [s for (p, s) in starlist]
+        self.fillc          = fillc
+        self.legacy_parsing = legacy_parsing
+        self.numpy_syntax   = numpy_syntax
+        self.use_floats     = use_floats
+        self.ignore_xml     = ignore_xml
+        self.xml_tables     = xml_tables
 
     def get_parsed_arguments(self, kwargs):
         """
@@ -685,36 +773,77 @@ class tablefill_internals_engine:
         read_data  = [open(file, 'rU').readlines() for file in self.input]
         parse_data = sum(read_data, [])
 
-        tables  = {}
         ctables = {}
-
         for row in parse_data:
             if re.match(self.tags, row, flags = re.IGNORECASE):
                 tag = re.findall(self.tags, row, flags = re.IGNORECASE)
                 tag = tag[0].lower()
-                tables[tag]  = []
                 ctables[tag] = []
             else:
                 clean_row_entries = [e.strip() for e in row.split('\t')]
-                tables[tag]  += clean_row_entries
                 ctables[tag] += [clean_row_entries]
 
+        if self.xml_tables is None and not self.ignore_xml:
+            if self.legacy_parsing:
+                self.parse_xml_file_legacy(ctables,
+                                           self.template,
+                                           prefix = '^%\s*')
+            else:
+                self.parse_xml_file(ctables, self.template, prefix = '^%\s*')
+        else:
+            if self.legacy_parsing:
+                self.parse_xml_file_legacy(ctables,
+                                           self.xml_tables,
+                                           prefix = '')
+            else:
+                self.parse_xml_file(ctables, self.xml_tables, prefix = '')
+
+        # Read in actual and custom tables
+        # self.tables = {k: self.filter_missing(v) for k, v in tables.items()}
+        self.tables = dict((k, self.filter_missing(list(flatten(v))))
+                           for (k, v) in ctables.items())
+
+    def parse_xml_file(self, ctables, xml_input, prefix = ''):
+        """Parse custom tabs in comments/XML files
+
+        Note that the parsing here is VERY crude (you will note it uses
+        a combination of XML parsing and regexes). This is more or less
+        intentional, since I want to be inflexible when using this
+        feature as it is VERY experimental. As it becomes stable the
+        function may move to proper XML parsing.
+
+        Args:
+            ctables (dict): Dictionary with input tables
+            xml_input (list): Template or XML files with custom tags
+
+        Kwargs:
+            prefix (str): regex with prefix for XML parsing (if parsing
+                          from template comments, this should be a LaTeX
+                          comment, e.g. '^%\s*', as the tables would be
+                          commented out in the file).
+
+        Returns: Dictionary with resulting custom tables
+
+        """
+
         # Read in all the custom tables
-        read_template = open(self.template, 'rU').readlines()
-        self.custom = "^%\s*<tablefill-custom\s+tag\s*=\s*['\"](.+)\s*['\"]>"
+        xml_list     = tolist(xml_input)
+        xml_template = [open(file, 'rU').readlines() for file in xml_list]
+        xml_toparse  = sum(xml_template, [])
 
-        ctags  = ()
-        custom = []
+        xml_regex  = prefix
+        xml_regex += "<tablefill-python\s+tag\s*=\s*['\"](.+)\s*['\"]"
 
+        # Figure out where the custom XML tags are
         i = 0
-        for line in read_template:
-            s = re.search(self.custom, line)
+        custom = []
+        for line in xml_toparse:
+            s = re.search(xml_regex, line)
             if s:
-                ctags += s.groups(0)
                 j = i
                 search = True
-                while search and j <= len(read_template):
-                    if re.search('</tablefill-custom\s*>', read_template[j]):
+                while search and j <= len(xml_toparse):
+                    if re.search('</\s*tablefill-python\s*>', xml_toparse[j]):
                         search = False
                     j += 1
 
@@ -723,48 +852,259 @@ class tablefill_internals_engine:
 
             i += 1
 
+        # Prase each custom XMl tag into a dictionary
         cdict = {}
-        for t, c in zip(ctags, custom):
+        for c in custom:
             chtml    = []
-            cobj     = itemgetter(*c)(read_template)
+            cobj     = itemgetter(*c)(xml_toparse)
             for obj in cobj:
                 chtml += [re.sub('^%\s*', '', obj)]
 
-            cdict[t] = chtml
+            try:
+                cxml = xml.fromstringlist(chtml)
+            except:
+                xml_parse_msg = "Could not parse custom XML in lines %d-%d."
+                raise Warning('\t' + xml_parse_msg % (c[0], c[-1]))
 
-        tdict = dict((k, self.filter_missing(v)) for (k, v) in ctables.items())
+            t = cxml.get('tag')
+            cdict[t] = cxml
 
-        # Create all the custom tables
-        for tag in cdict:
+        # Get temporary string and numeric dictionaries
+        strdict = ctables
+        numdict = {}
+        for tag, table in ctables.items():
+            numdict[tag] = nested_convert(table, float)
+
+        numpy_strdict = {}
+        numpy_numdict = {}
+        if numpyok:
+            for tag, table in strdict.items():
+                numpy_strdict[tag] = numpy.asmatrix(table)
+
+            for tag, table in numdict.items():
+                numpy_numdict[tag] = numpy.asmatrix(table)
+
+        # Create all the custom tables using python/numpy slicing
+        for tag, cxml in cdict.items():
             print_verbose(self.verbose, "\tcreating custom tab:%s" % (tag))
-            cxml = xml.fromstring(''.join(cdict[tag]))
-            tables[tag] = table_tag = []
-            for combine in cxml.findall('combine'):
-                ctag  = combine.get('tag')
-                clist = eval("tdict['%s']" % (ctag))
-                for subset in combine.text.split(';'):
-                    clean_subset = subset.strip(linesep).replace(' ', '')
-                    try:
-                        table_tag += [eval("clist%s" % (clean_subset))]
-                    except:
-                        warn_tuple   = (tag, clean_subset, ctag)
-                        warn_custom  = "custom 'tab:%s' failed to subset '%s'"
-                        warn_custom += " from 'tab:%s'; will continue..."
-                        print_verbose(self.verbose, warn_custom % warn_tuple)
-                        continue
 
-            self.clist  = clist
-            tables[tag] = [l for l in flatten(table_tag)]
+            csyntax = cxml.get('syntax')
+            if csyntax not in [None, 'python', 'numpy']:
+                xml_syntax_msg  = "Custom table '%s' requested unknown syntax"
+                xml_syntax_msg += " '%s'. Specify 'python' or 'numpy'."
+                raise Warning('\t' + xml_syntax_msg % (tag, csyntax))
 
-        self.tdict = tdict
+            usenumpy = self.numpy_syntax and not csyntax == 'python'
+            usenumpy = usenumpy or (csyntax == 'numpy')
+            if usenumpy and not numpyok:
+                xml_numpy_msg  = "Custom table '%s' requested syntax 'numpy'"
+                xml_numpy_msg += " but python failed to import numpy."
+                raise Warning('\t' + xml_numpy_msg % tag)
 
-        # Read in actual and custom tables
-        # self.tables = {k: self.filter_missing(v) for k, v in tables.items()}
-        self.tables = dict((k, self.filter_missing(v))
-                           for (k, v) in tables.items())
+            usetype = 'float' if self.use_floats else cxml.get('type')
+            if usetype not in [None, 'float', 'numeric', 'str', 'string']:
+                xml_usetype_msg  = "Custom table '%s' asked unknown type"
+                xml_usetype_msg += " '%s'. Specify 'float' or 'str'."
+                raise Warning('\t' + xml_usetype_msg % (tag, usetype))
+
+            if usetype in ['float', 'numeric']:
+                usedict = numpy_numdict if numpyok and usenumpy else numdict
+            else:
+                usedict = numpy_strdict if numpyok and usenumpy else strdict
+
+            try:
+                clean_text = re.subn('\s|' + linesep, '', cxml.text)[0]
+                ceval = eval(clean_text, usedict)
+                if numpyok and usenumpy:
+                    if usetype in ['float', 'numeric']:
+                        numpy_numdict[tag] = ceval
+                    else:
+                        numpy_strdict[tag] = ceval
+
+                    ceval = tolist2(ceval)
+                    toadd = list(flatten([numpy.array(l) for l in ceval]))
+                    strdict[tag] = nested_convert(toadd, str)
+                    numdict[tag] = nested_convert(toadd, float)
+                else:
+                    ceval = tolist2(ceval)
+                    toadd = list(flatten(ceval))
+                    strdict[tag] = nested_convert(ceval, str)
+                    numdict[tag] = nested_convert(ceval, float)
+                    if numpyok:
+                        numpy_strdict[tag] = numpy.asmatrix(strdict[tag])
+                        numpy_numdict[tag] = numpy.asmatrix(numdict[tag])
+
+            except:
+                warn_custom = "custom 'tab:%s' failed to parse." % tag
+                print_verbose(self.verbose, '\t' + warn_custom)
+                continue
+
+            ctables[tag] = list(nested_convert(toadd, str))
+
+    def parse_xml_file_legacy(self, ctables, xml_input, prefix = ''):
+        """Parse custom tabs in comments/XML files
+
+        Note that the parsing here is VERY crude (you will note it uses
+        a combination of XML parsing and regexes). This is more or less
+        intentional, since I want to be inflexible when using this
+        feature as it is VERY experimental. As it becomes stable the
+        function may move to proper XML parsing.
+
+        Args:
+            ctables (dict): Dictionary with input tables
+            xml_input (list): Template or XML files with custom tags
+
+        Kwargs:
+            prefix (str): regex with prefix for XML parsing (if parsing
+                          from template comments, this should be a LaTeX
+                          comment, e.g. '^%\s*', as the tables would be
+                          commented out in the file).
+
+        Returns: Dictionary with resulting custom tables
+
+        """
+
+        # Read in all the custom tables
+        xml_list     = tolist(xml_input)
+        xml_template = [open(file, 'rU').readlines() for file in xml_list]
+        xml_toparse  = sum(xml_template, [])
+
+        xml_regex  = prefix
+        xml_regex += "<tablefill-(custom|python)\s+tag\s*=\s*['\"](.+)\s*['\"]"
+
+        # Figure out where the custom XML tags are
+        i = 0
+        custom = []
+        todo   = []
+        for line in xml_toparse:
+            s = re.search(xml_regex, line)
+            if s:
+                j = i
+                w = s.groups()[0]
+                todo  += [w]
+                search = True
+                while search and j <= len(xml_toparse):
+                    if re.search('</\s*tablefill-%s\s*>' % w, xml_toparse[j]):
+                        search = False
+                    j += 1
+
+                if not search:
+                    custom += [range(i, j)]
+
+            i += 1
+
+        # Put them into a dictionary
+        cdict = {}
+        edict = {}
+        for c, e in zip(custom, todo):
+            chtml    = []
+            cobj     = itemgetter(*c)(xml_toparse)
+            for obj in cobj:
+                chtml += [re.sub('^%\s*', '', obj)]
+
+            try:
+                cxml = xml.fromstringlist(chtml)
+            except:
+                xml_parse_msg  = "Could not parse custom XML in lines %d-%d."
+                raise Warning('\t' + xml_parse_msg % (c[0], c[-1]))
+
+            t = cxml.get('tag')
+            cdict[t] = cxml
+            edict[t] = e
+
+        # Create all the custom tables using python/numpy slicing
+        for tag, cxml in cdict.items():
+            print_verbose(self.verbose, "\tcreating custom tab:%s" % (tag))
+
+            csyntax = cxml.get('syntax')
+            if csyntax not in [None, 'python', 'numpy']:
+                xml_syntax_msg  = "Custom table '%s' requested unknown syntax"
+                xml_syntax_msg += " '%s'. Specify 'python' or 'numpy'."
+                raise Warning('\t' + xml_syntax_msg % (tag, csyntax))
+
+            usenumpy = self.numpy_syntax and not csyntax == 'python'
+            usenumpy = usenumpy or (csyntax == 'numpy')
+            if usenumpy and not numpyok:
+                xml_numpy_msg  = "Custom table '%s' requested syntax 'numpy'"
+                xml_numpy_msg += " but python failed to import numpy."
+                raise Warning('\t' + xml_numpy_msg % tag)
+
+            convert = 'float' if self.use_floats else cxml.get('convert')
+            if convert not in [None, 'float', 'str']:
+                xml_convert_msg  = "Custom table '%s' asked unknown conversion"
+                xml_convert_msg += " '%s'. Specify 'float' or 'str'."
+                raise Warning('\t' + xml_convert_msg % (tag, convert))
+
+            if edict[tag] == 'python':
+                inputs  = [l.strip() for l in cxml.get('inputs').split(',')]
+                inputs  = filter(lambda a: a != '', inputs)
+                xmlexec = mktemp()
+                with open(xmlexec, "w+") as tmp:
+                    tmp.writelines(cxml.text)
+
+                python = {}
+                for table in inputs:
+                    ptable = tolist(ctables[table])
+                    if convert == 'float':
+                        ptable = nested_convert(ptable, float)
+
+                    if numpyok and usenumpy:
+                        ptable = numpy.asmatrix(ptable)
+
+                    python[table] = ptable
+
+                try:
+                    execfile(xmlexec, python)
+                except:
+                    xml_python_msg = "Custom code for '%s' failed to run."
+                    raise Warning('\t' + xml_python_msg % tag)
+
+                remove(xmlexec)
+                try:
+                    table_tag = python[tag]
+                except:
+                    xml_python_msg = "Code for '%s' did not create 'tag'"
+                    raise Warning('\t' + xml_python_msg % tag)
+
+                if numpyok and usenumpy:
+                    table_tag = numpy.array(table_tag)
+
+                table_tag = list(flatten(table_tag))
+                if convert == 'float':
+                    table_tag = nested_convert(table_tag, str)
+
+                ctables[tag] = table_tag
+            else:
+                ctables[tag] = table_tag = []
+                for combine in cxml.findall('combine'):
+                    ctag  = combine.get('tag')
+                    clist = ctables[ctag]
+                    if numpyok and usenumpy:
+                        clist = numpy.asmatrix(clist)
+
+                    for subset in combine.text.split(';'):
+                        clean_subset = subset.strip(linesep).replace(' ', '')
+                        if clean_subset == '':
+                            continue
+
+                        try:
+                            add = eval("clist%s" % (clean_subset))
+                            if numpyok and usenumpy:
+                                add = numpy.array(add)
+
+                            table_tag += [add]
+                        except:
+                            warn_custom  = "custom 'tab:%s' failed to subset "
+                            warn_custom += "'%s' from 'tab:%s'; will continue."
+                            warn_msg = warn_custom % (tag, clean_subset, ctag)
+                            print_verbose(self.verbose, warn_msg)
+                            continue
+
+                ctables[tag] = list(flatten(table_tag))
 
     def filter_missing(self, string_list):
-        return filter(lambda a: a not in ['.', '', 'NA'], string_list)
+        filters = ['.', '', 'NA', 'nan', 'NaN', 'None']
+        return filter(lambda a: a not in filters, string_list)
 
     def get_filled_template(self):
         """

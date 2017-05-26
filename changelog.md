@@ -1,6 +1,67 @@
 Change Log
 ==========
 
+## tablefill-0.8.0 (2017-04-11)
+
+### Bug fixes
+
+- `<tablefill-custom>` has been moved to `<tablefill-python>`
+    - The engine now evaluates whatever is in the tag.
+    - All the tables are available as python lists of lists
+    - The resulting object is read into the specified tag
+    - Can pass `syntax = 'numpy'` to use `numpy` matrix syntax instead of
+      python list slicing.
+    - Can pass `type = 'float'` so all entries in each table
+      are available as floats instead of strings.
+    - WARNING: When using `type = float` the conversion is NOT
+      necessarily lossless, as with the normal tablefill you can also
+      have placeholders be replaced with strings. But if you try to
+      convert everything to floats then you will replace those with
+      missing. This would only affect tables created this way.
+- When tablefill call is empty, nothing is parsed. In previous
+  versions the entire table was added.
+- The default syntax can be changed to `numpy` via `--use-numpy`
+- The default conversion can be changed to `float` via `--use-floats`
+
+An example:
+```xml
+<tablefill-python tag = 'output_table' type = 'float'>
+    input_table0[1][2], input_table0[2][1],
+    input_table0[1][2] / input_table0[2][1],
+</tablefill-math>
+
+<tablefill-python tag = 'output_table' type = 'float'> syntax = 'numpy'>
+    input_table0[:2, :2] / input_table1[:2, :2]
+</tablefill-math>
+```
+
+### Planned
+
+- Error checking for XML parsing: Currently very minimal
+  error checks are in place as this functionality is beta.
+  - If XMl file is provided, note if parsing failed in that file
+  - If multiple XML files provided, give file name as well
+  - Whether error was due to regex parsing
+  - Whether an opened tag was closed
+  - Closing a tag and opening the next tag on the same line
+  - Etc.
+- Replace tablefill-python with a more limited tablefill-math
+  so that I don't have to worry about executing arbitrary python
+  code. It's bad practice, no?
+- Replace engine with eval using the table dictionary as the context to
+  simplify syntax. This would result in, for instance
+```xml
+<tablefill-custom tag = 'newtagname'>
+    tagname[rows1][subentries1],
+    tagname[rows2][subentries2],
+    tagname[rows3][subentries3],
+    othertagname[rows3][subentries3]
+</tablefill-custom>
+```
+This would also simplify the function call for math... Have a float
+dictionary and a normal one. Use the float dictionary for `type =
+'float'` and the string otherwise. Always update both. Then for
+
 ## tablefill-0.7.0 (2016-10-24)
 
 ### Features
