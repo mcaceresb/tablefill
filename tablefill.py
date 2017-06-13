@@ -124,8 +124,8 @@ __usage__     = """[-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
-__updated__   = "Tue Apr 12, 2017"
-__version__   = __program__ + " version 0.8.0 updated " + __updated__
+__updated__   = "Tue Jun 13, 2017"
+__version__   = __program__ + " version 0.8.1 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:

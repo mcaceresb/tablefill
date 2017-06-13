@@ -1,9 +1,19 @@
 Change Log
 ==========
 
+## tablefill-0.8.1 (2017-06-13)
+
+### Features
+
+- Old XML parsing available via `--legacy-parsing`
+- Basic XML error checks
+- Numpy syntax can do string and numeric numpy matrices.
+- XML engine parses all entries to numeric and string
+  dictionaries and parses strings and floats sepparately.
+
 ## tablefill-0.8.0 (2017-04-11)
 
-### Bug fixes
+### Features
 
 - `<tablefill-custom>` has been moved to `<tablefill-python>`
     - The engine now evaluates whatever is in the tag.
@@ -28,11 +38,11 @@ An example:
 <tablefill-python tag = 'output_table' type = 'float'>
     input_table0[1][2], input_table0[2][1],
     input_table0[1][2] / input_table0[2][1],
-</tablefill-math>
+</tablefill-python>
 
-<tablefill-python tag = 'output_table' type = 'float'> syntax = 'numpy'>
+<tablefill-python tag = 'output_table' type = 'float' syntax = 'numpy'>
     input_table0[:2, :2] / input_table1[:2, :2]
-</tablefill-math>
+</tablefill-python>
 ```
 
 ### Planned
