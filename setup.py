@@ -37,6 +37,9 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     description="Automatically update LyX and LaTeX tables.",
+    entry_points={
+        'console_scripts': ['tablefill=tablefill.tablefill:main']
+    },
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
