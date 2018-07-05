@@ -1,5 +1,11 @@
 # Changelog
 
+## Next release
+
+### Features
+
+- Pip-installable.
+
 ## tablefill-0.8.1 (2017-06-13)
 
 ### Features
