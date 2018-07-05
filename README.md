@@ -67,7 +67,7 @@ Features
       engine can parse the placeholders as long as they are in a table
       environment, which can be regular text).
 
-Future releases will documentat the function's various features.
+Future releases will document the function's various features.
 
 Setup
 -----
@@ -111,7 +111,7 @@ The following code in the `.tex` template will be interpreted by `tablefill.py`
 The above is parsed as xml and will create 2 new tags: First it creates
 `newtagname` with `[rows1][subentries1]` and `[rows2][subentries2]`
 from `tagname` and `[rows3][subentries3]` from `othertagname`.
-Second it creats `othernewtagname` with the result of the operation
+Second it creates `othernewtagname` with the result of the operation
 `tagname[row1][subentry1] / tagname[row2][subentry2]` followed by the
 entries from `othertagname[rows3][subentries3]`. Only scalar operations
 are supported, and the type must be set to `float` or the parsing will exit
@@ -134,7 +134,7 @@ is parsed as a list of lists, so
 [1][1:3] or [-2][-2:] --> [-1, -2]
 ```
 
-It is also possible to specify tables in a sepparate `.xml` file and
+It is also possible to specify tables in a separate `.xml` file and
 pass it to tablefill (there should be no leading `%` in this case) via
 `--xml-tables` in the command line or `xml_tables` in a function call.
 
