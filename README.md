@@ -73,9 +73,8 @@ Setup
 -----
 
 ```bash
-git clone https://github.com/mcaceresb/tablefill
-cd tablefiil
-./tablefill.py --help
+pip install git+https://github.com/mcaceresb/tablefill
+tablefill --help
 ```
 
 This was created specifically to run in a server that only had Python
@@ -143,7 +142,6 @@ TODO
 
 - [ ] Finish writing the documentation for the project.
 - [ ] Update unit testing (tests are mostly copy/paste from the original tablefill).
-- [ ] Build into a proper Python package.
 - [ ] Look into doxygen.
 
 License
