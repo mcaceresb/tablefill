@@ -142,7 +142,14 @@ TODO
 
 - [ ] Finish writing the documentation for the project.
 - [ ] Update unit testing (tests are mostly copy/paste from the original tablefill).
+- [ ] Build into a proper Python package.
 - [ ] Look into doxygen.
+
+Contributors
+------------
+
+- The original idea for tablefill comes from [GSLab](https://github.com/gslab-econ)'s [tablefill](https://github.com/gslab-econ/gslab_python/blob/master/gslab_fill/tablefill.py).
+- [Kyle Barron](https://github.com/kylebarron) made the project into a pip-installable package.
 
 License
 -------

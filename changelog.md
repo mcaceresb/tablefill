@@ -1,10 +1,10 @@
 # Changelog
 
-## Next release
+## tablefill-0.9.1 (2018-07-17)
 
 ### Features
 
-- Pip-installable.
+- Pip-installable by [@kylebarron](https://github.com/kylebarron).
 
 ## tablefill-0.9.0 (2018-07-17)
 

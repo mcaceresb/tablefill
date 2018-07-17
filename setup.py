@@ -23,34 +23,35 @@ setup_requirements = [
 test_requirements = []
 
 setup(
-    author="Mauricio Cáceres",
-    author_email='caceres@nber.org',
-    classifiers=[
+    author       = "Mauricio Cáceres Bravo",
+    author_email = 'caceres@nber.org',
+    classifiers  = [
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
+        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    description="Automatically update LyX and LaTeX tables.",
-    entry_points={
-        'console_scripts': ['tablefill=tablefill.tablefill:main']
+    description  = "Automatically update LyX and LaTeX tables.",
+    entry_points = {
+        'console_scripts': ['tablefill = tablefill.tablefill:main']
     },
-    install_requires=requirements,
-    license="MIT license",
-    long_description=readme + '\n\n' + history,
-    long_description_content_type='text/markdown',
-    keywords='tablefill',
-    name='tablefill',
-    packages=find_packages(include=['tablefill']),
-    setup_requires=setup_requirements,
-    test_suite='tests',
-    tests_require=test_requirements,
-    url='https://github.com/mcaceresb/tablefill',
-    version='0.8.1',
-    zip_safe=False,
+    install_requires              = requirements,
+    license                       = "MIT license",
+    long_description              = readme + '\n\n' + history,
+    long_description_content_type = 'text/markdown',
+    keywords                      = 'tablefill',
+    name                          = 'tablefill',
+    packages                      = find_packages(include = ['tablefill']),
+    setup_requires                = setup_requirements,
+    test_suite                    = 'tests',
+    tests_require                 = test_requirements,
+    url                           = 'https://github.com/mcaceresb/tablefill',
+    version                       = '0.9.1',
+    zip_safe                      = False,
 )
