@@ -1,5 +1,10 @@
-Change Log
-==========
+# Changelog
+
+## Next release
+
+### Features
+
+- Pip-installable.
 
 ## tablefill-0.9.0 (2018-07-17)
 

@@ -1,4 +1,4 @@
-Supplementary readme for tablefiil.py; see script for use details
+Supplementary readme for tablefill.py; see script for use details
 
 LIMITATIONS
 -----------
