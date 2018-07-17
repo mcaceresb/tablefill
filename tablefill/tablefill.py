@@ -108,7 +108,6 @@ from sys import version_info
 from tempfile import mktemp
 import xml.etree.ElementTree as xml
 import argparse
-import math
 import re
 try:
     import numpy
@@ -132,6 +131,7 @@ try:
     "" is basestring
 except NameError:
     basestring = str
+
 
 def main():
     """
@@ -175,6 +175,16 @@ def main():
         print_silent(fill.silent, fillerror_msg)
         fill.parser.print_usage()
         sysexit(1)
+
+
+# Backwards-compatible file concatenation
+def concat_files(flist):
+    if version_info >= (3, 0):
+        readlist = [open(fn, 'r', newline = None).readlines() for fn in flist]
+    else:
+        readlist = [open(fn, 'rU').readlines() for fn in flist]
+
+    return sum(readlist, [])
 
 
 # Backwards-compatible string formatting
@@ -235,8 +245,7 @@ def custom_convert(x, func):
 
 
 def nested_convert(item, func):
-    # if isinstance(item, list):
-    if hasattr(item, '__iter__'):
+    if hasattr(item, '__iter__') and not isinstance(item, basestring):
         return [nested_convert(x, func) for x in item]
 
     return custom_convert(item, func)
@@ -392,8 +401,8 @@ class tablefill_internals_cliparse:
                             nargs    = '*',
                             metavar  = 'INPUT',
                             default  = None,
-                            help     = "Input files with tables" +
-                            " (default: INPUT_table)",
+                            help     = "Input files with tables"
+                                       " (default: INPUT_table)",
                             required = False)
         parser.add_argument('-o', '--output',
                             dest     = 'output',
@@ -401,8 +410,8 @@ class tablefill_internals_cliparse:
                             nargs    = 1,
                             metavar  = 'OUTPUT',
                             default  = None,
-                            help     = "Processed template file" +
-                            " (default: INPUT_filled)",
+                            help     = "Processed template file"
+                                       " (default: INPUT_filled)",
                             required = False)
         parser.add_argument('-t', '--type',
                             dest     = 'filetype',
@@ -424,7 +433,7 @@ class tablefill_internals_cliparse:
                             type     = str,
                             nargs    = '*',
                             default  = ['*', '**', '***'],
-                            help     = "Stars for sig thresholds " +
+                            help     = "Stars for sig thresholds "
                                        "(enclose each in quotes)",
                             required = False)
         parser.add_argument('-f', '--force',
@@ -668,15 +677,17 @@ class tablefill_internals_engine:
         """
         args = ['input', 'template', 'output']
 
-        missing_args = filter(lambda arg: arg not in kwargs.keys(), args)
+        # XX
+        missing_args = list(filter(lambda arg: arg not in kwargs.keys(), args))
         if missing_args != []:
             isare = " is " if len(missing_args) == 1 else " are "
             missing_args_msg  = " and ".join(missing_args)
             missing_args_msg += isare + "missing. Check function call."
             raise KeyError(missing_args_msg)
 
+        # XX
         m = filter(lambda t: not isinstance(t[1], basestring), kwargs.items())
-        mismatched_types = m
+        mismatched_types = list(m)
         if mismatched_types != []:
             msg = "Expected str for '%s' but got type '%s'"
             msg = [msg % (k, v.__class__.__name__)
@@ -689,7 +700,7 @@ class tablefill_internals_engine:
         self.input    = [path.abspath(ins) for ins in kwargs['input'].split()]
 
         infiles = [self.template] + self.input
-        missing_files = filter(lambda f: not path.isfile(f), infiles)
+        missing_files = list(filter(lambda f: not path.isfile(f), infiles))
         if missing_files != []:
             missing_files_msg  = "Please check the following are available:"
             missing_files_msg += linesep + linesep.join(missing_files)
@@ -770,10 +781,8 @@ class tablefill_internals_engine:
         """
 
         # Read in all the tables
-        read_data  = [open(file, 'rU').readlines() for file in self.input]
-        parse_data = sum(read_data, [])
-
-        ctables = {}
+        parse_data = concat_files(self.input)
+        ctables    = {}
         for row in parse_data:
             if re.match(self.tags, row, flags = re.IGNORECASE):
                 tag = re.findall(self.tags, row, flags = re.IGNORECASE)
@@ -828,8 +837,7 @@ class tablefill_internals_engine:
 
         # Read in all the custom tables
         xml_list     = tolist(xml_input)
-        xml_template = [open(file, 'rU').readlines() for file in xml_list]
-        xml_toparse  = sum(xml_template, [])
+        xml_toparse  = concat_files(xml_list)
 
         xml_regex  = prefix
         xml_regex += "<tablefill-python\s+tag\s*=\s*['\"](.+)\s*['\"]"
@@ -966,8 +974,7 @@ class tablefill_internals_engine:
 
         # Read in all the custom tables
         xml_list     = tolist(xml_input)
-        xml_template = [open(file, 'rU').readlines() for file in xml_list]
-        xml_toparse  = sum(xml_template, [])
+        xml_toparse  = concat_files(xml_list)
 
         xml_regex  = prefix
         xml_regex += "<tablefill-(custom|python)\s+tag\s*=\s*['\"](.+)\s*['\"]"
@@ -1037,7 +1044,7 @@ class tablefill_internals_engine:
 
             if edict[tag] == 'python':
                 inputs  = [l.strip() for l in cxml.get('inputs').split(',')]
-                inputs  = filter(lambda a: a != '', inputs)
+                inputs  = list(filter(lambda a: a != '', inputs))
                 xmlexec = mktemp()
                 with open(xmlexec, "w+") as tmp:
                     tmp.writelines(cxml.text)
@@ -1104,7 +1111,7 @@ class tablefill_internals_engine:
 
     def filter_missing(self, string_list):
         filters = ['.', '', 'NA', 'nan', 'NaN', 'None']
-        return filter(lambda a: a not in filters, string_list)
+        return list(filter(lambda a: a not in filters, string_list))
 
     def get_filled_template(self):
         """
@@ -1388,14 +1395,14 @@ class tablefill_internals_engine:
         self.filled_template[n:n] = head + msg + tail
 
     def write_to_output(self, text):
-        outfile = open(self.output, 'wb')
+        outfile = open(self.output, 'w')
         outfile.write(''.join(text))
         outfile.close()
 
     def get_exit_message(self):
         if self.warning:
             msg  = ["The following issues were found:"]
-            msg += filter(lambda wm: wm != '', self.warn_msg.values())
+            msg += list(filter(lambda wm: wm != '', self.warn_msg.values()))
             self.exit_msg = linesep.join(msg)
             self.exit     = 'WARNING'
         else:
