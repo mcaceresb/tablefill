@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+## tablefill-0.9.0 (2018-07-17)
+
+### Bug Fixes
+
+- Python 3 support. Fixes https://github.com/mcaceresb/tablefill/issues/2
+- Encloses all filters in `list`
+- File concatenation replaces deprecated `U` flag for `newline = None`
+- `nested_convert` avoids iterating over strings.
+- output file is opened as `w` instead of `wb`
+
 ## tablefill-0.8.1 (2017-06-13)
 
 ### Features
