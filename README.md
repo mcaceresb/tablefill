@@ -1,7 +1,7 @@
 tablefill
 =========
 
-Automatically update LaTeX and LyX tables using a placeholder system.
+Automatically update LaTeX, LyX, and Markdown tables using a placeholder system.
 
 __*Quickstart*__
 
@@ -14,8 +14,8 @@ Documentation
 -------------
 
 `tablefill` is a program that uses a generic placeholder system to
-fill LaTeX and LyX tables using formatted output from any programming
-language.
+fill LaTeX, LyX, and Markdown tables using formatted output from any
+programming language.
 
 - The [getting started](https://mcaceresb.github.io/tablefill/getting-started.html) gives a a basic example of
   how the system works.
@@ -40,8 +40,8 @@ in particular was made to automatically update LyX files with Stata output.
 However, I expanded this system to work with LaTeX and added several features.
 The workflow for the is as follows:
 
-1. Create a LaTeX or LyX document using placeholders in your tables. Label
-   or tab each table appropriately.
+1. Create a LaTeX, LyX, or Markdown document using placeholders in your tables.
+   Label or tab each table appropriately.
 
 2. Print a matrix (or any array) to a delimited text file. The output
    is preceded by the tag of the table you want to fill, and the matrix

@@ -21,10 +21,10 @@ Usage
 
 tablefill [-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
           [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
-          [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex}]
+          [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex,md}]
           TEMPLATE
 
-Fill tagged tables in LaTeX and LyX files with external text tables
+Fill tagged tables in LaTeX, LyX, and Markdown files with external text tables
 
 positional arguments:
   TEMPLATE              Code template
@@ -36,7 +36,7 @@ optional arguments:
                         Input files with tables (default: TEMPLATE_table)
   -o OUTPUT, --output OUTPUT
                         Processed template file (default: TEMPLATE_filled)
-  -t {auto,lyx,tex}, --type {auto,lyx,tex}
+  -t {auto,lyx,tex,md}, --type {auto,lyx,tex,md}
                         Template file type (default: auto)
   --pvals [PVALS [PVALS ...]]
                         Significance thresholds
@@ -122,7 +122,7 @@ except:
 __program__   = "tablefill.py"
 __usage__     = """[-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
                     [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
-                    [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex}]
+                    [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex,md}]
                     TEMPLATE"""
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
@@ -270,13 +270,13 @@ def tablefill(silent         = False,
               ignore_xml     = False,
               xml_tables     = None,
               **kwargs):
-    """Fill LaTeX and LyX template files with external inputs
+    """Fill LaTeX, LyX, or Markdown template files with external inputs
 
     Description
     -----------
 
-    tablefill is a python function designed to fill LaTeX and LyX tables
-    with output from text files (usually output from Stata or Matlab).
+    tablefill is a python function designed to fill LaTeX, LyX, or Markdown
+    tables with output from text files (usually output from Stata or Matlab).
     The original tablefill.py does the same but only for LyX files, and
     has fewer error checks. The regexps are also slightly different.
 
@@ -301,7 +301,7 @@ def tablefill(silent         = False,
     silent : bool
         try to print nothing at all
     filetype : str
-        auto, lyx, or tex
+        auto, lyx, tex, or md
 
     Output
     ------
@@ -378,9 +378,11 @@ class tablefill_internals_cliparse:
     """
     def __init__(self):
         self.compiler = {'tex': "xelatex ",
-                         'lyx': "lyx -e pdf2 "}
+                         'lyx': "lyx -e pdf2 ",
+                         'md': "pandoc -i "}
         self.bibtex   = {'tex': "bibtex ",
-                         'lyx': "echo Not sure how to run BiBTeX via LyX on "}
+                         'lyx': "echo Not sure how to run BiBTeX via LyX on ",
+                         'md': "echo Not sure how to run BiBTeX via pandoc on "}
 
     def get_input_parser(self):
         """
@@ -423,7 +425,7 @@ class tablefill_internals_cliparse:
                             dest     = 'filetype',
                             type     = str,
                             nargs    = 1,
-                            choices  = ['auto', 'lyx', 'tex'],
+                            choices  = ['auto', 'lyx', 'tex', 'md'],
                             default  = ['auto'],
                             help     = "Template file type (default: auto)",
                             required = False)
@@ -566,18 +568,21 @@ class tablefill_internals_cliparse:
         fname = path.basename(self.template)
         ext   = path.splitext(fname)[-1].lower().strip('. ')
         inext = self.args.filetype[0].lower()
-        if inext not in ['auto', 'tex', 'lyx']:
+        if inext not in ['auto', 'tex', 'lyx', 'md', 'markdown']:
             unknown_type = "Type '%s' not allowed. Expected {auto,lyx,tex}."
             unknown_type = unknown_type % inext
             raise KeyError(unknown_type)
         elif inext == 'auto':
-            if ext not in ['tex', 'lyx']:
+            if ext not in ['tex', 'lyx', 'md', 'markdown']:
                 unknown_type  = "File type '%s' not known."
-                unknown_type += " Expecting .lyx or .tex file."
+                unknown_type += " Expecting .lyx, .tex, or .md file."
                 unknown_type = unknown_type % ext
                 raise KeyError(unknown_type)
             else:
-                self.ext = ext.lower()
+                if ext in ['md', 'markdown']:
+                    self.ext = 'md'
+                else:
+                    self.ext = ext.lower()
                 logmsg = "NOTE: Automatically detected input type as %s" % ext
                 print_verbose(self.verbose, logmsg)
         else:
@@ -638,9 +643,9 @@ class tablefill_internals_engine:
 
         # Get file type
         self.filetype     = filetype.lower()
-        if self.filetype not in ['auto', 'lyx', 'tex']:
+        if self.filetype not in ['auto', 'lyx', 'tex', 'md']:
             unknown_type  = "File type '%s' not known."
-            unknown_type += " Expecting 'auto' or a .lyx or .tex file."
+            unknown_type += " Expecting 'auto' or a .lyx, .tex, or .md file."
             unknown_type  = unknown_type % filetype
             raise KeyError(unknown_type)
 
@@ -734,13 +739,16 @@ class tablefill_internals_engine:
         ext   = path.splitext(fname)[-1].lower().strip('. ')
         inext = self.filetype
         if inext == 'auto':
-            if ext not in ['tex', 'lyx']:
+            if ext not in ['tex', 'lyx', 'md', 'markdown']:
                 unknown_type  = "Option filetype = 'auto' detected type '%s'"
                 unknown_type += " but was expecting a .lyx or .tex file."
                 unknown_type  = unknown_type % ext
                 raise KeyError(unknown_type)
             else:
-                self.filetype = ext.lower()
+                if ext in ['md', 'markdown']:
+                    self.filetype = 'md'
+                else:
+                    self.filetype = ext.lower()
                 logmsg = "NOTE: Automatically detected input type as %s" % ext
                 print_verbose(self.verbose, logmsg)
         elif ext != inext:
@@ -779,6 +787,10 @@ class tablefill_internals_engine:
             self.begin = r'.*\\begin_inset Float table.*'
             self.end   = r'</lyxtabular>'
             self.label = r'name "tab:(.+)"'
+        elif self.filetype == 'md':
+            self.begin = r'<.*tablefill:start.*>'
+            self.end   = r'<.*tablefill:end.*>'
+            self.label = r'<.*tab:(.+)\b.*>'
 
     def get_parsed_tables(self):
         """
@@ -1350,6 +1362,11 @@ class tablefill_internals_engine:
             while not self.filled_template[n].startswith('\\begin_body'):
                 n += 1
             n += 1
+        elif self.filetype == 'md':
+            pre   = ""
+            after = linesep
+            head  = ["<!-- "]
+            tail  = [" -->", linesep, linesep]
 
         for key in self.warnings.keys():
             self.warnings[key] = ', '.join(self.warnings[key])
