@@ -20,12 +20,12 @@ go from results in Stata/R/etc. to automated table production in LaTeX.
 Basic Example
 -------------
 
-`input1.txt` contains the data used to fill the template. This file is
-generated your programming language of choice (e.g. Stata) with output
-from a regression, a table with summary statistics, etc. The entries
-must be tab-delimited and each section separated by a label of the format
-`<tab:label>` (see the [sample programs](sample-programs.md) for examples on
-how to do this on various programming languages):
+[`input1.txt`](usage/01basic/input1.txt) contains the data used to fill the
+template. This file is generated your programming language of choice (e.g.
+Stata) with output from a regression, a table with summary statistics, etc. The
+entries must be tab-delimited and each section separated by a label of the
+format `<tab:label>` (see the [sample programs](sample-programs.md) page for
+examples on how to do this in various programming languages):
 
 ```
 <tab:example>
@@ -39,8 +39,9 @@ how to do this on various programming languages):
       1.13	     0.57235	 0.02417291
 ```
 
-`template.tex` contains the LaTeX file with placeholders corresponding
-to the data in `input1.txt`. The template should compile as is:
+[`template.tex`](usage/01basic/template.tex) contains the LaTeX file with
+placeholders corresponding to the data in
+[`input1.txt`](usage/01basic/input1.txt). The template should compile as is:
 
 ```latex
 \documentclass{article}

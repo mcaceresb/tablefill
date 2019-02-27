@@ -7,6 +7,8 @@ Here we illustrate how to export a matrix into the preferred format of
 R
 -
 
+[Download script `saveTable.R`](programs/saveTable.R)
+
 ```R
 saveTable <- function (outfile, tag, outmatrix) {
     cat(tag,
@@ -29,6 +31,8 @@ saveTable("test.txt", "<tab:testR2>", matrix(runif(4), 2, 2))
 
 Stata
 -----
+
+[Download script `saveTable.ado`](programs/saveTable.ado)
 
 ```stata
 capture program drop saveTable
@@ -72,6 +76,8 @@ saveTable using "test.txt", tag("<tab:testStata2>") outmat(test)
 Python
 ------
 
+[Download script `saveTable.py`](programs/saveTable.py)
+
 ```python
 from os import linesep
 import numpy as np
@@ -89,6 +95,8 @@ saveTable("test.txt", "<tab:testPython2>", np.random.uniform(size = (2, 2)))
 
 Julia
 -----
+
+[Download script `saveTable.jl`](programs/saveTable.jl)
 
 ```julia
 using DelimitedFiles
@@ -108,7 +116,7 @@ saveTable("test.txt", "<tab:testJulia2>", rand(2, 2))
 Matlab
 ------
 
-Save `saveTable.m` with
+Save [`saveTable.m`](programs/saveTable.m) with
 
 ```matlab
 function saveTable(outfile, tag, outmatrix)
