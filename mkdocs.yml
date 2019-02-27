@@ -2,6 +2,12 @@
 site_name:        'tablefill'
 site_description: 'Atimated system for LaTeX and LyX table updating'
 
+# Repository
+repo_name: 'mcaceresb/tablefill'
+repo_url: 'https://github.com/mcaceresb/tablefill'
+edit_uri: 'blob/master/docs/'
+site_url: 'https://mcaceresb.github.io/tablefill/'
+
 nav:
     - Home: index.md
     - Getting Started:    getting-started.md
