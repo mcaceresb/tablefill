@@ -21,7 +21,7 @@ theme:
         accent: 'blue grey'
     font:
         text: 'Open Sans'
-        code: 'Ubuntu Mono'
+        code: 'Inconsolata'
 
 extra_javascript:
     - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
