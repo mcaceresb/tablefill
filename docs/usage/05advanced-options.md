@@ -9,7 +9,7 @@ Advanced Options
 Command-line use
 ----------------
 
-```c
+```
 tablefill [-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
           [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
           [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex}]
@@ -71,7 +71,7 @@ exit, exit_msg = tablefill(template,     # required
 
 ### Required Input
 
-```c
+```
 template : str
     Name of user-written document to use as basis for update
 
@@ -84,7 +84,7 @@ output : str
 
 ### Optional Input
 
-```c
+```
 verbose : bool
     print a lot of info
 
