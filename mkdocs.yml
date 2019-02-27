@@ -20,7 +20,7 @@ theme:
         primary: 'blue grey'
         accent: 'blue grey'
     font:
-        text: 'Ubuntu'
+        text: 'Open Sans'
         code: 'Ubuntu Mono'
 
 extra_javascript:
