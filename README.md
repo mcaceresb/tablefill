@@ -17,18 +17,18 @@ Documentation
 fill LaTeX and LyX tables using formatted output from any programming
 language.
 
-- The [getting started](getting-started.md) gives a a basic example of
+- The [getting started](https://mcaceresb.github.io/tablefill/getting-started.html) gives a a basic example of
   how the system works.
 
-- [Sample workflow](sample-workflow.md) guides the user on how to
+- [Sample workflow](https://mcaceresb.github.io/tablefill/sample-workflow.html) guides the user on how to
   automate LaTeX table updating.
 
-- The usage section details the [input](usage/02matrix-input.md)
-  required by `tablefill`, the format of the [paceholders](usage/placeholders.md)
+- The usage section details the [input](https://mcaceresb.github.io/tablefill/usage/02matrix-input.html)
+  required by `tablefill`, the format of the [paceholders](https://mcaceresb.github.io/tablefill/usage/03placeholders.html)
   that are allowed, and documents the `tablefill` usage options.
 
 - Last, we provide examples of how to generate the type of input
-  required by `tablefill` in the [sample programs](sample-programs.md)
+  required by `tablefill` in the [sample programs](https://mcaceresb.github.io/tablefill/sample-programs.html)
   page.
 
 Background
