@@ -311,6 +311,40 @@
     Python use
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-input" title="Required Input" class="md-nav__link">
+    Required Input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-input" title="Optional Input" class="md-nav__link">
+    Optional Input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output" title="Output" class="md-nav__link">
+    Output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
       
@@ -385,6 +419,40 @@
     Python use
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required-input" title="Required Input" class="md-nav__link">
+    Required Input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-input" title="Optional Input" class="md-nav__link">
+    Optional Input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output" title="Output" class="md-nav__link">
+    Output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
       
@@ -416,8 +484,6 @@
           <span class="p">[</span><span class="o">--</span><span class="n">xml</span><span class="o">-</span><span class="n">tables</span> <span class="p">[</span><span class="n">INPUT</span> <span class="p">[</span><span class="n">INPUT</span> <span class="p">...]]]</span> <span class="p">[</span><span class="o">-</span><span class="n">t</span> <span class="p">{</span><span class="k">auto</span><span class="p">,</span><span class="n">lyx</span><span class="p">,</span><span class="n">tex</span><span class="p">}]</span>
           <span class="n">TEMPLATE</span>
 
-<span class="n">Fill</span> <span class="n">tagged</span> <span class="n">tables</span> <span class="n">in</span> <span class="n">LaTeX</span> <span class="n">and</span> <span class="n">LyX</span> <span class="n">files</span> <span class="n">with</span> <span class="n">external</span> <span class="n">text</span> <span class="n">tables</span>
-
 <span class="n">positional</span> <span class="nl">arguments</span><span class="p">:</span>
   <span class="n">TEMPLATE</span>              <span class="n">Code</span> <span class="n">template</span>
 
@@ -425,9 +491,9 @@
   <span class="o">-</span><span class="n">h</span><span class="p">,</span> <span class="o">--</span><span class="n">help</span>            <span class="n">show</span> <span class="n">this</span> <span class="n">help</span> <span class="n">message</span> <span class="n">and</span> <span class="n">exit</span>
   <span class="o">-</span><span class="n">v</span><span class="p">,</span> <span class="o">--</span><span class="n">version</span>         <span class="n">Show</span> <span class="n">current</span> <span class="n">version</span>
   <span class="o">-</span><span class="n">i</span> <span class="p">[</span><span class="n">INPUT</span> <span class="p">[</span><span class="n">INPUT</span> <span class="p">...]],</span> <span class="o">--</span><span class="n">input</span> <span class="p">[</span><span class="n">INPUT</span> <span class="p">[</span><span class="n">INPUT</span> <span class="p">...]]</span>
-                        <span class="n">Input</span> <span class="n">files</span> <span class="n">with</span> <span class="n">tables</span> <span class="p">(</span><span class="k">default</span><span class="o">:</span> <span class="n">INPUT_table</span><span class="p">)</span>
+                        <span class="n">Input</span> <span class="n">files</span> <span class="n">with</span> <span class="n">tables</span> <span class="p">(</span><span class="k">default</span><span class="o">:</span> <span class="n">TEMPLATE_table</span><span class="p">)</span>
   <span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT</span><span class="p">,</span> <span class="o">--</span><span class="n">output</span> <span class="n">OUTPUT</span>
-                        <span class="n">Processed</span> <span class="n">template</span> <span class="n">file</span> <span class="p">(</span><span class="k">default</span><span class="o">:</span> <span class="n">INPUT_filled</span><span class="p">)</span>
+                        <span class="n">Processed</span> <span class="n">template</span> <span class="n">file</span> <span class="p">(</span><span class="k">default</span><span class="o">:</span> <span class="n">TEMPLATE_filled</span><span class="p">)</span>
   <span class="o">-</span><span class="n">t</span> <span class="p">{</span><span class="k">auto</span><span class="p">,</span><span class="n">lyx</span><span class="p">,</span><span class="n">tex</span><span class="p">},</span> <span class="o">--</span><span class="n">type</span> <span class="p">{</span><span class="k">auto</span><span class="p">,</span><span class="n">lyx</span><span class="p">,</span><span class="n">tex</span><span class="p">}</span>
                         <span class="n">Template</span> <span class="n">file</span> <span class="n">type</span> <span class="p">(</span><span class="k">default</span><span class="o">:</span> <span class="k">auto</span><span class="p">)</span>
   <span class="o">--</span><span class="n">pvals</span> <span class="p">[</span><span class="n">PVALS</span> <span class="p">[</span><span class="n">PVALS</span> <span class="p">...]]</span>
@@ -454,19 +520,80 @@
 <p>Options are analogous to their command-lien counterparts:</p>
 <div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">tablefill</span> <span class="kn">import</span> <span class="n">tablefill</span>
 
-<span class="nb">exit</span><span class="p">,</span> <span class="n">exit_msg</span> <span class="o">=</span> <span class="n">tablefill</span><span class="p">(</span><span class="n">template</span><span class="p">,</span>  <span class="c1"># required</span>
-                           <span class="nb">input</span><span class="p">,</span>     <span class="c1"># required</span>
-                           <span class="n">output</span><span class="p">,</span>    <span class="c1"># required</span>
-                           <span class="n">filetype</span><span class="p">,</span>
-                           <span class="n">verbose</span><span class="p">,</span>
-                           <span class="n">silent</span><span class="p">,</span>
-                           <span class="n">pvals</span><span class="p">,</span>
-                           <span class="n">stars</span><span class="p">,</span>
-                           <span class="n">fillc</span><span class="p">,</span>
-                           <span class="n">numpy_syntax</span><span class="p">,</span>
-                           <span class="n">use_floats</span><span class="p">,</span>
-                           <span class="n">ignore_xml</span><span class="p">,</span>
-                           <span class="n">xml_tables</span><span class="p">)</span>
+<span class="nb">exit</span><span class="p">,</span> <span class="n">exit_msg</span> <span class="o">=</span> <span class="n">tablefill</span><span class="p">(</span><span class="n">template</span><span class="p">,</span>     <span class="c1"># required</span>
+                           <span class="nb">input</span><span class="p">,</span>        <span class="c1"># required</span>
+                           <span class="n">output</span><span class="p">,</span>       <span class="c1"># required</span>
+                           <span class="n">filetype</span><span class="p">,</span>     <span class="c1"># default: True</span>
+                           <span class="n">verbose</span><span class="p">,</span>      <span class="c1"># default: &#39;auto&#39;</span>
+                           <span class="n">silent</span><span class="p">,</span>       <span class="c1"># default: [0.1, 0.05, 0.01]</span>
+                           <span class="n">pvals</span><span class="p">,</span>        <span class="c1"># default: [&#39;*&#39;, &#39;**&#39;, &#39;***&#39;]</span>
+                           <span class="n">stars</span><span class="p">,</span>        <span class="c1"># default: False</span>
+                           <span class="n">fillc</span><span class="p">,</span>        <span class="c1"># default: False</span>
+                           <span class="n">numpy_syntax</span><span class="p">,</span> <span class="c1"># default: False</span>
+                           <span class="n">use_floats</span><span class="p">,</span>   <span class="c1"># default: False</span>
+                           <span class="n">ignore_xml</span><span class="p">,</span>   <span class="c1"># default: False</span>
+                           <span class="n">xml_tables</span><span class="p">)</span>   <span class="c1"># default: None</span>
+</pre></div>
+
+
+<h3 id="required-input">Required Input</h3>
+<div class="codehilite"><pre><span></span><span class="nl">template</span> <span class="p">:</span> <span class="n">str</span>
+    <span class="n">Name</span> <span class="n">of</span> <span class="n">user</span><span class="o">-</span><span class="n">written</span> <span class="n">document</span> <span class="n">to</span> <span class="n">use</span> <span class="n">as</span> <span class="n">basis</span> <span class="k">for</span> <span class="n">update</span>
+
+<span class="nl">input</span> <span class="p">:</span> <span class="n">str</span>
+    <span class="n">Space</span><span class="o">-</span><span class="n">separated</span> <span class="n">list</span> <span class="n">of</span> <span class="n">files</span> <span class="n">with</span> <span class="n">tables</span> <span class="n">to</span> <span class="n">be</span> <span class="n">used</span> <span class="n">in</span> <span class="n">update</span><span class="p">.</span>
+
+<span class="nl">output</span> <span class="p">:</span> <span class="n">str</span>
+    <span class="n">Filled</span> <span class="n">template</span> <span class="n">to</span> <span class="n">be</span> <span class="n">produced</span><span class="p">.</span>
+</pre></div>
+
+
+<h3 id="optional-input">Optional Input</h3>
+<div class="codehilite"><pre><span></span><span class="nl">verbose</span> <span class="p">:</span> <span class="kt">bool</span>
+    <span class="n">print</span> <span class="n">a</span> <span class="n">lot</span> <span class="n">of</span> <span class="n">info</span>
+
+<span class="nl">silent</span> <span class="p">:</span> <span class="kt">bool</span>
+    <span class="n">try</span> <span class="n">to</span> <span class="n">print</span> <span class="n">nothing</span> <span class="n">at</span> <span class="n">all</span>
+
+<span class="nl">filetype</span> <span class="p">:</span> <span class="n">str</span>
+    <span class="k">auto</span><span class="p">,</span> <span class="n">lyx</span><span class="p">,</span> <span class="n">or</span> <span class="n">tex</span>
+
+<span class="nl">pvals</span> <span class="p">:</span> <span class="n">list</span>
+    <span class="n">p</span><span class="o">-</span><span class="n">value</span> <span class="n">thresholds</span>
+
+<span class="nl">stars</span> <span class="p">:</span> <span class="n">list</span>
+    <span class="n">symbols</span> <span class="n">to</span> <span class="n">replace</span> <span class="n">p</span><span class="o">-</span><span class="n">values</span> <span class="n">with</span>
+
+<span class="nl">fillc</span> <span class="p">:</span> <span class="kt">bool</span>
+    <span class="n">whether</span> <span class="n">to</span> <span class="n">fill</span> <span class="n">in</span> <span class="n">commented</span> <span class="n">out</span> <span class="n">lines</span>
+
+<span class="nl">xml_tables</span> <span class="p">:</span> <span class="n">str</span> <span class="n">or</span> <span class="n">list</span>
+    <span class="n">file</span> <span class="n">or</span> <span class="n">list</span> <span class="n">of</span> <span class="n">files</span> <span class="n">with</span> <span class="n">XML</span> <span class="n">combination</span> <span class="n">tables</span>
+
+<span class="nl">numpy_syntax</span> <span class="p">:</span> <span class="kt">bool</span>
+    <span class="n">use</span> <span class="n">numpy</span> <span class="n">syntax</span> <span class="k">for</span> <span class="n">XML</span> <span class="n">engine</span>
+
+<span class="nl">use_floats</span> <span class="p">:</span> <span class="kt">bool</span>
+    <span class="n">force</span> <span class="n">floats</span> <span class="n">when</span> <span class="n">passing</span> <span class="n">arguments</span> <span class="n">to</span> <span class="n">XML</span> <span class="n">engine</span>
+
+<span class="nl">ignore_xml</span> <span class="p">:</span> <span class="kt">bool</span>
+    <span class="n">whether</span> <span class="n">to</span> <span class="n">ignore</span> <span class="n">XML</span> <span class="n">in</span> <span class="n">commented</span> <span class="n">out</span> <span class="n">lines</span>
+</pre></div>
+
+
+<h3 id="output">Output</h3>
+<div class="codehilite"><pre><span></span><span class="n">exit</span> <span class="o">:</span> <span class="n">str</span>
+    <span class="n">One</span> <span class="n">of</span> <span class="n">SUCCESS</span><span class="o">,</span> <span class="n">WARNING</span><span class="o">,</span> <span class="n">ERROR</span>
+
+<span class="n">exit_msg</span> <span class="o">:</span> <span class="n">str</span>
+    <span class="n">Details</span> <span class="n">on</span> <span class="n">the</span> <span class="n">exit</span> <span class="n">status</span>
+</pre></div>
+
+
+<h3 id="example">Example</h3>
+<div class="codehilite"><pre><span></span><span class="n">exit</span><span class="p">,</span> <span class="n">exit_msg</span> <span class="o">=</span> <span class="n">tablefill</span><span class="p">(</span><span class="k">template</span> <span class="o">=</span> <span class="s1">&#39;template_file&#39;</span><span class="p">,</span>
+                           <span class="k">input</span>    <span class="o">=</span> <span class="s1">&#39;input_file(s)&#39;</span><span class="p">,</span>
+                           <span class="k">output</span>   <span class="o">=</span> <span class="s1">&#39;output_file&#39;</span><span class="p">)</span>
 </pre></div>
                 
                   

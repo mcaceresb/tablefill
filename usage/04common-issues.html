@@ -288,15 +288,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#common-mistakes" title="Common Mistakes" class="md-nav__link">
-    Common Mistakes
+  <a href="#error-logging" title="Error Logging" class="md-nav__link">
+    Error Logging
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-logging" title="Error Logging" class="md-nav__link">
-    Error Logging
+  <a href="#notes" title="Notes" class="md-nav__link">
+    Notes
   </a>
   
 </li>
@@ -374,15 +374,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#common-mistakes" title="Common Mistakes" class="md-nav__link">
-    Common Mistakes
+  <a href="#error-logging" title="Error Logging" class="md-nav__link">
+    Error Logging
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-logging" title="Error Logging" class="md-nav__link">
-    Error Logging
+  <a href="#notes" title="Notes" class="md-nav__link">
+    Notes
   </a>
   
 </li>
@@ -409,44 +409,36 @@
 <p class="admonition-title">Warning</p>
 <p>This page is under construction</p>
 </div>
-<h2 id="common-mistakes">Common Mistakes</h2>
-<ul>
-<li>
-<p>Missing table label/tag in the input file or in the template file.</p>
-</li>
-<li>
-<p>Mismatch between the length of the template table and corresponding
-  text table. If the template table has more entries to be filled than
-  the text table has entries to fill from, this will cause an error.</p>
-</li>
-<li>
-<p>Use of numerical tags (e.g. #1#) to fill non-numerical data. This will
-  cause an error. Non-numerical data can only be filled using "###", as
-  it does not make sense to round or truncate this data.</p>
-</li>
-<li>
-<p>The program currently does not handle trailing comments. If a line
-   doesn't start with a comment, it will replace everything in that line,
-   even if there is a comment halfway through.</p>
-</li>
-<li>
-<p>New lines of the table must be on new lines of the <code>.tex</code> file</p>
-</li>
-</ul>
 <h2 id="error-logging">Error Logging</h2>
-<p>The program indicates</p>
+<p><code>tablefill</code> tries to be informative when the template and input
+do not line up as expected. Therefore when it finds a table
+environment it checks:</p>
 <ul>
-<li>When it finds a table environment<ul>
 <li>If it finds a label within that environment</li>
 <li>If the label matches one in the input file(s)</li>
 <li>Whether it finds the <code>#(#|\d+,*)#</code> pattern but no label</li>
 <li>When it finds the end of the table environment</li>
 <li>How many substitutions it made in the table</li>
-</ul>
-</li>
+<li>When there are more <code>#(#|\d+,*)#</code> than entries in the corresponding input matrix.</li>
 <li>When it finds the <code>#(#|\d+,*)#</code> pattern outside a table environment</li>
-<li>When it finds more <code>#(#|\d+,*)#</code> than entries in the corresponding table</li>
-<li>When it finds an error (and if so it terminates)</li>
+</ul>
+<p>If the user forgets to include a label/tag or if there is a mismatch
+between the number of placeholders, <code>tablefill</code> say so and note where
+to fix the issue. </p>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>
+<p>Non-numerical data can only be filled using "###"; all other placeholders
+  require numeric input.</p>
+</li>
+<li>
+<p>The program currently does not handle trailing comments. If a line
+  doesn't start with a comment, it will replace everything in that line,
+  even if there is a comment halfway through.</p>
+</li>
+<li>
+<p>New lines of the table must be on new lines of the <code>.tex</code> file</p>
+</li>
 </ul>
                 
                   
