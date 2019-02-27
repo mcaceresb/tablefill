@@ -35,7 +35,7 @@ lists: See [here](http://stackoverflow.com/questions/509211#509295).
 Note that python uses 0-based indexing and that the combine engine uses
 the raw matrices (i.e. before missing entries are stripped). Each matrix
 is parsed as a list of lists, so
-```html
+```
 1  2  3        [[1,  2,  3],
 . -1 -2   -->   [., -1, -2],
 .  0  .         [.,  0,  .]]
@@ -50,4 +50,3 @@ is parsed as a list of lists, so
 It is also possible to specify tables in a separate `.xml` file and
 pass it to tablefill (there should be no leading `%` in this case) via
 `--xml-tables` in the command line or `xml_tables` in a function call.
-
