@@ -1,5 +1,17 @@
 # Changelog
 
+## tablefill-0.9.2 (2019-02-26)
+
+### Features
+
+- Markdown support:
+
+    <!-- tablefill:start tab:label -->
+
+    Table with placeholders
+
+    <!-- tablefill:end -->
+
 ## tablefill-0.9.1 (2018-07-17)
 
 ### Features

@@ -788,9 +788,9 @@ class tablefill_internals_engine:
             self.end   = r'</lyxtabular>'
             self.label = r'name "tab:(.+)"'
         elif self.filetype == 'md':
-            self.begin = r'<.*tablefill:start.*>'
-            self.end   = r'<.*tablefill:end.*>'
-            self.label = r'<.*tab:(.+)\b.*>'
+            self.begin = r'^<!--.*tablefill:start.*-->$'
+            self.end   = r'^<!--.*tablefill:end.*-->$'
+            self.label = r'^<!--.*\btab:(.+)\b.*-->$'
 
     def get_parsed_tables(self):
         """
