@@ -127,8 +127,8 @@ __usage__     = """[-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
-__updated__   = "Tue Jun 13, 2017"
-__version__   = __program__ + " version 0.8.1 updated " + __updated__
+__updated__   = "Tue Feb 26, 2019"
+__version__   = __program__ + " version 0.9.3 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -779,18 +779,43 @@ class tablefill_internals_engine:
         self.matchc    = '(-?\d+)(\.?\d*)'
         self.matchd    = r'\\?#\|.{1,4}\|\\?#'
         self.comments  = '^\s*%'
+
+        # TODO: Allow custom regexes!
+        dictRegexes = {
+            'tex': {
+                'begin': r'.*\\begin{table}.*',
+                'end':   r'.*\\end{table}.*',
+                'label': r'.*\\label{tab:(.+)}'
+            },
+            'lyx': {
+                'begin':  r'.*\\begin_inset Float table.*',
+                'end':    r'</lyxtabular>',
+                'label':  r'name "tab:(.+)"'
+            },
+            'md': {
+                'begin': r'(^<!--.*tablefill:start.*-->$)|(^\s*\\begin{table}.*)',
+                'end':   r'(^<!--.*tablefill:end.*-->$)|(.*\\end{table}.*)',
+                'label': r'(?:^<!--.*\b|.*\\label{)tab:(.+)(?:\b.*-->$|})'
+            }
+            # 'md': {
+            #     'begin': r'^<!--.*tablefill:start.*-->$',
+            #     'end':   r'^<!--.*tablefill:end.*-->$',
+            #     'label': r'^<!--.*\btab:(.+)\b.*-->$'
+            # }
+        }
+
         if self.filetype == 'tex':
-            self.begin = r'.*\\begin{table}.*'
-            self.end   = r'.*\\end{table}.*'
-            self.label = r'.*\\label{tab:(.+)}'
+            self.begin = dictRegexes['tex']['begin']
+            self.end   = dictRegexes['tex']['end']
+            self.label = dictRegexes['tex']['label']
         elif self.filetype == 'lyx':
-            self.begin = r'.*\\begin_inset Float table.*'
-            self.end   = r'</lyxtabular>'
-            self.label = r'name "tab:(.+)"'
+            self.begin = dictRegexes['lyx']['begin']
+            self.end   = dictRegexes['lyx']['end']
+            self.label = dictRegexes['lyx']['label']
         elif self.filetype == 'md':
-            self.begin = r'^<!--.*tablefill:start.*-->$'
-            self.end   = r'^<!--.*tablefill:end.*-->$'
-            self.label = r'^<!--.*\btab:(.+)\b.*-->$'
+            self.begin = dictRegexes['md']['begin']
+            self.end   = dictRegexes['md']['end']
+            self.label = dictRegexes['md']['label']
 
     def get_parsed_tables(self):
         """

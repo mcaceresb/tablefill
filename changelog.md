@@ -1,5 +1,11 @@
 # Changelog
 
+## tablefill-0.9.3 (2019-02-26)
+
+### Features
+
+- Raw LaTeX support in markdown
+
 ## tablefill-0.9.2 (2019-02-26)
 
 ### Features
