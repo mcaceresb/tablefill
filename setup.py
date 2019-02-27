@@ -37,7 +37,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
-    description  = "Automatically update LyX and LaTeX tables.",
+    description  = "Automatically update LaTeX, Markdown, and LyX tables.",
     entry_points = {
         'console_scripts': ['tablefill = tablefill.tablefill:main']
     },
@@ -52,6 +52,6 @@ setup(
     test_suite                    = 'tests',
     tests_require                 = test_requirements,
     url                           = 'https://github.com/mcaceresb/tablefill',
-    version                       = '0.9.1',
+    version                       = '0.9.2',
     zip_safe                      = False,
 )
