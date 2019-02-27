@@ -33,9 +33,9 @@ optional arguments:
   -h, --help            show this help message and exit
   -v, --version         Show current version
   -i [INPUT [INPUT ...]], --input [INPUT [INPUT ...]]
-                        Input files with tables (default: INPUT_table)
+                        Input files with tables (default: TEMPLATE_table)
   -o OUTPUT, --output OUTPUT
-                        Processed template file (default: INPUT_filled)
+                        Processed template file (default: TEMPLATE_filled)
   -t {auto,lyx,tex}, --type {auto,lyx,tex}
                         Template file type (default: auto)
   --pvals [PVALS [PVALS ...]]
@@ -57,6 +57,8 @@ flags:
   --silent              Try to say nothing
 
 For details on the files and the replace engine, see the online documentation.
+
+    https://mcaceresb.github.io/tablefill/getting-started.html
 
 WARNING
 -------
@@ -281,14 +283,16 @@ def tablefill(silent         = False,
     Required Input
     --------------
 
-    See 'tablefill_help.txt' for details on the format of these files.
-
     template : str
         Name of user-written document to use as basis for update
     input : str
         Space-separated list of files with tables to be used in update.
     output : str
         Filled template to be produced.
+
+    For details on the files and the replace engine, see the online documentation.
+
+        https://mcaceresb.github.io/tablefill/getting-started.html
 
     Optional Input
     --------------

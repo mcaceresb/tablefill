@@ -4,6 +4,9 @@ Placeholders
 !!! info "Warning"
     This page is under construction
 
+!!! note "Note"
+    This section was adapted from the readme for the original tablefill.py
+
 The template placeholders determine where the numbers from the input
 files are and how they will be displayed. Every table in the template
 file (if it is to be filled) must appear within a table environment.

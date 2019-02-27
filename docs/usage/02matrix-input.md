@@ -4,6 +4,9 @@ Matrix Shapes
 !!! info "Warning"
     This page is under construction
 
+!!! note "Note"
+    This section was adapted from the readme for the original tablefill.py
+
 Input files must be tab-delimited rows of numbers or characters,
 preceded by `<label>`. The numbers can be arbitrarily long, can be
 negative, and can also be in scientific notation.
