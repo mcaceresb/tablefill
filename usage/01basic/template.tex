@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage{booktabs}
+\begin{document}
+\begin{table}
+  \caption{Table caption (e.g. summary stats)}
+  \label{tab:example} % name must match label in input1.txt
+  \begin{tabular}{p{4.25cm}crcc}
+    Outcomes
+    & N
+    & Mean
+    & (Std.)
+    \
+    Outcomes \#\#\# & \#1,\# & \#1\# & (\#1\#) \
+    Outcomes \#\#\# & \#0,\# & \#1\# & (\#1\#) \
+    Outcomes \#\#\# & \#1,\# & \#1\# & (\#1\#) \
+    Outcomes \#\#\# & \#0,\# & \#1\# & (\#1\#) \
+    \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
+  \end{tabular}
+\end{table}
+
+\begin{table}
+  \caption{Table caption (e.g. regression results)}
+  \label{tab:anotherExample} % name must match label in input1.txt
+  \begin{tabular}{p{4.25cm}c}
+    Outcomes
+    & Coef
+    & (SE)
+    \
+    Variable 1 & \#2\# (\#2\#)\#*\# \
+    Variable 2 & \#2\# (\#2\#)\#*\# \
+    Variable 3 & \#2\# (\#2\#)\#*\# \
+    \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
+  \end{tabular}
+\end{table}
+\end{document}
