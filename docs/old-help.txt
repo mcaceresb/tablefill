@@ -13,7 +13,6 @@ LIMITATIONS
     - More placeholders found in table than table entries in input
     The original tablefill.py ignores these cases
 
-
 Notes
 -----
 

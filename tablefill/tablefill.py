@@ -6,25 +6,23 @@
 Description
 -----------
 
-tablefill.py is a python module designed to fill LaTeX and Lyx tables
+tablefill is a python module designed to fill LaTeX and Lyx tables
 with output from text files (usually output from Stata or Matlab). The
-original tablefill.py does the same for LyX files only, and has fewer
+original tablefill does the same for LyX files only, and has fewer
 error checks. Note this is intended both for command line _AND_ script
 usage. Hence both the following are valid
 
 >>> from tablefill import tablefill
 
-$ python tablefill.py
-$ chmod +x tablefill.py
-$ tablefill.py
+$ tablefill --help
 
 Usage
 -----
 
-tablefill.py [-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
-             [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
-             [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex}]
-             TEMPLATE
+tablefill [-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
+          [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
+          [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex}]
+          TEMPLATE
 
 Fill tagged tables in LaTeX and LyX files with external text tables
 
@@ -58,7 +56,7 @@ flags:
   --verbose             Verbose printing (for debugging)
   --silent              Try to say nothing
 
-See tablefill_help.txt for details on the files and the replace engine
+For details on the files and the replace engine, see the online documentation.
 
 WARNING
 -------
@@ -70,11 +68,15 @@ even if there is a comment halfway through.
 Examples
 --------
 
+If you installed the program via PIP, then simply run
+
 $ ls
-tablefill.py
 test.tex
 test_table.txt
-$ python tablefill.py test.tex --force --silent
+$ tablefill test.tex --force --silent
+
+If you have a copy of `tablefill.py`, then run
+
 $ ls
 tablefill.py
 test.tex

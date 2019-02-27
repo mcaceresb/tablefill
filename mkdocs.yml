@@ -1,0 +1,47 @@
+# Project information
+site_name:        'tablefill'
+site_description: 'Atimated system for LaTeX and LyX table updating'
+
+pages:
+    - Home: index.md
+    - Getting Started:    getting-started.md
+    - Sample Workflow:    sample-workflow.md
+    - Usage:
+        Matrix Input:     usage/02matrix-input.md
+        Placeholders:     usage/03placeholders.md
+        Common Issues:    usage/04common-issues.md
+        Advanced Options: usage/05advanced-options.md
+        XML Engine:       usage/06xml-engine.md
+    - Sample Programs:    sample-programs.md
+
+theme:
+    name: 'material'
+    primary: 'Teal'
+    accent: 'Teal'
+
+extra_javascript:
+    - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+    - helpers.js
+
+markdown_extensions:
+    - meta
+    - toc
+    - tables
+    - fenced_code
+    - admonition
+    - codehilite
+
+# guess_lang:     False
+# use_pygments:   True
+# noclasses:      True
+# pygments_style: monokai
+
+use_directory_urls: false
+
+extra_css:
+    - css/extra-material.css
+
+# extra_css:
+#     - css/extra-rtd.css
+#     - css/extra-material.css
+#     - css/extra-material-dark.css
