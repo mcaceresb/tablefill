@@ -2,7 +2,7 @@
 site_name:        'tablefill'
 site_description: 'Atimated system for LaTeX and LyX table updating'
 
-pages:
+nav:
     - Home: index.md
     - Getting Started:    getting-started.md
     - Sample Workflow:    sample-workflow.md
