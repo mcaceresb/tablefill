@@ -33,7 +33,8 @@ Placeholder  | Format
 `#\d+,#`     | Round to `\d+` digits; add thousands comma separator.
 `#*#`        | Interpret input as p-value and replce with a star corresponding so significance. Detault is `* 0.1, **0.05, ***0.01`.
 `#\d+%#`     | Round to `\d+` digits; interpret as percentage.
-`|###|`      | Get the absolute value of the number.
+`#|#|#`      | Get the absolute value of the number.
+`#{.*}#`     | Arbitrary python format. Anything that `string.format()` will accept is allowed. In Python 2.6, you must prepend `0:`, that is `{0:.+}`.
 
 Consider the following examples
 

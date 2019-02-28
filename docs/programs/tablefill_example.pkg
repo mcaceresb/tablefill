@@ -1,0 +1,12 @@
+v 0.1
+d
+p 'TABLEFILL_EXAMPLE': tablefill example program
+d
+d Sample program for tablefill
+d
+d Distribution-Date: 20190226
+d
+d Author: Mauricio Caceres Bravo
+d Support: mauricio.caceres.bravo@gmail.com
+d
+f saveTable.ado

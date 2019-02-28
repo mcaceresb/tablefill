@@ -1,5 +1,14 @@
 # Changelog
 
+## tablefill-0.9.4 (2019-02-26)
+
+### Features
+
+- New placeholder #{}# allows arbitrary python-style formatting.
+- Added `sampleTable` as a stata-installable package to the repo.
+- Merged in sample workflow and Kyle's guide with 'getting started' section.
+- Added markdown example.
+
 ## tablefill-0.9.3 (2019-02-26)
 
 ### Features

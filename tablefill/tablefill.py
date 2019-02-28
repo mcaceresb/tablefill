@@ -128,7 +128,7 @@ __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Tue Feb 26, 2019"
-__version__   = __program__ + " version 0.9.3 updated " + __updated__
+__version__   = __program__ + " version 0.9.4 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -770,14 +770,16 @@ class tablefill_internals_engine:
         #   - matchb:   numeric matches (#\d+%?#, \#\d+,?\#)
         #   - matchc:   (-?)integer(.decimal)?
         #   - matchd:   absolute value
+        #   - matchf:   python formatting
         #   - comments: comment
         self.tags      = '^<Tab:(.+)>' + linesep
         self.matche    = r'[^\\](%|&)'
-        self.match0    = r'\\?#\|?((\d+)(,?|\\?%)?|\\?(#|\*))\|?\\?#'
+        self.match0    = r'\\?#\|?((\d+)(,?|\\?%)?|\\?(#|\*)|{0?(:.*?)?})\|?\\?#'
         self.matcha    = r'\\?#\\?(#|\*)\\?#'
         self.matchb    = r'\\?#\|?(\d+)(,?|\\?%)\|?\\?#'
         self.matchc    = '(-?\d+)(\.?\d*)'
         self.matchd    = r'\\?#\|.{1,4}\|\\?#'
+        self.matchf    = r'\\?#({0?(:.*?)?})\\?#'
         self.comments  = '^\s*%'
 
         # TODO: Allow custom regexes!
@@ -1188,9 +1190,14 @@ class tablefill_internals_engine:
                 search_msg   = self.get_search_msg(table_search, table_tag, n)
                 print_verbose(self.verbose, search_msg)
 
-            if re.search(self.matcha, line) or re.search(self.matchb, line):
+            found =                             \
+                re.search(self.matcha, line) or \
+                re.search(self.matchb, line) or \
+                re.search(self.matchf, line)
+
+            if found:
                 if re.search(self.comments, line.strip()) and not self.fillc:
-                    warn_incomments  = "Line %d matches #(#|\d+,*)#"
+                    warn_incomments  = "Line %d matches #(#|\d+,*|{.*})#"
                     warn_incomments += " but it appears to be commented out."
                     warn_incomments += " Skipping..."
                     print_verbose(self.verbose, warn + warn_incomments % n)
@@ -1216,14 +1223,14 @@ class tablefill_internals_engine:
                 elif table_start == -1:
                     self.warnings['notable'] += [str(n)]
 
-                    warn_notable  = "Line %d matches #(#|\d+,*)# but"
+                    warn_notable  = "Line %d matches #(#|\d+,*|{.*})# but"
                     warn_notable += " is not in begin/end table statements."
                     warn_notable += " Skipping..."
 
                     print_verbose(self.verbose, warn + warn_notable % n)
                 elif table_tag == '':
                     self.warnings['nolabel'] += [str(n)]
-                    warn_nolabel  = "Line %d matches #(#|\d+,*)#"
+                    warn_nolabel  = "Line %d matches #(#|\d+,*|{.*})#"
                     warn_nolabel += " but couldn't find " + self.label
                     warn_nolabel += " Skipping..."
                     print_verbose(self.verbose, warn + warn_nolabel % n)
@@ -1288,9 +1295,9 @@ class tablefill_internals_engine:
 
     def replace_line(self, line, table, tablen):
         """
-        Replaces all matches of #(#|\d+,*)#. Splits by & because that's
-        how LaTeX delimits tables. Returns how many values it replaced
-        because LaTeX can have any number of entries per line.
+        Replaces all matches of #(#|\d+,*|{.*})#. Splits by & because
+        that's how LaTeX delimits tables. Returns how many values it
+        replaced because LaTeX can have any number of entries per line.
         """
         i = 0
         force_stop = False
@@ -1301,6 +1308,7 @@ class tablefill_internals_engine:
             cell = line[s:e]
             matcha = re.search(self.matcha, cell)
             matchb = re.search(self.matchb, cell)
+            matchf = re.search(self.matchf, cell)
 
             if len(table) > tablen:
                 # Replace all pattern A matches (simply replace the text)
@@ -1320,8 +1328,25 @@ class tablefill_internals_engine:
                     cell    = self.round_and_format(cell, entry)
                     line    = re.sub(self.matchb, cell, line, count = 1)
                     tablen += 1
+
+                # Replace all pattern F matches ({} arbitrary python formatting)
+                if matchf:
+                    entry = re.sub(self.matche, '\\\\\\1', table[tablen])
+                    try:
+                        try:
+                            fmt = matchf.group(1).format(entry)
+                        except:
+                            fmt = matchf.group(1).format(float(entry))
+                    except:
+                        msg = "Unable to apply python format '%s' to entry '%s'"
+                        raise Warning(msg % (matchf.group(1), entry))
+
+                    cell    = re.sub(self.matchf, fmt,  cell, count = 1)
+                    line    = re.sub(self.matchf, cell, line, count = 1)
+                    tablen += 1
+
             else:
-                if matcha or matchb:
+                if matcha or matchb or matchf:
                     starts  = tablen if tablen - starts == i + 1 else starts
                     tablen += 1
 

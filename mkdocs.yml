@@ -11,14 +11,13 @@ site_url: 'https://mcaceresb.github.io/tablefill/'
 nav:
     - Home: index.md
     - Getting Started:    getting-started.md
-    - Sample Workflow:    sample-workflow.md
+    - Sample Programs:    sample-programs.md
     - Usage:
         Matrix Input:     usage/02matrix-input.md
         Placeholders:     usage/03placeholders.md
         Common Issues:    usage/04common-issues.md
         Advanced Options: usage/05advanced-options.md
         XML Engine:       usage/06xml-engine.md
-    - Sample Programs:    sample-programs.md
 
 theme:
     name: 'material'
