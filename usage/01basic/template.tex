@@ -2,13 +2,6 @@
 \usepackage{booktabs}
 \begin{document}
 
-\begin{table}
-  \label{tab:paragraph} % must match label in input.txt
-  Sample paragraph referring to a number: e.g. $N = \#0,\#$.
-  Or perhaps text: e.g. This is the \#\#\# sample. You can
-  also fill text using python-style formatting: \#{}\#.
-\end{table}
-
 Regular placeholders:
 \begin{table}
   \caption{Table caption (e.g. summary stats)}
@@ -27,7 +20,23 @@ Regular placeholders:
   \end{tabular}
 \end{table}
 
-Python-style formatting:
+% tablefill:start tab:paragraph
+Placeholders do not need to be inside a table. You can also have
+placeholders in the text:
+\begin{itemize}
+    \item $N = \#0,\#$
+    \item This is the \#\#\# sample.
+\end{itemize}
+
+Note \verb'% tablefill:start tab:paragraph' tells tablefill to start
+looking for placeholders using the matrix labeled \verb'tab:paragraph'
+in the input file. \verb'% tablefill:end' tells tablefill to stop.
+
+Tablefill provides several placeholders types (more on this below),
+but advanced users can use any format allowed by python via \verb'{}':
+\#{}\#. Here is another table, using python-style formatting:
+% tablefill:end
+
 \begin{table}
   \caption{Table caption (e.g. regression results)}
   \label{tab:anotherExample} % must match label in input.txt

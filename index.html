@@ -538,7 +538,7 @@ tablefill --help
 
 
 <h2 id="documentation">Documentation</h2>
-<p><code>tablefill</code> is a program that uses a generic placeholder system to fill LaTeX, LyX, and Markdown tables using formatted output from any programming language.</p>
+<p><code>tablefill</code> is a program that uses a generic placeholder system to update LaTeX, LyX, and Markdown documents. While it's primary use is to fill in tables (hance the name) placeholders are replaced anywhere in a table environment or within commented-out tablefill tags.</p>
 <ul>
 <li>
 <p><a href="https://mcaceresb.github.io/tablefill/getting-started.html">Getting Started</a> gives a basic example of how the system works, and guides the user through updating a template using Stata-generated input files (this example can be replicated with any programming language, however, not just Stata).</p>
@@ -554,7 +554,7 @@ tablefill --help
 <p>The original idea for this workflow comes from <a href="https://github.com/gslab-econ">GSLab</a>.  <a href="https://github.com/gslab-econ/gslab_python/blob/master/gslab_fill/tablefill.py">The original tablefill</a> in particular was made to automatically update LyX files with Stata output.  However, I expanded this system to work with LaTeX and added several features.  The workflow is as follows:</p>
 <ol>
 <li>
-<p>Create a LaTeX, LyX, or Markdown document using placeholders in your tables.  Label or tag each table appropriately.</p>
+<p>Create a LaTeX, LyX, or Markdown document using placeholders. Label or tag each table appropriately.</p>
 </li>
 <li>
 <p>Print a matrix (or any array) into a tab-delimited text file. The output is preceded by the label or tag of the table you want to fill, and the matrix or array entries correspond to the placeholders.</p>
@@ -579,6 +579,7 @@ tablefill --help
 <ul>
 <li>There can be several placeholders in one line (however, there must be at most one table line per code line).</li>
 <li>Labels in LaTeX can be anywhere in the table environment.</li>
+<li>Placeholders can also be placed between commented-out tablefill tags, so updating is not restricted to literal tables.</li>
 <li>Placeholders can be either <code>#</code> or <code>\#</code> (note the former is a special character in LaTeX so while the filled output will compile, the template will not).</li>
 <li>Can have several matches of the pattern in the same line.</li>
 <li>LaTeX tables can be filled inside Markdown documents.</li>

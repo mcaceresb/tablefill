@@ -679,13 +679,12 @@ correctly; however, the command-line call is would change to:</p>
 
 
 <h2 id="overview">Overview</h2>
-<p><code>tablefill</code> replaces named placeholders inside LaTeX, LyX, or Markdown tables. While the initial setup is more complex than, say, <code>estout</code> or <code>tabout</code>, <code>tablefill</code> is much more flexible. The workflow is typically as follows:</p>
+<p><code>tablefill</code> replaces named placeholders inside LaTeX, LyX, or Markdown documents. While the initial setup is more complex than, say, <code>estout</code> or <code>tabout</code>, <code>tablefill</code> is much more flexible. The workflow is typically as follows:</p>
 <ol>
 <li>
-<p>Create a LaTeX (or LyX or Markdown) document with tables that you want filled with numeric (or text) output.</p>
+<p>Create a LaTeX (or LyX or Markdown) document with placeholders that you want filled with numeric (or text) output.</p>
 <ul>
-<li>Each table must be labeled and have placeholders where you need output to be replaced.</li>
-<li>Format the table in any way you see fit; placeholders can be anywhere inside the table.</li>
+<li>Placeholders must be either inside a <em>labeled</em> table or inside commented-out tablefill tags. More on this below.</li>
 </ul>
 </li>
 <li>
@@ -705,7 +704,7 @@ correctly; however, the command-line call is would change to:</p>
 <p><code>tablefill</code> replaces the placeholders with the matrix values.</p>
 </li>
 </ol>
-<p>The strength of this workflow is its flexibility. The user can format their tables however they see fit, without imposing any restrictions on where the values will be filled, as long as they are inside a labeled table.  Optionally, the user can create a file with various mappings to allow multiple Stata matrices to be appended as a single LaTeX table, or different portions of a single matrix to be appended to several tables. This is covered in the <a href="usage/06xml-engine.html">XML engine</a> section.</p>
+<p>The strength of this workflow is its flexibility. The user can format their documents however they see fit, without imposing any restrictions on where the values will be filled, as long as they are inside a labeled environment.  Optionally, the user can create a file with various mappings to allow multiple Stata matrices to be appended as a single LaTeX table, or different portions of a single matrix to be appended to several tables. This is covered in the <a href="usage/06xml-engine.html">XML engine</a> section.</p>
 <h2 id="basic-example-in-latex">Basic Example in LaTeX</h2>
 <h3 id="template">Template</h3>
 <p>First you need to create a file with a table that you want. This can be anything from summary statistics to regression results to paragraphs that refer to a specifics or text which need to be updated. Consider, for instance, <a href="usage/01basic/template.tex"><code>template.tex</code></a> below:</p>
@@ -714,17 +713,12 @@ correctly; however, the command-line call is would change to:</p>
 <span class="k">\usepackage</span><span class="nb">{</span>booktabs<span class="nb">}</span>
 <span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
 
-<span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
-  <span class="k">\label</span><span class="nb">{</span>tab:paragraph<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
-  Sample paragraph referring to a number: e.g. <span class="s">$</span><span class="nb">N </span><span class="o">=</span><span class="nb"> </span><span class="nv">\#</span><span class="m">0</span><span class="nb">,</span><span class="nv">\#</span><span class="s">$</span>.
-  Or perhaps text: e.g. This is the <span class="k">\#\#\#</span> sample. You can
-  also fill text using python-style formatting: <span class="k">\#</span><span class="nb">{}</span><span class="k">\#</span>.
-<span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
+Tablefill will look for the label <span class="k">\verb</span>&#39;tab:example&#39; inside
+<span class="k">\verb</span>&#39;input.txt&#39; and fill the table below:
 
-Regular placeholders:
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. summary stats)<span class="nb">}</span>
-  <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span> <span class="c">% name must match label in input.txt</span>
+  <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span>
   <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>crcc<span class="nb">}</span>
     Outcomes
     <span class="nb">&amp;</span> N
@@ -739,7 +733,26 @@ Regular placeholders:
   <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
 
-Python-style formatting:
+However, placeholders do not need to be inside a table. You can also
+have placeholders in the text:
+
+<span class="c">% tablefill:start tab:paragraph</span>
+
+<span class="k">\begin</span><span class="nb">{</span>itemize<span class="nb">}</span>
+    <span class="k">\item</span> <span class="s">$</span><span class="nb">N </span><span class="o">=</span><span class="nb"> </span><span class="nv">\#</span><span class="m">0</span><span class="nb">,</span><span class="nv">\#</span><span class="s">$</span>
+    <span class="k">\item</span> This is the <span class="k">\#\#\#</span> sample.
+<span class="k">\end</span><span class="nb">{</span>itemize<span class="nb">}</span>
+
+Note <span class="k">\verb</span>&#39;<span class="c">% tablefill:start tab:paragraph&#39; tells tablefill to start</span>
+looking for placeholders using the matrix labeled <span class="k">\verb</span>&#39;tab:paragraph&#39;
+in the input file. <span class="k">\verb</span>&#39;<span class="c">% tablefill:end&#39; will tell tablefill to stop.</span>
+
+Tablefill provides several placeholders types (more on this below), but
+advanced users can use any format allowed by python via <span class="k">\verb</span>&#39;<span class="nb">{}</span>&#39;. For
+example: <span class="k">\#</span><span class="nb">{}</span><span class="k">\#</span>. Here is another table, using python-style formatting:
+
+<span class="c">% tablefill:end</span>
+
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. regression results)<span class="nb">}</span>
   <span class="k">\label</span><span class="nb">{</span>tab:anotherExample<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
@@ -838,7 +851,7 @@ Python-style formatting:
 </pre></div>
 
 
-<p>(see <a href="exporting-matrices-in-stata">below</a> for an example of how to create this file directly from Stata).</p>
+<p>See <a href="exporting-matrices-in-stata">below</a> for an example of how to create this file directly from Stata. Note that the matrices do not have to be in the same order they appear in the template. As long as the label matches, tablefill will correctly match it to the template.</p>
 <h3 id="output">Output</h3>
 <p>To get the filled output, run</p>
 <div class="codehilite"><pre><span></span>tablefill -i input.txt -o filled.tex template.tex
@@ -863,13 +876,6 @@ Python-style formatting:
 <span class="k">\usepackage</span><span class="nb">{</span>booktabs<span class="nb">}</span>
 <span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
 
-<span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
-  <span class="k">\label</span><span class="nb">{</span>tab:paragraph<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
-  Sample paragraph referring to a number: e.g. <span class="s">$</span><span class="nb">N </span><span class="o">=</span><span class="nb"> </span><span class="m">5</span><span class="nb">,</span><span class="m">708</span><span class="s">$</span>.
-  Or perhaps text: e.g. This is the &#39;tablefill example&#39; sample. You can
-  also fill text using python-style formatting: &#39;python formatting&#39;.
-<span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
-
 Regular placeholders:
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. summary stats)<span class="nb">}</span>
@@ -888,7 +894,23 @@ Regular placeholders:
   <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
 
-Python-style formatting:
+<span class="c">% tablefill:start tab:paragraph</span>
+Placeholders do not need to be inside a table. You can also have
+placeholders in the text:
+<span class="k">\begin</span><span class="nb">{</span>itemize<span class="nb">}</span>
+    <span class="k">\item</span> <span class="s">$</span><span class="nb">N </span><span class="o">=</span><span class="nb"> </span><span class="m">5</span><span class="nb">,</span><span class="m">708</span><span class="s">$</span>
+    <span class="k">\item</span> This is the &#39;tablefill example&#39; sample.
+<span class="k">\end</span><span class="nb">{</span>itemize<span class="nb">}</span>
+
+Note <span class="k">\verb</span>&#39;<span class="c">% tablefill:start tab:paragraph&#39; tells tablefill to start</span>
+looking for placeholders using the matrix labeled <span class="k">\verb</span>&#39;tab:paragraph&#39;
+in the input file. <span class="k">\verb</span>&#39;<span class="c">% tablefill:end&#39; tells tablefill to stop.</span>
+
+Tablefill provides several placeholders types (more on this below),
+but advanced users can use any format allowed by python via <span class="k">\verb</span>&#39;<span class="nb">{}</span>&#39;:
+&#39;python formatting&#39;. Here is another table, using python-style formatting:
+<span class="c">% tablefill:end</span>
+
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. regression results)<span class="nb">}</span>
   <span class="k">\label</span><span class="nb">{</span>tab:anotherExample<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
@@ -955,17 +977,17 @@ Python-style formatting:
 </table>
 <p>The way <code>tablefill</code> operates is:</p>
 <ol>
-<li>Per line, the program searches for the start of a table. In LaTeX, this is <code>\begin{table}</code>.</li>
-<li>If found, it searches for a label <strong><em>before</em></strong> the the table ends. In LaTeX this is <code>\label{tab:(.+)}</code> before <code>\end{table}</code>.</li>
+<li>Per line, the program searches for the start of a table or tablefill delimiter. In LaTeX, a table starts with <code>\begin{table}</code>. A tablefill delimiter starts with <code>% tablefill:start</code>.</li>
+<li>If found, it searches for a label <strong><em>before</em></strong> the the table ends. In LaTeX <code>\label{tab:(.+)}</code> can appear anywhere <em>before</em> <code>\end{table}</code>. With tablefill delimiters, <code>% tablefill:start tab:label</code> <em>must</em> appear on the same line.</li>
 <li>If a label is found, it searches the input files for a label a match.</li>
 <li>Find all occurrences of placeholders (note that in LaTeX, <code>#</code> is a special character, so <code>tablefill</code> will match both <code>#</code> and <code>\#</code> as part of a placeholder construct; this is so that templates can be compiled before using <code>tablefill</code> to fill in the values).</li>
-<li>Repeat 3 and 4 until reaching <code>\end{table}</code></li>
+<li>Repeat 3 and 4 until reaching <code>\end{table}</code> or  <code>% tablefill:end</code>.</li>
 <li>Move on to next table: Repeat 1 to 5 until reaching the end of the document.</li>
 </ol>
 <h2 id="exporting-matrices-in-stata">Exporting Matrices in Stata</h2>
 <p>We provide code snippets in <a href="sample-programs.html">several programming languages</a> to illustrate the format required by <code>tablefill</code> as input. For this example, we will use a Stata program named <code>saveTable</code>. We keep a copy in this repository, and you can install it from Stata by running:</p>
 <div class="codehilite"><pre><span></span><span class="k">local</span> gh_repo https:<span class="o">//</span>raw<span class="m">.</span>githubusercontent<span class="m">.</span>com<span class="o">/</span>mcaceresb<span class="o">/</span>tablefill<span class="k"></span>
-<span class="k">net</span> install matrix_tools, from(<span class="s">&quot;</span><span class="nv">`gh_repo&#39;</span><span class="s">/master/docs/programs&#39;&quot;</span>)
+<span class="k">net</span> install tablefill_example, from(<span class="s">&quot;</span><span class="nv">`gh_repo&#39;</span><span class="s">/master/docs/programs&#39;&quot;</span>)
 </pre></div>
 
 
@@ -1042,9 +1064,11 @@ saveTable using <span class="s">&quot;input.txt&quot;</span>, outmatrix(y) f(<sp
 <p>Consider the file <a href="usage/01basic/template.html"><code>template.md</code></a></p>
 <div class="codehilite"><pre><span></span>&lt;!-- tablefill:start tab:paragraph --&gt;
 
-Sample paragraph referring to a number: e.g. $N = #0,#$.  Or perhaps
-text: e.g. This is the ### sample. You can also fill text using
-python-style formatting: #{}#.
+Sample paragraph
+- $N = #0,#$
+- This is the ### sample.
+
+Python-style formatting: #{}#.
 
 &lt;!-- tablefill:end --&gt;
 
@@ -1061,7 +1085,7 @@ python-style formatting: #{}#.
 
 `pandoc` will compile raw LaTeX inside markdown documents, so
 `tablefill` will also replace placeholders in LaTeX tables inside
-markdown files:
+markdown files. The replacement rules for LaTeX also apply here.
 
 \begin{table}
   \caption{Table caption (e.g. regression results)}
@@ -1084,7 +1108,7 @@ markdown files:
 
 
 <p>Using the same <a href="usage/01basic/input.txt"><code>input.txt</code></a> file as above, run</p>
-<div class="codehilite"><pre><span></span>tablefill.py -i input.txt -o filled.md template.md 
+<div class="codehilite"><pre><span></span>tablefill.py -i input.txt -o filled.md template.md
 </pre></div>
 
 
@@ -1100,9 +1124,11 @@ DO NOT EDIT THIS FILE DIRECTLY.
 
 &lt;!-- tablefill:start tab:paragraph --&gt;
 
-Sample paragraph referring to a number: e.g. $N = 5,708$.  Or perhaps
-text: e.g. This is the &#39;tablefill example&#39; sample. You can also fill text using
-python-style formatting: &#39;python formatting&#39;.
+Sample paragraph
+- $N = 5,708$
+- This is the &#39;tablefill example&#39; sample.
+
+Python-style formatting: &#39;python formatting&#39;.
 
 &lt;!-- tablefill:end --&gt;
 
@@ -1119,7 +1145,7 @@ python-style formatting: &#39;python formatting&#39;.
 
 `pandoc` will compile raw LaTeX inside markdown documents, so
 `tablefill` will also replace placeholders in LaTeX tables inside
-markdown files:
+markdown files. The replacement rules for LaTeX also apply here.
 
 \begin{table}
   \caption{Table caption (e.g. regression results)}
@@ -1147,8 +1173,10 @@ markdown files:
 <p>This section is under construction</p>
 </div>
 <h2 id="comparison-with-other-methods">Comparison with other methods</h2>
-<p>There are a few programs to do this in Stata.  <a href="http://repec.sowi.unibe.ch/stata/estout/"><code>estout</code></a> is very helpful, but it is mainly designed to work with estimation output and can be hard to customize otherwise.  <a href="https://www.tabout.net.au/downloads/tabout_user_guide.pdf"><code>tabout</code></a> is very promising but somewhat hard to use.  Further, both <code>estout</code> and <code>tabout</code> impose a specific process to create the matrix of values that underlies a table. This means that a lot of the formatting must be done directly from Stata, which is not as flexible as <code>tablefill</code>'s approach.</p>
-<p>Naturally, if the shape and format of the tables that you will be producing will vary a lot <em>and</em> you do not need the flexibility that <code>tablefill</code> affords, then it is probably not the best tool, as it does have steeper setup costs.</p>
+<p>There are good reasons to use tablefill, and good reasons not to.</p>
+<p>For example, if exporting your results quickly is more important than the format in which they are presented, then the additional complexity of <code>tablefill</code> is probably not worth the hassle. I think <a href="http://repec.sowi.unibe.ch/stata/estout/"><code>estout</code></a> can be very helpful for these scenarios, but it does impose a specific process to create the matrix of values that underlies the table displayed in your document. It is very good if you just want to export your results, but when you want to format them, add notes around them, or customize them in any way, all this must be done from Stata, rather than LaTeX, LyX, or Markdown.</p>
+<p>Stata is mainly made for data analysis, not text fomatting. The main idea behind <code>tablefill</code> is that it allows the user to do all of the formatting in LaTeX, which is what LaTeX is built for, and all the analysis in Stata. To get the data back and forth between the two, minimal structure is required (labeled output that is tab-delimited). The key idea is flexibility: <code>tablefill</code> allows the user to put placeholders anywhere as long as they are inside a labeled environment. You can update titles, notes, entire paragraphs, and so on.</p>
+<p><code>tablefill</code> is also great if you want to plan out your document <em>before</em> generating all of your results. You can create and compile a document and see exactly how it will look before adding in results (you will just see placeholders instead of your data).</p>
                 
                   
                 
