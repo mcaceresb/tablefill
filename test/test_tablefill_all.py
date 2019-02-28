@@ -1,16 +1,17 @@
 #! /usr/bin/env python
 # ---------------------------------------------------------------------
-# Tests for tablefill.py
+# Tests for tablefill
 # TODO(mauricio): Implement error codes in CLI version
 
 from subprocess import call
 import unittest
 import os
 import sys
-sys.path.append('../')
+sys.path.append('../tablefill/')
 from nostderrout import nostderrout
 from tablefill import tablefill
-program = 'python ../tablefill.py --silent'
+program = '../tablefill/tablefill.py --silent'
+
 
 class testTableFillFunction(unittest.TestCase):
 
@@ -50,8 +51,8 @@ class testTableFillFunction(unittest.TestCase):
                                           template = self.textemplate,
                                           output   = self.texoutput)
 
-        self.assertEqual('SUCCESS', statustex)
         self.assertEqual('SUCCESS', statuslyx)
+        self.assertEqual('SUCCESS', statustex)
 
         # Given my message changes length, I need to change this
         # self.assertEqual(len(tag_data) + 13, len(filled_data))
@@ -231,7 +232,7 @@ class testTableFillFunction(unittest.TestCase):
 
     # ------------------------------------------------------------------
     # The following test uses three files that are WRONG but the
-    # original tablefill.py ignores the issues. This gives a warning.
+    # original tablefill ignores the issues. This gives a warning.
 
     def testMissingLabel(self):
         self.getFileNames()
@@ -305,15 +306,15 @@ class testTableFillCLI(unittest.TestCase):
         self.getFileNames()
         lyxinforce = (program, self.lyxtemplate, self.input_appendix)
         lyxinout   = (program, self.lyxtemplate, self.input_appendix, self.lyxoutput)
-        lyxinforce_status = call('%s %s --input %s --force' % lyxinforce, shell = True)
-        lyxinout_status   = call('%s %s --input %s --output %s' % lyxinout, shell = True)
+        lyxinforce_status = tfcall('%s %s --input %s --force' % lyxinforce)
+        lyxinout_status   = tfcall('%s %s --input %s --output %s' % lyxinout)
         self.assertEqual(0, lyxinforce_status)
         self.assertEqual(0, lyxinout_status)
 
         texinforce = (program, self.textemplate, self.input_appendix)
         texinout   = (program, self.textemplate, self.input_appendix, self.texoutput)
-        texinforce_status = call('%s %s --input %s --force' % texinforce, shell = True)
-        texinout_status   = call('%s %s --input %s --output %s' % texinout, shell = True)
+        texinforce_status = tfcall('%s %s --input %s --force' % texinforce)
+        texinout_status   = tfcall('%s %s --input %s --output %s' % texinout)
         self.assertEqual(0, texinforce_status)
         self.assertEqual(0, texinout_status)
 
@@ -321,9 +322,9 @@ class testTableFillCLI(unittest.TestCase):
         self.getFileNames()
 
         lyxinout = (program, self.lyxtemplatebreaks, self.input_appendix, self.lyxoutput)
-        lyxinout_status = call('%s %s --input %s --output %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --input %s --output %s' % lyxinout)
         texinout = (program, self.textemplatebreaks, self.input_appendix, self.texoutput)
-        texinout_status = call('%s %s --input %s --output %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s --output %s' % texinout)
         self.assertEqual(1, lyxinout_status)
         self.assertEqual(1, texinout_status)
 
@@ -332,24 +333,24 @@ class testTableFillCLI(unittest.TestCase):
 
         # missing arguments
         lyxinout = (program, self.lyxtemplate, self.input_appendix)
-        lyxinout_status = call('%s %s --input %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --input %s' % lyxinout)
         texinout = (program, self.textemplate, self.input_appendix)
-        texinout_status = call('%s %s --input %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s' % texinout)
         self.assertEqual(1, lyxinout_status)
         self.assertEqual(1, texinout_status)
 
         # unexpected arguments are give error courtesy of argparse
         lyxinout = (program, self.lyxtemplate, self.input_appendix, self.lyxoutput)
-        lyxinout_status = call('%s %s --input %s --output %s hello' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --input %s --output %s hello' % lyxinout)
         texinout = (program, self.textemplate, self.input_appendix, self.texoutput)
-        texinout_status = call('%s %s --input %s --output %s hello' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s --output %s hello' % texinout)
         self.assertEqual(2, lyxinout_status)
         self.assertEqual(2, texinout_status)
 
         lyxinout = (program, self.lyxtemplate, self.input_appendix, self.lyxoutput)
-        lyxinout_status = call('%s %s --input %s --output %s --waffle hi' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --input %s --output %s --waffle hi' % lyxinout)
         texinout = (program, self.textemplate, self.input_appendix, self.texoutput)
-        texinout_status = call('%s %s --input %s --output %s --waffle hi' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s --output %s --waffle hi' % texinout)
         self.assertEqual(2, lyxinout_status)
         self.assertEqual(2, texinout_status)
 
@@ -357,34 +358,34 @@ class testTableFillCLI(unittest.TestCase):
         self.getFileNames()
 
         lyxinout = (program, self.pytemplate, self.input_appendix, self.lyxoutput)
-        lyxinout_status = call('%s %s --input %s --output %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --input %s --output %s' % lyxinout)
         texinout = (program, self.pytemplate, self.input_appendix, self.texoutput)
-        texinout_status = call('%s %s --input %s --output %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s --output %s' % texinout)
         self.assertEqual(1, lyxinout_status)
         self.assertEqual(1, texinout_status)
 
         texinout = (program, self.pytemplate, self.input_appendix, self.texoutput)
-        texinout_status = call('%s %s --input %s --output %s --type tex' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s --output %s --type tex' % texinout)
         self.assertEqual(0, texinout_status)
 
         lyxinout = (program, self.lyxtemplate, self.input_appendix, self.lyxoutputnodir)
-        lyxinout_status = call('%s %s --input %s --output %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --input %s --output %s' % lyxinout)
         texinout = (program, self.textemplate, self.input_appendix, self.texoutputnodir)
-        texinout_status = call('%s %s --input %s --output %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s --output %s' % texinout)
         self.assertEqual(1, lyxinout_status)
         self.assertEqual(1, texinout_status)
 
         lyxinout = (program, self.lyxtemplate, self.input_fakeone, self.lyxoutput)
-        lyxinout_status = call('%s %s --input %s --output %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --input %s --output %s' % lyxinout)
         texinout = (program, self.textemplate, self.input_fakeone, self.texoutput)
-        texinout_status = call('%s %s --input %s --output %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s --output %s' % texinout)
         self.assertEqual(1, lyxinout_status)
         self.assertEqual(1, texinout_status)
 
         lyxinout = (program, self.lyxtemplate, self.input_faketwo, self.lyxoutput)
-        lyxinout_status = call('%s %s --input %s --output %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --input %s --output %s' % lyxinout)
         texinout = (program, self.textemplate, self.input_faketwo, self.texoutput)
-        texinout_status = call('%s %s --input %s --output %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --input %s --output %s' % texinout)
         self.assertEqual(1, lyxinout_status)
         self.assertEqual(1, texinout_status)
 
@@ -392,9 +393,9 @@ class testTableFillCLI(unittest.TestCase):
         self.getFileNames()
 
         lyxinout = (program, self.lyxtemplate, self.lyxoutput, self.input_appendix)
-        lyxinout_status = call('%s %s --output %s --input %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --output %s --input %s' % lyxinout)
         texinout = (program, self.textemplate, self.texoutput, self.input_appendix)
-        texinout_status = call('%s %s --output %s --input %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --output %s --input %s' % texinout)
         self.assertEqual(0, lyxinout_status)
         self.assertEqual(0, texinout_status)
         texfilled_data_args1 = open(self.texoutput, 'rU').readlines()
@@ -402,17 +403,17 @@ class testTableFillCLI(unittest.TestCase):
 
         # Since input takes multiple inputs, this actually fails
         lyxinout = (program, self.lyxoutput, self.input_appendix, self.lyxtemplate)
-        lyxinout_status = call('%s --output %s --input %s %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s --output %s --input %s %s' % lyxinout)
         texinout = (program, self.texoutput, self.input_appendix, self.textemplate)
-        texinout_status = call('%s --output %s --input %s %s' % texinout, shell = True)
+        texinout_status = tfcall('%s --output %s --input %s %s' % texinout)
         self.assertEqual(2, lyxinout_status)
         self.assertEqual(2, texinout_status)
 
         # But this is also OK
         lyxinout = (program, self.lyxoutput, self.input_appendix, self.lyxtemplate)
-        lyxinout_status = call('%s --output %s --input %s --type lyx %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s --output %s --input %s --type lyx %s' % lyxinout)
         texinout = (program, self.texoutput, self.input_appendix, self.textemplate)
-        texinout_status = call('%s --output %s --input %s --type tex %s' % texinout, shell = True)
+        texinout_status = tfcall('%s --output %s --input %s --type tex %s' % texinout)
         self.assertEqual(0, lyxinout_status)
         self.assertEqual(0, texinout_status)
 
@@ -424,31 +425,37 @@ class testTableFillCLI(unittest.TestCase):
 
     # ------------------------------------------------------------------
     # The following test uses three files that are WRONG but the
-    # original tablefill.py ignores the issues. This gives a warning.
+    # original tablefill ignores the issues. This gives a warning.
 
     def testMissingLabel(self):
         self.getFileNames()
         lyxinout = (program, self.lyxtemplatewrong, self.lyxoutput, self.input_appendix)
-        lyxinout_status = call('%s %s --output %s --input %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --output %s --input %s' % lyxinout)
         texinout = (program, self.textemplatewrong, self.texoutput, self.input_appendix)
-        texinout_status = call('%s %s --output %s --input %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --output %s --input %s' % texinout)
         self.assertEqual(255, lyxinout_status)
         self.assertEqual(255, texinout_status)
 
         lyxinout = (program, self.lyxtemplatenolab, self.lyxoutput, self.input_appendix)
-        lyxinout_status = call('%s %s --output %s --input %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --output %s --input %s' % lyxinout)
         texinout = (program, self.textemplatenolab, self.texoutput, self.input_appendix)
-        texinout_status = call('%s %s --output %s --input %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --output %s --input %s' % texinout)
         self.assertEqual(255, lyxinout_status)
         self.assertEqual(255, texinout_status)
 
         lyxinout = (program, self.lyxtemplate, self.lyxoutput, self.input_nolabel)
-        lyxinout_status = call('%s %s --output %s --input %s' % lyxinout, shell = True)
+        lyxinout_status = tfcall('%s %s --output %s --input %s' % lyxinout)
         texinout = (program, self.textemplate, self.texoutput, self.input_nolabel)
-        texinout_status = call('%s %s --output %s --input %s' % texinout, shell = True)
+        texinout_status = tfcall('%s %s --output %s --input %s' % texinout)
         self.assertEqual(255, lyxinout_status)
         self.assertEqual(255, texinout_status)
 
+
+def tfcall(*args, **kwargs):
+    devnull = open(os.devnull, 'w')
+    rc = call(*args, shell = True, stdout = devnull, stderr = devnull, **kwargs)
+    devnull.close()
+    return rc
 
 if __name__ == '__main__':
     os.getcwd()

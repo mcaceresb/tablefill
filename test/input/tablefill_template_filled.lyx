@@ -65,9 +65,9 @@ status open
 \begin_layout Plain Layout
 This file was produced by 'tablefill.py'\end_layout
 \begin_layout Plain Layout
-	Template file: /home/mauricio/Documents/projects/ra/doyle/projects/aux-lyx-autoupdate-standalone/test/input/tablefill_template.lyx\end_layout
+	Template file: /home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/test/input/tablefill_template.lyx\end_layout
 \begin_layout Plain Layout
-	Input file(s): ['/home/mauricio/Documents/projects/ra/doyle/projects/aux-lyx-autoupdate-standalone/test/input/tables_appendix.txt', '/home/mauricio/Documents/projects/ra/doyle/projects/aux-lyx-autoupdate-standalone/test/input/tables_nolabel.txt']\end_layout
+	Input file(s): ['/home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/test/input/tables_appendix.txt', '/home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/test/input/tables_nolabel.txt']\end_layout
 \begin_layout Plain Layout
 To make changes, edit the input and template files.\end_layout
 \begin_layout Plain Layout
@@ -81,7 +81,9 @@ THERE WAS AN ISSUE CREATING THIS FILE!\end_layout
 \begin_layout Plain Layout
 \end_layout
 \begin_layout Plain Layout
-WARNING: These tags were in 'template' file but not in 'input' file(s):unobservables; Output '/home/mauricio/Documents/projects/ra/doyle/projects/aux-lyx-autoupdate-standalone/test/input/tablefill_template_filled.lyx' may not compile!\end_layout
+\end_layout
+\begin_layout Plain Layout
+WARNING: These tags were in 'template' file but not in 'input' file(s): unobservables; Output '/home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/test/input/tablefill_template_filled.lyx' may not compile!\end_layout
 \end_inset
 \end_layout
 

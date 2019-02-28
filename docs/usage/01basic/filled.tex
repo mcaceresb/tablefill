@@ -40,7 +40,23 @@ Regular placeholders:
   \end{tabular}
 \end{table}
 
-Python-style formatting:
+% tablefill:start tab:paragraph
+Placeholders do not need to be inside a table. You can also have
+placeholders in the text:
+\begin{itemize}
+    \item $N = 5,708$
+    \item This is the 'tablefill example' sample.
+\end{itemize}
+
+Note \verb'% tablefill:start tab:paragraph' tells tablefill to start
+looking for placeholders using the matrix labeled \verb'tab:paragraph'
+in the input file. \verb'% tablefill:end' tells tablefill to stop.
+
+Tablefill provides several placeholders types (more on this below),
+but advanced users can use any format allowed by python via \verb'{}':
+'python formatting'. Here is another table, using python-style formatting:
+% tablefill:end
+
 \begin{table}
   \caption{Table caption (e.g. regression results)}
   \label{tab:anotherExample} % must match label in input.txt

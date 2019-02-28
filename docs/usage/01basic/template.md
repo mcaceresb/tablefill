@@ -1,8 +1,10 @@
 <!-- tablefill:start tab:paragraph -->
 
-Sample paragraph referring to a number: e.g. $N = #0,#$.  Or perhaps
-text: e.g. This is the ### sample. You can also fill text using
-python-style formatting: #{}#.
+Sample paragraph
+- $N = #0,#$
+- This is the ### sample.
+
+Python-style formatting: #{}#.
 
 <!-- tablefill:end -->
 
@@ -19,7 +21,7 @@ python-style formatting: #{}#.
 
 `pandoc` will compile raw LaTeX inside markdown documents, so
 `tablefill` will also replace placeholders in LaTeX tables inside
-markdown files:
+markdown files. The replacement rules for LaTeX also apply here.
 
 \begin{table}
   \caption{Table caption (e.g. regression results)}

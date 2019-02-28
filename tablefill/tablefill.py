@@ -128,7 +128,7 @@ __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Tue Feb 26, 2019"
-__version__   = __program__ + " version 0.9.4 updated " + __updated__
+__version__   = __program__ + " version 0.9.5 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -783,11 +783,19 @@ class tablefill_internals_engine:
         self.comments  = '^\s*%'
 
         # TODO: Allow custom regexes!
+
+        # TODO: Make this strict: Comment labels only for comments,
+        # latex labels only for latex, etc.
+
         dictRegexes = {
             'tex': {
-                'begin': r'.*\\begin{table}.*',
-                'end':   r'.*\\end{table}.*',
-                'label': r'.*\\label{tab:(.+)}'
+                # 'begin': r'.*\\begin{table}.*',
+                # 'end':   r'.*\\end{table}.*',
+                # 'label': r'.*\\label{tab:(.+)}'
+                # 'label': r'(.*\\label{tab:(.+)})|(^\s*%\s*tablefill:start\s+tab:(.+)\b)'
+                'begin': r'(^\s*%\s*tablefill:start\s+tab:.+$)|(.*\\begin{table}.*)',
+                'end':   r'(^\s*%\s*tablefill:end.*$)|(.*\\end{table}.*)',
+                'label': r'(?:^\s*%\s*tablefill:start\s+|.*\\label{)tab:(.+?)(?:}|\b)'
             },
             'lyx': {
                 'begin':  r'.*\\begin_inset Float table.*',
@@ -1230,10 +1238,10 @@ class tablefill_internals_engine:
                     print_verbose(self.verbose, warn + warn_notable % n)
                 elif table_tag == '':
                     self.warnings['nolabel'] += [str(n)]
-                    warn_nolabel  = "Line %d matches #(#|\d+,*|{.*})#"
+                    warn_nolabel  = "Line %d matches #(#|\d+,*|{.*})#" %n
                     warn_nolabel += " but couldn't find " + self.label
                     warn_nolabel += " Skipping..."
-                    print_verbose(self.verbose, warn + warn_nolabel % n)
+                    print_verbose(self.verbose, warn + warn_nolabel)
 
             if re.search(self.end, line) and table_search:
                 search_msg   = "Table '%s' in line %d ended in line %d."

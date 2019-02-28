@@ -1,5 +1,15 @@
 # Changelog
 
+## tablefill-0.9.5 (2019-02-27)
+
+### Features
+
+- Allow commented-out tablefill delimiters in LaTeX
+
+### Enhancements
+
+- Make it clear you can update anything with placeholders, not just tables.
+
 ## tablefill-0.9.4 (2019-02-26)
 
 ### Features

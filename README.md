@@ -14,7 +14,7 @@ tablefill --help
 Documentation
 -------------
 
-`tablefill` is a program that uses a generic placeholder system to fill LaTeX, LyX, and Markdown tables using formatted output from any programming language.
+`tablefill` is a program that uses a generic placeholder system to update LaTeX, LyX, and Markdown documents. While it's primary use is to fill in tables (hance the name) placeholders are replaced anywhere in a table environment or within commented-out tablefill tags.
 
 - [Getting Started](https://mcaceresb.github.io/tablefill/getting-started.html) gives a basic example of how the system works, and guides the user through updating a template using Stata-generated input files (this example can be replicated with any programming language, however, not just Stata).
 
@@ -27,7 +27,7 @@ Background
 
 The original idea for this workflow comes from [GSLab](https://github.com/gslab-econ).  [The original tablefill](https://github.com/gslab-econ/gslab_python/blob/master/gslab_fill/tablefill.py) in particular was made to automatically update LyX files with Stata output.  However, I expanded this system to work with LaTeX and added several features.  The workflow is as follows:
 
-1. Create a LaTeX, LyX, or Markdown document using placeholders in your tables.  Label or tag each table appropriately.
+1. Create a LaTeX, LyX, or Markdown document using placeholders. Label or tag each table appropriately.
 
 2. Print a matrix (or any array) into a tab-delimited text file. The output is preceded by the label or tag of the table you want to fill, and the matrix or array entries correspond to the placeholders.
 
@@ -53,6 +53,7 @@ As mentioned above, the original idea for tablefill comes from [GSLab](https://g
 - Ability to fill LaTeX and Markdown templates
     - There can be several placeholders in one line (however, there must be at most one table line per code line).
     - Labels in LaTeX can be anywhere in the table environment.
+    - Placeholders can also be placed between commented-out tablefill tags, so updating is not restricted to literal tables.
     - Placeholders can be either `#` or `\#` (note the former is a special character in LaTeX so while the filled output will compile, the template will not).
     - Can have several matches of the pattern in the same line.
     - LaTeX tables can be filled inside Markdown documents.

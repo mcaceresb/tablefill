@@ -34,3 +34,7 @@ Notes
   even if there is a comment halfway through.
 
 - New lines of the table must be on new lines of the `.tex` file
+
+- Only _one_ label is matched to a table. If there are duplicate labels in the
+  input file(s), only the last one is kept. This is done so the user can
+  continuously append results to the same input file.
