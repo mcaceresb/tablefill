@@ -2,20 +2,24 @@
 \usepackage{booktabs}
 \begin{document}
 
-Regular placeholders:
+Tablefill will look for the label \verb'tab:example' inside
+\verb'input.txt' and fill the table below:
+
 \begin{table}
   \caption{Table caption (e.g. summary stats)}
   \label{tab:example} % name must match label in input1.txt
-  \begin{tabular}{p{4.25cm}crcc}
+  \begin{tabular}{p{4.25cm}ccc}
+    \toprule
     Outcomes
     & N
     & Mean
     & (Std.)
-    \\
+    \\\midrule
     Outcomes \#\#\# & \#0,\# & \#1\# & (\#2\#) \\
     Outcomes \#\#\# & \#0,\# & \#1\# & (\#2\#) \\
     Outcomes \#\#\# & \#0,\# & \#1\# & (\#2\#) \\
     Outcomes \#\#\# & \#0,\# & \#1\# & (\#2\#) \\
+    \bottomrule
     \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
   \end{tabular}
 \end{table}
@@ -40,17 +44,19 @@ but advanced users can use any format allowed by python via \verb'{}':
 \begin{table}
   \caption{Table caption (e.g. regression results)}
   \label{tab:anotherExample} % must match label in input.txt
-  \begin{tabular}{p{4.25cm}c}
+  \begin{tabular}{p{4.25cm}cc}
+    \toprule
     Outcomes
     & Coef
     & (SE)
-    \\
-    Variable 1 & \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
-    Variable 2 & \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
-    Variable 3 & \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
-    \midrule
-             N & \#{:,.0f}\# \\
-    \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
+    \\\midrule
+    Variable 1 & \#{:.1f}\# & (\#{:.2f}\#)\#*\# \\
+    Variable 2 & \#{:.1f}\# & (\#{:.2f}\#)\#*\# \\
+    Variable 3 & \#{:.1f}\# & (\#{:.2f}\#)\#*\# \\
+             N & \#{:,.0f}\#
+    \\\midrule
+    \bottomrule
+    \multicolumn{3}{p{5cm}}{\footnotesize Footnotes!}
   \end{tabular}
 \end{table}
 \end{document}

@@ -718,26 +718,26 @@ Tablefill will look for the label <span class="k">\verb</span>&#39;tab:example&#
 
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. summary stats)<span class="nb">}</span>
-  <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span>
-  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>crcc<span class="nb">}</span>
+  <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span> <span class="c">% name must match label in input1.txt</span>
+  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>ccc<span class="nb">}</span>
+    <span class="k">\toprule</span>
     Outcomes
     <span class="nb">&amp;</span> N
     <span class="nb">&amp;</span> Mean
     <span class="nb">&amp;</span> (Std.)
-    <span class="k">\\</span>
+    <span class="k">\\\midrule</span>
     Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>2<span class="k">\#</span>) <span class="k">\\</span>
     Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>2<span class="k">\#</span>) <span class="k">\\</span>
     Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>2<span class="k">\#</span>) <span class="k">\\</span>
     Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>2<span class="k">\#</span>) <span class="k">\\</span>
+    <span class="k">\bottomrule</span>
     <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
   <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
 
-However, placeholders do not need to be inside a table. You can also
-have placeholders in the text:
-
 <span class="c">% tablefill:start tab:paragraph</span>
-
+Placeholders do not need to be inside a table. You can also have
+placeholders in the text:
 <span class="k">\begin</span><span class="nb">{</span>itemize<span class="nb">}</span>
     <span class="k">\item</span> <span class="s">$</span><span class="nb">N </span><span class="o">=</span><span class="nb"> </span><span class="nv">\#</span><span class="m">0</span><span class="nb">,</span><span class="nv">\#</span><span class="s">$</span>
     <span class="k">\item</span> This is the <span class="k">\#\#\#</span> sample.
@@ -745,28 +745,29 @@ have placeholders in the text:
 
 Note <span class="k">\verb</span>&#39;<span class="c">% tablefill:start tab:paragraph&#39; tells tablefill to start</span>
 looking for placeholders using the matrix labeled <span class="k">\verb</span>&#39;tab:paragraph&#39;
-in the input file. <span class="k">\verb</span>&#39;<span class="c">% tablefill:end&#39; will tell tablefill to stop.</span>
+in the input file. <span class="k">\verb</span>&#39;<span class="c">% tablefill:end&#39; tells tablefill to stop.</span>
 
-Tablefill provides several placeholders types (more on this below), but
-advanced users can use any format allowed by python via <span class="k">\verb</span>&#39;<span class="nb">{}</span>&#39;. For
-example: <span class="k">\#</span><span class="nb">{}</span><span class="k">\#</span>. Here is another table, using python-style formatting:
-
+Tablefill provides several placeholders types (more on this below),
+but advanced users can use any format allowed by python via <span class="k">\verb</span>&#39;<span class="nb">{}</span>&#39;:
+<span class="k">\#</span><span class="nb">{}</span><span class="k">\#</span>. Here is another table, using python-style formatting:
 <span class="c">% tablefill:end</span>
 
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. regression results)<span class="nb">}</span>
   <span class="k">\label</span><span class="nb">{</span>tab:anotherExample<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
-  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>c<span class="nb">}</span>
+  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>cc<span class="nb">}</span>
+    <span class="k">\toprule</span>
     Outcomes
     <span class="nb">&amp;</span> Coef
     <span class="nb">&amp;</span> (SE)
-    <span class="k">\\</span>
-    Variable 1 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
-    Variable 2 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
-    Variable 3 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
-    <span class="k">\midrule</span>
-             N <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:,.0f<span class="nb">}</span><span class="k">\#</span> <span class="k">\\</span>
-    <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
+    <span class="k">\\\midrule</span>
+    Variable 1 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
+    Variable 2 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
+    Variable 3 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
+             N <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:,.0f<span class="nb">}</span><span class="k">\#</span>
+    <span class="k">\\\midrule</span>
+    <span class="k">\bottomrule</span>
+    <span class="k">\multicolumn</span><span class="nb">{</span>3<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
   <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span>
@@ -866,7 +867,7 @@ example: <span class="k">\#</span><span class="nb">{}</span><span class="k">\#</
 <span class="c">%   Template file: /home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/docs/usage/01basic/template.tex</span>
 <span class="c">%   Input file(s): [&#39;/home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/docs/usage/01basic/input.txt&#39;]</span>
 <span class="c">% To make changes, edit the input and template files.</span>
-<span class="c">% %</span>
+<span class="c">% % </span>
 
 <span class="c">% DO NOT EDIT THIS FILE DIRECTLY.</span>
 <span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
@@ -876,20 +877,24 @@ example: <span class="k">\#</span><span class="nb">{}</span><span class="k">\#</
 <span class="k">\usepackage</span><span class="nb">{</span>booktabs<span class="nb">}</span>
 <span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
 
-Regular placeholders:
+Tablefill will look for the label <span class="k">\verb</span>&#39;tab:example&#39; inside
+<span class="k">\verb</span>&#39;input.txt&#39; and fill the table below:
+
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. summary stats)<span class="nb">}</span>
   <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span> <span class="c">% name must match label in input1.txt</span>
-  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>crcc<span class="nb">}</span>
+  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>ccc<span class="nb">}</span>
+    <span class="k">\toprule</span>
     Outcomes
     <span class="nb">&amp;</span> N
     <span class="nb">&amp;</span> Mean
     <span class="nb">&amp;</span> (Std.)
-    <span class="k">\\</span>
+    <span class="k">\\\midrule</span>
     Outcomes 1 <span class="nb">&amp;</span> 1,237 <span class="nb">&amp;</span> 1.0 <span class="nb">&amp;</span> (2.00) <span class="k">\\</span>
     Outcomes 2 <span class="nb">&amp;</span> 2,234 <span class="nb">&amp;</span> 3.0 <span class="nb">&amp;</span> (2.40) <span class="k">\\</span>
     Outcomes 3 <span class="nb">&amp;</span> 3 <span class="nb">&amp;</span> 2.0 <span class="nb">&amp;</span> (2.46) <span class="k">\\</span>
     Outcomes 4 <span class="nb">&amp;</span> 2,234 <span class="nb">&amp;</span> 3.0 <span class="nb">&amp;</span> (2.40) <span class="k">\\</span>
+    <span class="k">\bottomrule</span>
     <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
   <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
@@ -914,17 +919,19 @@ but advanced users can use any format allowed by python via <span class="k">\ver
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. regression results)<span class="nb">}</span>
   <span class="k">\label</span><span class="nb">{</span>tab:anotherExample<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
-  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>c<span class="nb">}</span>
+  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>cc<span class="nb">}</span>
+    <span class="k">\toprule</span>
     Outcomes
     <span class="nb">&amp;</span> Coef
     <span class="nb">&amp;</span> (SE)
-    <span class="k">\\</span>
-    Variable 1 <span class="nb">&amp;</span> -1.2 (-1.18) <span class="k">\\</span>
-    Variable 2 <span class="nb">&amp;</span> 2.8 (-0.53)*** <span class="k">\\</span>
-    Variable 3 <span class="nb">&amp;</span> 1.1 (0.57)** <span class="k">\\</span>
-    <span class="k">\midrule</span>
-             N <span class="nb">&amp;</span> 5,708 <span class="k">\\</span>
-    <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
+    <span class="k">\\\midrule</span>
+    Variable 1 <span class="nb">&amp;</span> -1.2 <span class="nb">&amp;</span> (-1.18) <span class="k">\\</span>
+    Variable 2 <span class="nb">&amp;</span> 2.8 <span class="nb">&amp;</span> (-0.53)*** <span class="k">\\</span>
+    Variable 3 <span class="nb">&amp;</span> 1.1 <span class="nb">&amp;</span> (0.57)** <span class="k">\\</span>
+             N <span class="nb">&amp;</span> 5,708
+    <span class="k">\\\midrule</span>
+    <span class="k">\bottomrule</span>
+    <span class="k">\multicolumn</span><span class="nb">{</span>3<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
   <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span>
@@ -1089,18 +1096,20 @@ markdown files. The replacement rules for LaTeX also apply here.
 
 \begin{table}
   \caption{Table caption (e.g. regression results)}
-  \label{tab:anotherExample}
-  \begin{tabular}{p{4.25cm}c}
+  \label{tab:anotherExample} % must match label in input.txt
+  \begin{tabular}{p{4.25cm}cc}
+    \toprule
     Outcomes
     &amp; Coef
     &amp; (SE)
-    \\
-    Variable 1 &amp; \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
-    Variable 2 &amp; \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
-    Variable 3 &amp; \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
-    \midrule
-             N &amp; \#{:,.0f}\# \\
-    \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
+    \\\midrule
+    Variable 1 &amp; \#{:.1f}\# &amp; (\#{:.2f}\#)\#*\# \\
+    Variable 2 &amp; \#{:.1f}\# &amp; (\#{:.2f}\#)\#*\# \\
+    Variable 3 &amp; \#{:.1f}\# &amp; (\#{:.2f}\#)\#*\# \\
+             N &amp; \#{:,.0f}\#
+    \\\midrule
+    \bottomrule
+    \multicolumn{3}{p{5cm}}{\footnotesize Footnotes!}
   \end{tabular}
 \end{table}
 \end{document}
@@ -1149,18 +1158,20 @@ markdown files. The replacement rules for LaTeX also apply here.
 
 \begin{table}
   \caption{Table caption (e.g. regression results)}
-  \label{tab:anotherExample}
-  \begin{tabular}{p{4.25cm}c}
+  \label{tab:anotherExample} % must match label in input.txt
+  \begin{tabular}{p{4.25cm}cc}
+    \toprule
     Outcomes
     &amp; Coef
     &amp; (SE)
-    \\
-    Variable 1 &amp; -1.2 (-1.18) \\
-    Variable 2 &amp; 2.8 (-0.53)*** \\
-    Variable 3 &amp; 1.1 (0.57)** \\
-    \midrule
-             N &amp; 5,708 \\
-    \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
+    \\\midrule
+    Variable 1 &amp; -1.2 &amp; (-1.18) \\
+    Variable 2 &amp; 2.8 &amp; (-0.53)*** \\
+    Variable 3 &amp; 1.1 &amp; (0.57)** \\
+             N &amp; 5,708
+    \\\midrule
+    \bottomrule
+    \multicolumn{3}{p{5cm}}{\footnotesize Footnotes!}
   \end{tabular}
 \end{table}
 \end{document}
