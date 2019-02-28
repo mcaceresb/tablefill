@@ -190,7 +190,7 @@ To get the filled output, run
 tablefill -i input.txt -o filled.tex template.tex
 ```
 
-This produces [`input.txt`](usage/01basic/input.txt):
+This produces [`filled.tex`](usage/01basic/filled.tex):
 ```latex
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -214,7 +214,7 @@ Tablefill will look for the label \verb'tab:example' inside
 
 \begin{table}
   \caption{Table caption (e.g. summary stats)}
-  \label{tab:example} % name must match label in input1.txt
+  \label{tab:example} % name must match label in input.txt
   \begin{tabular}{p{4.25cm}ccc}
     \toprule
     Outcomes
