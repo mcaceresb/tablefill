@@ -15,27 +15,24 @@
 \usepackage{booktabs}
 \begin{document}
 
-\begin{table}
-  \label{tab:paragraph} % must match label in input.txt
-  Sample paragraph referring to a number: e.g. $N = 5,708$.
-  Or perhaps text: e.g. This is the 'tablefill example' sample. You can
-  also fill text using python-style formatting: 'python formatting'.
-\end{table}
+Tablefill will look for the label \verb'tab:example' inside
+\verb'input.txt' and fill the table below:
 
-Regular placeholders:
 \begin{table}
   \caption{Table caption (e.g. summary stats)}
   \label{tab:example} % name must match label in input1.txt
-  \begin{tabular}{p{4.25cm}crcc}
+  \begin{tabular}{p{4.25cm}ccc}
+    \toprule
     Outcomes
     & N
     & Mean
     & (Std.)
-    \\
+    \\\midrule
     Outcomes 1 & 1,237 & 1.0 & (2.00) \\
     Outcomes 2 & 2,234 & 3.0 & (2.40) \\
     Outcomes 3 & 3 & 2.0 & (2.46) \\
     Outcomes 4 & 2,234 & 3.0 & (2.40) \\
+    \bottomrule
     \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
   \end{tabular}
 \end{table}
@@ -60,17 +57,19 @@ but advanced users can use any format allowed by python via \verb'{}':
 \begin{table}
   \caption{Table caption (e.g. regression results)}
   \label{tab:anotherExample} % must match label in input.txt
-  \begin{tabular}{p{4.25cm}c}
+  \begin{tabular}{p{4.25cm}cc}
+    \toprule
     Outcomes
     & Coef
     & (SE)
-    \\
-    Variable 1 & -1.2 (-1.18) \\
-    Variable 2 & 2.8 (-0.53)*** \\
-    Variable 3 & 1.1 (0.57)** \\
-    \midrule
-             N & 5,708 \\
-    \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
+    \\\midrule
+    Variable 1 & -1.2 & (-1.18) \\
+    Variable 2 & 2.8 & (-0.53)*** \\
+    Variable 3 & 1.1 & (0.57)** \\
+             N & 5,708
+    \\\midrule
+    \bottomrule
+    \multicolumn{3}{p{5cm}}{\footnotesize Footnotes!}
   \end{tabular}
 \end{table}
 \end{document}
