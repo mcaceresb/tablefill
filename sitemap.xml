@@ -1,47 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-     <loc>None</loc>
+     <loc>https://mcaceresb.github.io/tablefill/index.html</loc>
      <lastmod>2019-02-27</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
+     <loc>https://mcaceresb.github.io/tablefill/getting-started.html</loc>
      <lastmod>2019-02-27</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
+     <loc>https://mcaceresb.github.io/tablefill/sample-programs.html</loc>
      <lastmod>2019-02-27</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
+     <loc>https://mcaceresb.github.io/tablefill/usage/02matrix-input.html</loc>
      <lastmod>2019-02-27</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
+     <loc>https://mcaceresb.github.io/tablefill/usage/03placeholders.html</loc>
      <lastmod>2019-02-27</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
+     <loc>https://mcaceresb.github.io/tablefill/usage/04common-issues.html</loc>
      <lastmod>2019-02-27</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
+     <loc>https://mcaceresb.github.io/tablefill/usage/05advanced-options.html</loc>
      <lastmod>2019-02-27</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>None</loc>
-     <lastmod>2019-02-27</lastmod>
-     <changefreq>daily</changefreq>
-    </url>
-    <url>
-     <loc>None</loc>
+     <loc>https://mcaceresb.github.io/tablefill/usage/06xml-engine.html</loc>
      <lastmod>2019-02-27</lastmod>
      <changefreq>daily</changefreq>
     </url>

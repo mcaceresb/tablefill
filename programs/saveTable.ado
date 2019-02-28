@@ -7,7 +7,7 @@
 capture program drop saveTable
 program saveTable
     version 13
-    syntax using/, tag(str) OUTMatrix(name) [fmt(str)]
+    syntax using/, tag(str) OUTMatrix(name) [Format(str)]
     mata: saveTable()
 end
 
@@ -18,7 +18,7 @@ void function saveTable()
     real scalar i, j, fh
     real matrix outmatrix
     outmatrix = st_matrix(st_local("outmatrix"))
-    fmt = st_local("fmt")
+    fmt = st_local("format")
     if ( fmt == "" ) {
         fmt = "%21.9f"
     }

@@ -10,8 +10,10 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
-        <meta name="description" content="Atimated system for LaTeX and LyX table updating">
+        <meta name="description" content="Automated system for LaTeX and LyX table updating">
       
+      
+        <link rel="canonical" href="https://mcaceresb.github.io/tablefill/getting-started.html">
       
       
       
@@ -77,6 +79,25 @@
       <defs>
         
         
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
       </defs>
     </svg>
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -92,7 +113,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="tablefill" class="md-header-nav__button md-logo">
+        <a href="https://mcaceresb.github.io/tablefill/" title="tablefill" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -146,6 +167,30 @@
         
       </div>
       
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/mcaceresb/tablefill/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      mcaceresb/tablefill
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
     </div>
   </nav>
 </header>
@@ -164,13 +209,35 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="tablefill" class="md-nav__button md-logo">
+    <a href="https://mcaceresb.github.io/tablefill/" title="tablefill" class="md-nav__button md-logo">
       
         <i class="md-icon"></i>
       
     </a>
     tablefill
   </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/mcaceresb/tablefill/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      mcaceresb/tablefill
+    </div>
+  </a>
+
+    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -219,15 +286,104 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-example" title="Basic Example" class="md-nav__link">
-    Basic Example
+  <a href="#installation" title="Installation" class="md-nav__link">
+    Installation
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#overview" title="Overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example-in-latex" title="Basic Example in LaTeX" class="md-nav__link">
+    Basic Example in LaTeX
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#template" title="Template" class="md-nav__link">
+    Template
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholders" title="Placeholders" class="md-nav__link">
+    Placeholders
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input" title="Input" class="md-nav__link">
+    Input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output" title="Output" class="md-nav__link">
+    Output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#explanation" title="Explanation" class="md-nav__link">
     Explanation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exporting-matrices-in-stata" title="Exporting Matrices in Stata" class="md-nav__link">
+    Exporting Matrices in Stata
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#savetable-arguments" title="saveTable arguments" class="md-nav__link">
+    saveTable arguments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example-in-markdown" title="Basic Example in Markdown" class="md-nav__link">
+    Basic Example in Markdown
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example-in-lyx" title="Basic Example in LyX" class="md-nav__link">
+    Basic Example in LyX
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-with-other-methods" title="Comparison with other methods" class="md-nav__link">
+    Comparison with other methods
   </a>
   
 </li>
@@ -249,8 +405,8 @@
 
 
   <li class="md-nav__item">
-    <a href="sample-workflow.html" title="Sample Workflow" class="md-nav__link">
-      Sample Workflow
+    <a href="sample-programs.html" title="Sample Programs" class="md-nav__link">
+      Sample Programs
     </a>
   </li>
 
@@ -339,18 +495,6 @@
   </li>
 
     
-      
-      
-      
-
-
-  <li class="md-nav__item">
-    <a href="sample-programs.html" title="Sample Programs" class="md-nav__link">
-      Sample Programs
-    </a>
-  </li>
-
-    
   </ul>
 </nav>
                   </div>
@@ -372,15 +516,104 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#basic-example" title="Basic Example" class="md-nav__link">
-    Basic Example
+  <a href="#installation" title="Installation" class="md-nav__link">
+    Installation
   </a>
   
 </li>
       
         <li class="md-nav__item">
+  <a href="#overview" title="Overview" class="md-nav__link">
+    Overview
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example-in-latex" title="Basic Example in LaTeX" class="md-nav__link">
+    Basic Example in LaTeX
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#template" title="Template" class="md-nav__link">
+    Template
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#placeholders" title="Placeholders" class="md-nav__link">
+    Placeholders
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input" title="Input" class="md-nav__link">
+    Input
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#output" title="Output" class="md-nav__link">
+    Output
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#explanation" title="Explanation" class="md-nav__link">
     Explanation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#exporting-matrices-in-stata" title="Exporting Matrices in Stata" class="md-nav__link">
+    Exporting Matrices in Stata
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#savetable-arguments" title="saveTable arguments" class="md-nav__link">
+    saveTable arguments
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example-in-markdown" title="Basic Example in Markdown" class="md-nav__link">
+    Basic Example in Markdown
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example-in-lyx" title="Basic Example in LyX" class="md-nav__link">
+    Basic Example in LyX
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-with-other-methods" title="Comparison with other methods" class="md-nav__link">
+    Comparison with other methods
   </a>
   
 </li>
@@ -401,136 +634,125 @@
             <article class="md-content__inner md-typeset">
               
                 
+                  <a href="https://github.com/mcaceresb/tablefill/blob/master/docs/getting-started.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
                 
                 <h1 id="getting-started">Getting Started</h1>
-<p>You can use tablefill from the command line or from python. To install,
-run</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This page illustrates the usage of <code>tablefill</code> with Stata.
+However, any programming language can produce output to be used by
+<code>tablefill</code>. See the <a href="sample-programs.html">sample programs</a> section
+for details.</p>
+</div>
+<p><code>tablefill</code> allows the user to update text and numbers in LaTeX,
+LyX, and Markdown. Its main purpose is to aid the user in creating
+reproducible reports that can be automatically updated.</p>
+<h2 id="installation">Installation</h2>
+<p>To install <code>tablefill</code>, run</p>
 <div class="codehilite"><pre><span></span>pip install git+https://github.com/mcaceresb/tablefill
 </pre></div>
 
 
-<p>Then you can call tablefill via</p>
-<div class="codehilite"><pre><span></span>tablefill -i input1.tex <span class="o">[</span>input2.tex ...<span class="o">]</span> -o output.tex template.tex
+<p>You can the use <code>tablefill</code> from the command-line via</p>
+<div class="codehilite"><pre><span></span>tablefill -i input1.txt <span class="o">[</span>input2.txt ...<span class="o">]</span> -o output.tex template.tex
 </pre></div>
 
 
-<p>The section below shows a basic example of how <code>tablefill</code> works. See
-the <a href="sample-workflow.html">sample workflow</a> section for details on how to
-go from results in Stata/R/etc. to automated table production in LaTeX.</p>
-<h2 id="basic-example">Basic Example</h2>
-<p><code>input1.txt</code> contains the data used to fill the template. This file is
-generated your programming language of choice (e.g. Stata) with output
-from a regression, a table with summary statistics, etc. The entries
-must be tab-delimited and each section separated by a label of the format
-<code>&lt;tab:label&gt;</code> (see the <a href="sample-programs.html">sample programs</a> for examples on
-how to do this on various programming languages):</p>
-<div class="codehilite"><pre><span></span><span class="o">&lt;</span><span class="n">tab</span><span class="p">:</span><span class="n">example</span><span class="o">&gt;</span>
-    <span class="mi">1</span>     <span class="mi">1237</span><span class="p">.</span><span class="mi">1234</span>      <span class="mi">1</span>       <span class="mi">2</span>
-    <span class="mi">2</span>     <span class="mi">2234</span><span class="p">.</span><span class="mi">4</span>         <span class="mi">3</span>       <span class="mi">2</span><span class="p">.</span><span class="mi">4</span>
-    <span class="mi">3</span>     <span class="mi">3</span><span class="p">.</span><span class="mi">345345</span>       <span class="mi">2</span>       <span class="mi">2</span><span class="p">.</span><span class="mi">456</span>
-    <span class="mi">4</span>     <span class="mi">2234</span><span class="p">.</span><span class="mi">4</span>         <span class="mi">3</span>       <span class="mi">2</span><span class="p">.</span><span class="mi">4</span>
-<span class="o">&lt;</span><span class="n">tab</span><span class="p">:</span><span class="n">anotherExample</span><span class="o">&gt;</span>
-     <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">25</span>         <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">18</span>     <span class="mi">0</span><span class="p">.</span><span class="mi">1447266</span>
-     <span class="mi">2</span><span class="p">.</span><span class="mi">756</span>         <span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">53</span>     <span class="mi">9</span><span class="p">.</span><span class="mi">964426</span><span class="n">e</span><span class="o">-</span><span class="mi">08</span>
-      <span class="mi">1</span><span class="p">.</span><span class="mi">13</span>       <span class="mi">0</span><span class="p">.</span><span class="mi">57235</span>     <span class="mi">0</span><span class="p">.</span><span class="mi">02417291</span>
+<p>Or directly from python via</p>
+<div class="codehilite"><pre><span></span><span class="kn">from</span> <span class="nn">tablefill</span> <span class="kn">import</span> <span class="n">tablefill</span>
+
+<span class="n">tablefill</span><span class="p">(</span>
+    <span class="nb">input</span>    <span class="o">=</span> <span class="s1">&#39;input1.txt input2.txt ...&#39;</span><span class="p">,</span>
+    <span class="n">output</span>   <span class="o">=</span> <span class="s1">&#39;output.tex&#39;</span><span class="p">,</span>
+    <span class="n">template</span> <span class="o">=</span> <span class="s1">&#39;template.tex&#39;</span>
+<span class="p">)</span>
 </pre></div>
 
 
-<p><code>template.tex</code> contains the LaTeX file with placeholders corresponding
-to the data in <code>input1.txt</code>. The template should compile as is:</p>
-<div class="codehilite"><pre><span></span><span class="k">\documentclass</span><span class="nb">{</span>article<span class="nb">}</span>
-<span class="k">\usepackage</span><span class="nb">{</span>booktabs<span class="nb">}</span>
-<span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
-<span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
-  <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. summary stats)<span class="nb">}</span>
-  <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span> <span class="c">% name must match label in input1.txt</span>
-  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>crcc<span class="nb">}</span>
-    Outcomes
-    <span class="nb">&amp;</span> N
-    <span class="nb">&amp;</span> Mean
-    <span class="nb">&amp;</span> (Std.)
-    <span class="k">\\</span>
-    Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>1<span class="k">\#</span>) <span class="k">\\</span>
-    Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>1<span class="k">\#</span>) <span class="k">\\</span>
-    Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>1<span class="k">\#</span>) <span class="k">\\</span>
-    Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>1<span class="k">\#</span>) <span class="k">\\</span>
-    <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
-  <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
-<span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
-
-<span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
-  <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. regression results)<span class="nb">}</span>
-  <span class="k">\label</span><span class="nb">{</span>tab:anotherExample<span class="nb">}</span> <span class="c">% name must match label in input1.txt</span>
-  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>cc<span class="nb">}</span>
-    Variables
-    <span class="nb">&amp;</span> Coef
-    <span class="nb">&amp;</span> (SE)
-    <span class="k">\\</span>
-    Variable 1 <span class="nb">&amp;</span> <span class="k">\#</span>2<span class="k">\#</span> (<span class="k">\#</span>2<span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
-    Variable 2 <span class="nb">&amp;</span> <span class="k">\#</span>2<span class="k">\#</span> (<span class="k">\#</span>2<span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
-    Variable 3 <span class="nb">&amp;</span> <span class="k">\#</span>2<span class="k">\#</span> (<span class="k">\#</span>2<span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
-    <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
-  <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
-<span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
-<span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span>
+<p>If you do not wish to install <code>tablefill</code> system-wide, you can simply
+download <a href="../tablefill/tablefill.py"><code>tablefill.py</code></a> and place it in
+your project's folder. The above snippet will import it into python
+correctly; however, the command-line call is would change to:</p>
+<div class="codehilite"><pre><span></span>python paht/to/tablefill.py -i input1.txt <span class="o">[</span>input2.txt ...<span class="o">]</span> -o output.tex template.tex
 </pre></div>
 
 
-<p>Note that each table environment is labeled, and the label corresponds
-to the set of results we want to fill that table with. Further note
-that the shape of the input matrices correspond to the <em><strong>number</strong></em> of
-placeholders in the table environment (the shape need not be the same;
-see the <a href="usage/02matrix-input.html">matrix input</a> section for details).
-To fill the template, run</p>
-<div class="codehilite"><pre><span></span>tablefill -i input1.txt -o filled.tex template.tex
-</pre></div>
-
-
-<p>This produces the file <code>filled.tex</code>:</p>
-<div class="codehilite"><pre><span></span><span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="c">% This file was produced by &#39;tablefill.py&#39;</span>
-<span class="c">%   Template file: /home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/docs/usage/01basic/template.tex</span>
-<span class="c">%   Input file(s): [&#39;/home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/docs/usage/01basic/input1.txt&#39;]</span>
-<span class="c">% To make changes, edit the input and template files.</span>
-<span class="c">% %</span>
-
-<span class="c">% DO NOT EDIT THIS FILE DIRECTLY.</span>
-<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<h2 id="overview">Overview</h2>
+<p><code>tablefill</code> replaces named placeholders inside LaTeX, LyX, or Markdown tables. While the initial setup is more complex than, say, <code>estout</code> or <code>tabout</code>, <code>tablefill</code> is much more flexible. The workflow is typically as follows:</p>
+<ol>
+<li>
+<p>Create a LaTeX (or LyX or Markdown) document with tables that you want filled with numeric (or text) output.</p>
+<ul>
+<li>Each table must be labeled and have placeholders where you need output to be replaced.</li>
+<li>Format the table in any way you see fit; placeholders can be anywhere inside the table.</li>
+</ul>
+</li>
+<li>
+<p>Create a matrix of values that correspond to the table's placeholders.</p>
+<ul>
+<li>Values will be read in order from the topmost row, left to right.</li>
+</ul>
+</li>
+<li>
+<p>Export that matrix to a text file.</p>
+<ul>
+<li>The matrix is preceded by a label that must match the label in your LaTeX document.</li>
+<li>Numeric matrices are most common, but <code>tablefill</code> will also take text input.</li>
+</ul>
+</li>
+<li>
+<p><code>tablefill</code> replaces the placeholders with the matrix values.</p>
+</li>
+</ol>
+<p>The strength of this workflow is its flexibility. The user can format their tables however they see fit, without imposing any restrictions on where the values will be filled, as long as they are inside a labeled table.  Optionally, the user can create a file with various mappings to allow multiple Stata matrices to be appended as a single LaTeX table, or different portions of a single matrix to be appended to several tables. This is covered in the <a href="usage/06xml-engine.html">XML engine</a> section.</p>
+<h2 id="basic-example-in-latex">Basic Example in LaTeX</h2>
+<h3 id="template">Template</h3>
+<p>First you need to create a file with a table that you want. This can be anything from summary statistics to regression results to paragraphs that refer to a specifics or text which need to be updated. Consider, for instance, <a href="usage/01basic/template.tex"><code>template.tex</code></a> below:</p>
+<div class="codehilite"><pre><span></span><span class="c">% template.tex</span>
 <span class="k">\documentclass</span><span class="nb">{</span>article<span class="nb">}</span>
 <span class="k">\usepackage</span><span class="nb">{</span>booktabs<span class="nb">}</span>
 <span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
+
+<span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
+  <span class="k">\label</span><span class="nb">{</span>tab:paragraph<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
+  Sample paragraph referring to a number: e.g. <span class="s">$</span><span class="nb">N </span><span class="o">=</span><span class="nb"> </span><span class="nv">\#</span><span class="m">0</span><span class="nb">,</span><span class="nv">\#</span><span class="s">$</span>.
+  Or perhaps text: e.g. This is the <span class="k">\#\#\#</span> sample. You can
+  also fill text using python-style formatting: <span class="k">\#</span><span class="nb">{}</span><span class="k">\#</span>.
+<span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
+
+Regular placeholders:
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. summary stats)<span class="nb">}</span>
-  <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span> <span class="c">% name must match label in input1.txt</span>
+  <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span> <span class="c">% name must match label in input.txt</span>
   <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>crcc<span class="nb">}</span>
     Outcomes
     <span class="nb">&amp;</span> N
     <span class="nb">&amp;</span> Mean
     <span class="nb">&amp;</span> (Std.)
-    <span class="k">\</span>
-    Outcomes 1 <span class="nb">&amp;</span> 1,237.1 <span class="nb">&amp;</span> 1.0 <span class="nb">&amp;</span> (2.0) <span class="k">\</span>
-    Outcomes 2 <span class="nb">&amp;</span> 2,234 <span class="nb">&amp;</span> 3.0 <span class="nb">&amp;</span> (2.4) <span class="k">\</span>
-    Outcomes 3 <span class="nb">&amp;</span> 3.3 <span class="nb">&amp;</span> 2.0 <span class="nb">&amp;</span> (2.5) <span class="k">\</span>
-    Outcomes 4 <span class="nb">&amp;</span> 2,234 <span class="nb">&amp;</span> 3.0 <span class="nb">&amp;</span> (2.4) <span class="k">\</span>
+    <span class="k">\\</span>
+    Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>2<span class="k">\#</span>) <span class="k">\\</span>
+    Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>2<span class="k">\#</span>) <span class="k">\\</span>
+    Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>2<span class="k">\#</span>) <span class="k">\\</span>
+    Outcomes <span class="k">\#\#\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>0,<span class="k">\#</span> <span class="nb">&amp;</span> <span class="k">\#</span>1<span class="k">\#</span> <span class="nb">&amp;</span> (<span class="k">\#</span>2<span class="k">\#</span>) <span class="k">\\</span>
     <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
   <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
 
+Python-style formatting:
 <span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
   <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. regression results)<span class="nb">}</span>
-  <span class="k">\label</span><span class="nb">{</span>tab:anotherExample<span class="nb">}</span> <span class="c">% name must match label in input1.txt</span>
+  <span class="k">\label</span><span class="nb">{</span>tab:anotherExample<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
   <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>c<span class="nb">}</span>
-    Variables
+    Outcomes
     <span class="nb">&amp;</span> Coef
     <span class="nb">&amp;</span> (SE)
-    <span class="k">\</span>
-    Variable 1 <span class="nb">&amp;</span> -1.25 (-1.18) <span class="k">\</span>
-    Variable 2 <span class="nb">&amp;</span> 2.76 (-0.53)*** <span class="k">\</span>
-    Variable 3 <span class="nb">&amp;</span> 1.13 (0.57)** <span class="k">\</span>
+    <span class="k">\\</span>
+    Variable 1 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
+    Variable 2 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
+    Variable 3 <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:.1f<span class="nb">}</span><span class="k">\#</span> (<span class="k">\#</span><span class="nb">{</span>:.2f<span class="nb">}</span><span class="k">\#</span>)<span class="k">\#*\#</span> <span class="k">\\</span>
+    <span class="k">\midrule</span>
+             N <span class="nb">&amp;</span> <span class="k">\#</span><span class="nb">{</span>:,.0f<span class="nb">}</span><span class="k">\#</span> <span class="k">\\</span>
     <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
   <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
 <span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
@@ -538,28 +760,15 @@ To fill the template, run</p>
 </pre></div>
 
 
-<p>The placeholders in <code>tab:example</code> were replaced with the entries right
-under <code>&lt;tab:example&gt;</code> in the file <code>input1.txt</code>, and similarly with
-<code>tab:anotherExample</code>. <code>tablefill</code> assumes that the input ends when the
-next placeholder starts or at the end of the file.</p>
-<p>Note that the entries have been formatted based on the directions passed
-by the placeholders.</p>
-<h2 id="explanation">Explanation</h2>
-<p>The way <code>tablefill</code> operates is:</p>
-<ol>
-<li>Per line, the program searches for a <code>\begin{table}</code> statement..</li>
-<li>If found, it searches for a <code>\label{tab:(.+)}</code> BEFORE an <code>\end{table}</code>.</li>
-<li>If a label is found, it searches the input files for a label a match.</li>
-<li>Find all occurrences of placeholders (note that in LaTeX, <code>#</code> is a
-   special character, so <code>tablefill</code> will match both <code>#</code> and <code>\#</code> as part
-   of a placeholder construct; this is so that templates can be compiled
-   before using <code>tablefill</code> to fill in the values):</li>
-</ol>
+<h3 id="placeholders">Placeholders</h3>
+<ul>
+<li>Placeholders are of the form <code>###</code> or <code>\#\#\#</code> (the latter since LaTeX requires the <code>#</code> character to be escaped), with the middle placeholder varying depending on whether you wish to customize the printing format. The following constructs are available:</li>
+</ul>
 <table>
 <thead>
 <tr>
-<th>Placeholder</th>
-<th>Format</th>
+<th>Placeholder Format</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
@@ -584,22 +793,362 @@ by the placeholders.</p>
 <td>Round to <code>\d+</code> digits; interpret as percentage.</td>
 </tr>
 <tr>
-<td><code>|###|</code></td>
+<td><code>#|#|#</code></td>
 <td>Get the absolute value of the number.</td>
+</tr>
+<tr>
+<td><code>#{.*}#</code></td>
+<td>Arbitrary python format. Anything that <code>string.format()</code> will accept is allowed. In Python 2.6, you must prepend <code>0:</code>, that is <code>{0:.+}</code>.</td>
 </tr>
 </tbody>
 </table>
+<ul>
+<li>
+<p>Each table contains somewhere in it a <code>label{tab:...}</code> statement.</p>
+<ul>
+<li>This is <em>required</em> and will be used to identify the input to use to fill in that table.</li>
+<li>It must match an entry in <code>input.txt</code> (<a href="#exporting-matrices-in-stata">created below</a>) <strong><em>or</em></strong> it must match a name provided in the optional mapping file.</li>
+</ul>
+</li>
+<li>
+<p>There must be at most one table line per code line (hence all the <code>\\</code>, but that also makes the table more readable).</p>
+</li>
+<li>
+<p>The LaTeX environment must be a table environment, not tabular. See the <a href="#basic-example-in-lyx">LyX</a> and <a href="#basic-example-in-markdown">Markdown</a> sections below for details on how to set up tables in those formats.</p>
+</li>
+</ul>
+<h3 id="input">Input</h3>
+<p>In order to fill this template, we need data. Consider this example input file, called <a href="usage/01basic/input.txt"><code>input.txt</code></a></p>
+<div class="codehilite"><pre><span></span>&lt;tab:paragraph&gt;
+    5708
+    &#39;tablefill example&#39;
+    &#39;python formatting&#39;
+
+&lt;tab:example&gt;
+    1     1237.1234      1       2
+    2     2234.4         3       2.4
+    3     3.345345       2       2.456
+    4     2234.4         3       2.4
+
+&lt;tab:anotherExample&gt;
+     -1.25         -1.18     0.1447266
+     2.756         -0.53     9.964426e-08
+      1.13       0.57235     0.02417291
+      5708
+</pre></div>
+
+
+<p>(see <a href="exporting-matrices-in-stata">below</a> for an example of how to create this file directly from Stata).</p>
+<h3 id="output">Output</h3>
+<p>To get the filled output, run</p>
+<div class="codehilite"><pre><span></span>tablefill -i input.txt -o filled.tex template.tex
+</pre></div>
+
+
+<p>This produces <a href="usage/01basic/input.txt"><code>input.txt</code></a>:</p>
+<div class="codehilite"><pre><span></span><span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="c">% This file was produced by &#39;tablefill.py&#39;</span>
+<span class="c">%   Template file: /home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/docs/usage/01basic/template.tex</span>
+<span class="c">%   Input file(s): [&#39;/home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/docs/usage/01basic/input.txt&#39;]</span>
+<span class="c">% To make changes, edit the input and template files.</span>
+<span class="c">% %</span>
+
+<span class="c">% DO NOT EDIT THIS FILE DIRECTLY.</span>
+<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="c">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+<span class="k">\documentclass</span><span class="nb">{</span>article<span class="nb">}</span>
+<span class="k">\usepackage</span><span class="nb">{</span>booktabs<span class="nb">}</span>
+<span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
+
+<span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
+  <span class="k">\label</span><span class="nb">{</span>tab:paragraph<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
+  Sample paragraph referring to a number: e.g. <span class="s">$</span><span class="nb">N </span><span class="o">=</span><span class="nb"> </span><span class="m">5</span><span class="nb">,</span><span class="m">708</span><span class="s">$</span>.
+  Or perhaps text: e.g. This is the &#39;tablefill example&#39; sample. You can
+  also fill text using python-style formatting: &#39;python formatting&#39;.
+<span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
+
+Regular placeholders:
+<span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
+  <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. summary stats)<span class="nb">}</span>
+  <span class="k">\label</span><span class="nb">{</span>tab:example<span class="nb">}</span> <span class="c">% name must match label in input1.txt</span>
+  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>crcc<span class="nb">}</span>
+    Outcomes
+    <span class="nb">&amp;</span> N
+    <span class="nb">&amp;</span> Mean
+    <span class="nb">&amp;</span> (Std.)
+    <span class="k">\\</span>
+    Outcomes 1 <span class="nb">&amp;</span> 1,237 <span class="nb">&amp;</span> 1.0 <span class="nb">&amp;</span> (2.00) <span class="k">\\</span>
+    Outcomes 2 <span class="nb">&amp;</span> 2,234 <span class="nb">&amp;</span> 3.0 <span class="nb">&amp;</span> (2.40) <span class="k">\\</span>
+    Outcomes 3 <span class="nb">&amp;</span> 3 <span class="nb">&amp;</span> 2.0 <span class="nb">&amp;</span> (2.46) <span class="k">\\</span>
+    Outcomes 4 <span class="nb">&amp;</span> 2,234 <span class="nb">&amp;</span> 3.0 <span class="nb">&amp;</span> (2.40) <span class="k">\\</span>
+    <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
+  <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
+<span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
+
+Python-style formatting:
+<span class="k">\begin</span><span class="nb">{</span>table<span class="nb">}</span>
+  <span class="k">\caption</span><span class="nb">{</span>Table caption (e.g. regression results)<span class="nb">}</span>
+  <span class="k">\label</span><span class="nb">{</span>tab:anotherExample<span class="nb">}</span> <span class="c">% must match label in input.txt</span>
+  <span class="k">\begin</span><span class="nb">{</span>tabular<span class="nb">}{</span>p<span class="nb">{</span>4.25cm<span class="nb">}</span>c<span class="nb">}</span>
+    Outcomes
+    <span class="nb">&amp;</span> Coef
+    <span class="nb">&amp;</span> (SE)
+    <span class="k">\\</span>
+    Variable 1 <span class="nb">&amp;</span> -1.2 (-1.18) <span class="k">\\</span>
+    Variable 2 <span class="nb">&amp;</span> 2.8 (-0.53)*** <span class="k">\\</span>
+    Variable 3 <span class="nb">&amp;</span> 1.1 (0.57)** <span class="k">\\</span>
+    <span class="k">\midrule</span>
+             N <span class="nb">&amp;</span> 5,708 <span class="k">\\</span>
+    <span class="k">\multicolumn</span><span class="nb">{</span>4<span class="nb">}{</span>p<span class="nb">{</span>5cm<span class="nb">}}{</span><span class="k">\footnotesize</span> Footnotes!<span class="nb">}</span>
+  <span class="k">\end</span><span class="nb">{</span>tabular<span class="nb">}</span>
+<span class="k">\end</span><span class="nb">{</span>table<span class="nb">}</span>
+<span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span>
+</pre></div>
+
+
+<h3 id="explanation">Explanation</h3>
+<p>The following replacements were made:</p>
+<table>
+<thead>
+<tr>
+<th>Placeholder</th>
+<th>Replacement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\#\#\#</code></td>
+<td>replaced as is; mainly used for text input</td>
+</tr>
+<tr>
+<td><code>\#0,\#</code></td>
+<td>round to 0 decimal places, add thousands comma-separator</td>
+</tr>
+<tr>
+<td><code>\#1\#</code></td>
+<td>round to 1 decimal places</td>
+</tr>
+<tr>
+<td><code>\#2\#</code></td>
+<td>round to 2 decimal places</td>
+</tr>
+<tr>
+<td><code>\#*\#</code></td>
+<td>Input is a p-value; replaced with significance stars</td>
+</tr>
+<tr>
+<td><code>\#{}\#</code></td>
+<td>Passes input to <code>"{}".format()</code> (print as is)</td>
+</tr>
+<tr>
+<td><code>\#{:.1f}\#</code></td>
+<td>Passes input to <code>"{:.1f}".format()</code> (round to 1 decimal places)</td>
+</tr>
+<tr>
+<td><code>\#{:,.0f}\#</code></td>
+<td>Passes input to <code>"{:,.0f}".format()</code> (thousands comma-separator, round to 0 decimal places)</td>
+</tr>
+</tbody>
+</table>
+<p>The way <code>tablefill</code> operates is:</p>
 <ol>
+<li>Per line, the program searches for the start of a table. In LaTeX, this is <code>\begin{table}</code>.</li>
+<li>If found, it searches for a label <strong><em>before</em></strong> the the table ends. In LaTeX this is <code>\label{tab:(.+)}</code> before <code>\end{table}</code>.</li>
+<li>If a label is found, it searches the input files for a label a match.</li>
+<li>Find all occurrences of placeholders (note that in LaTeX, <code>#</code> is a special character, so <code>tablefill</code> will match both <code>#</code> and <code>\#</code> as part of a placeholder construct; this is so that templates can be compiled before using <code>tablefill</code> to fill in the values).</li>
 <li>Repeat 3 and 4 until reaching <code>\end{table}</code></li>
 <li>Move on to next table: Repeat 1 to 5 until reaching the end of the document.</li>
 </ol>
-<p>We can see this in the example above:</p>
-<ol>
-<li><code>\#\#\#</code> was replaced as is.</li>
-<li><code>\#0\#</code>, <code>\#1\#</code>, and <code>\#2\#</code> were rounded to 0, 1, and 2 significant digits.</li>
-<li><code>\#0,\#</code> were comma-delimited.</li>
-<li><code>\#*\#</code> were replaced with significance stars.</li>
-</ol>
+<h2 id="exporting-matrices-in-stata">Exporting Matrices in Stata</h2>
+<p>We provide code snippets in <a href="sample-programs.html">several programming languages</a> to illustrate the format required by <code>tablefill</code> as input. For this example, we will use a Stata program named <code>saveTable</code>. We keep a copy in this repository, and you can install it from Stata by running:</p>
+<div class="codehilite"><pre><span></span><span class="k">local</span> gh_repo https:<span class="o">//</span>raw<span class="m">.</span>githubusercontent<span class="m">.</span>com<span class="o">/</span>mcaceresb<span class="o">/</span>tablefill<span class="k"></span>
+<span class="k">net</span> install matrix_tools, from(<span class="s">&quot;</span><span class="nv">`gh_repo&#39;</span><span class="s">/master/docs/programs&#39;&quot;</span>)
+</pre></div>
+
+
+<p>Now you should be able to run <code>saveTable</code> from any Stata session.  As a simple example, we create a random matrix with four rows and three columns:</p>
+<div class="codehilite"><pre><span></span><span class="k">matrix</span> x = (<span class="m">1</span>, <span class="m">1237.1234</span>, <span class="m">1</span>, <span class="m">2</span>)     \ <span class="cs">///</span>
+           (<span class="m">2</span>, <span class="m">2234.4</span>,    <span class="m">3</span>, <span class="m">2.4</span>)   \ <span class="cs">///</span>
+           (<span class="m">3</span>, <span class="m">3.345345</span>,  <span class="m">2</span>, <span class="m">2.456</span>)
+           (<span class="m">4</span>, <span class="m">2234.4</span>,    <span class="m">3</span>, <span class="m">2.4</span>)
+
+saveTable using <span class="s">&quot;input.txt&quot;</span>, outmatrix(x) tag(<span class="s">&quot;&lt;tab:example&gt;&quot;</span>)
+</pre></div>
+
+
+<h3 id="savetable-arguments"><code>saveTable</code> arguments</h3>
+<ul>
+<li>
+<p><code>using</code>: <em>required</em>, provide the filename to write to.</p>
+</li>
+<li>
+<p><code>OUTMatrix</code>: <em>required</em>, provide the name of the matrix intended for exporting. The capitalization <code>OUTMatrix</code> means that at this command can be abbreviated up to <code>outmat</code>, that is</p>
+</li>
+</ul>
+<div class="codehilite"><pre><span></span>saveTable using <span class="s">&quot;matrix.txt&quot;</span>, outm(x) tag(<span class="s">&quot;&lt;tab:example_matrix&gt;&quot;</span>)
+</pre></div>
+
+
+<ul>
+<li><code>tag</code>: <em>required</em>, string for tag for outputted matrix. Note that the format is <code>&lt;tab:label&gt;</code>. To append a matrix to the last tag in the file, provide a blank tag.</li>
+</ul>
+<div class="codehilite"><pre><span></span>saveTable using <span class="s">&quot;matrix.txt&quot;</span>, outm(x) tag(<span class="s">&quot;&lt;tab:example_matrix&gt;&quot;</span>)
+saveTable using <span class="s">&quot;matrix.txt&quot;</span>, outm(y) tag(<span class="s">&quot; &quot;</span>)
+</pre></div>
+
+
+<div class="codehilite"><pre><span></span>&lt;tab:example_matrix&gt;
+    entries of x
+
+    entries of y
+</pre></div>
+
+
+<ul>
+<li><code>Format</code>: <em>optional</em>, string for numerical format for outputted data. By default the output format is <code>%21.9f</code></li>
+</ul>
+<p>We give the example of a numeric matrix, as this is the most common usage, but as we saw above any text that is appended after the label can be filled by <code>tablefill</code> (entries must be tab-delimited or appear in a separate line). To produce the <code>input.txt</code> file we use earlier, run the <a href="usage/01basic/example.do">following <code>do</code> file</a>:</p>
+<div class="codehilite"><pre><span></span><span class="k">file open</span> fh using <span class="s">&quot;input.txt&quot;</span>, write text<span class="k"> append</span>
+<span class="k">file</span> write fh <span class="s">&quot;&lt;tab:paragraph&gt;&quot;</span>     _n <span class="cs">///</span>
+         _tab <span class="s">&quot;5708&quot;</span>                _n <span class="cs">///</span>
+         _tab <span class="s">&quot;&#39;tablefill example&#39;&quot;</span> _n <span class="cs">///</span>
+         _tab <span class="s">&quot;&#39;python formatting&#39;&quot;</span> _n<span class="k"></span>
+<span class="k">file close</span> fh
+
+<span class="k">matrix</span> x = (<span class="m">1</span>, <span class="m">1237.1234</span>, <span class="m">1</span>, <span class="m">2</span>)     \ <span class="cs">///</span>
+           (<span class="m">2</span>, <span class="m">2234.4</span>,    <span class="m">3</span>, <span class="m">2.4</span>)   \ <span class="cs">///</span>
+           (<span class="m">3</span>, <span class="m">3.345345</span>,  <span class="m">2</span>, <span class="m">2.456</span>) \ <span class="cs">///</span>
+           (<span class="m">4</span>, <span class="m">2234.4</span>,    <span class="m">3</span>, <span class="m">2.4</span>)
+
+<span class="k">matrix</span> y = (<span class="o">-</span><span class="m">1.25</span>,   <span class="o">-</span><span class="m">1.18</span>, <span class="m">0.1447266</span>)    \ <span class="cs">///</span>
+           (<span class="m">2.756</span>,   <span class="o">-</span><span class="m">0.53</span>, <span class="m">9.964426e-08</span>) \ <span class="cs">///</span>
+           (<span class="m">1.13</span>,  <span class="m">0.57235</span>, <span class="m">0.02417291</span>)   \ <span class="cs">///</span>
+           (<span class="m">5708</span>,        ., .)
+
+saveTable using <span class="s">&quot;input.txt&quot;</span>, outmatrix(x) f(<span class="nx">%12.0g</span>) tag(<span class="s">&quot;&lt;tab:example&gt;&quot;</span>)
+saveTable using <span class="s">&quot;input.txt&quot;</span>, outmatrix(y) f(<span class="nx">%12.0g</span>) tag(<span class="s">&quot;&lt;tab:anotherExample&gt;&quot;</span>)
+</pre></div>
+
+
+<p>Now you can run</p>
+<div class="codehilite"><pre><span></span>tablefill -i input.txt -o filled.tex template.tex
+</pre></div>
+
+
+<h2 id="basic-example-in-markdown">Basic Example in Markdown</h2>
+<p>Consider the file <a href="usage/01basic/template.html"><code>template.md</code></a></p>
+<div class="codehilite"><pre><span></span>&lt;!-- tablefill:start tab:paragraph --&gt;
+
+Sample paragraph referring to a number: e.g. $N = #0,#$.  Or perhaps
+text: e.g. This is the ### sample. You can also fill text using
+python-style formatting: #{}#.
+
+&lt;!-- tablefill:end --&gt;
+
+&lt;!-- tablefill:start tab:example --&gt;
+
+| Outcomes     | N    | Mean | (Std.) |
+| ------------ | ---- | ---- | ------ |
+| Outcomes ### | #0,# | #1,# | (#2,#) |
+| Outcomes ### | #0,# | #1,# | (#2,#) |
+| Outcomes ### | #0,# | #1,# | (#2,#) |
+| Outcomes ### | #0,# | #1,# | (#2,#) |
+
+&lt;!-- tablefill:end --&gt;
+
+`pandoc` will compile raw LaTeX inside markdown documents, so
+`tablefill` will also replace placeholders in LaTeX tables inside
+markdown files:
+
+\begin{table}
+  \caption{Table caption (e.g. regression results)}
+  \label{tab:anotherExample}
+  \begin{tabular}{p{4.25cm}c}
+    Outcomes
+    &amp; Coef
+    &amp; (SE)
+    \\
+    Variable 1 &amp; \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
+    Variable 2 &amp; \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
+    Variable 3 &amp; \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
+    \midrule
+             N &amp; \#{:,.0f}\# \\
+    \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
+  \end{tabular}
+\end{table}
+\end{document}
+</pre></div>
+
+
+<p>Using the same <a href="usage/01basic/input.txt"><code>input.txt</code></a> file as above, run</p>
+<div class="codehilite"><pre><span></span>tablefill.py -i input.txt -o filled.md template.md 
+</pre></div>
+
+
+<p>This produces <a href="usage/01basic/filled.html"><code>filled.md</code></a></p>
+<div class="codehilite"><pre><span></span>&lt;!-- This file was produced by &#39;tablefill.py&#39;
+    Template file: /home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/docs/usage/01basic/template.md
+    Input file(s): [&#39;/home/mauricio/Documents/projects/dev/code/archive/2015/tablefill/docs/usage/01basic/input.txt&#39;]
+To make changes, edit the input and template files.
+
+
+DO NOT EDIT THIS FILE DIRECTLY.
+ --&gt;
+
+&lt;!-- tablefill:start tab:paragraph --&gt;
+
+Sample paragraph referring to a number: e.g. $N = 5,708$.  Or perhaps
+text: e.g. This is the &#39;tablefill example&#39; sample. You can also fill text using
+python-style formatting: &#39;python formatting&#39;.
+
+&lt;!-- tablefill:end --&gt;
+
+&lt;!-- tablefill:start tab:example --&gt;
+
+| Outcomes     | N    | Mean | (Std.) |
+| ------------ | ---- | ---- | ------ |
+| Outcomes 1 | 1,237 | 1.0 | (2.00) |
+| Outcomes 2 | 2,234 | 3.0 | (2.40) |
+| Outcomes 3 | 3 | 2.0 | (2.46) |
+| Outcomes 4 | 2,234 | 3.0 | (2.40) |
+
+&lt;!-- tablefill:end --&gt;
+
+`pandoc` will compile raw LaTeX inside markdown documents, so
+`tablefill` will also replace placeholders in LaTeX tables inside
+markdown files:
+
+\begin{table}
+  \caption{Table caption (e.g. regression results)}
+  \label{tab:anotherExample}
+  \begin{tabular}{p{4.25cm}c}
+    Outcomes
+    &amp; Coef
+    &amp; (SE)
+    \\
+    Variable 1 &amp; -1.2 (-1.18) \\
+    Variable 2 &amp; 2.8 (-0.53)*** \\
+    Variable 3 &amp; 1.1 (0.57)** \\
+    \midrule
+             N &amp; 5,708 \\
+    \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
+  \end{tabular}
+\end{table}
+\end{document}
+</pre></div>
+
+
+<h2 id="basic-example-in-lyx">Basic Example in LyX</h2>
+<div class="admonition info">
+<p class="admonition-title">Warning</p>
+<p>This section is under construction</p>
+</div>
+<h2 id="comparison-with-other-methods">Comparison with other methods</h2>
+<p>There are a few programs to do this in Stata.  <a href="http://repec.sowi.unibe.ch/stata/estout/"><code>estout</code></a> is very helpful, but it is mainly designed to work with estimation output and can be hard to customize otherwise.  <a href="https://www.tabout.net.au/downloads/tabout_user_guide.pdf"><code>tabout</code></a> is very promising but somewhat hard to use.  Further, both <code>estout</code> and <code>tabout</code> impose a specific process to create the matrix of values that underlies a table. This means that a lot of the formatting must be done directly from Stata, which is not as flexible as <code>tablefill</code>'s approach.</p>
+<p>Naturally, if the shape and format of the tables that you will be producing will vary a lot <em>and</em> you do not need the flexibility that <code>tablefill</code> affords, then it is probably not the best tool, as it does have steeper setup costs.</p>
                 
                   
                 
@@ -635,13 +1184,13 @@ by the placeholders.</p>
           </a>
         
         
-          <a href="sample-workflow.html" title="Sample Workflow" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="sample-programs.html" title="Sample Programs" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Sample Workflow
+                Sample Programs
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
@@ -675,9 +1224,9 @@ by the placeholders.</p>
       
       <script>app.initialize({version:"1.0.4",url:{base:"."}})</script>
       
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-      
         <script src="helpers.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
       
     
     

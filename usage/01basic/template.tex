@@ -1,6 +1,15 @@
 \documentclass{article}
 \usepackage{booktabs}
 \begin{document}
+
+\begin{table}
+  \label{tab:paragraph} % must match label in input.txt
+  Sample paragraph referring to a number: e.g. $N = \#0,\#$.
+  Or perhaps text: e.g. This is the \#\#\# sample. You can
+  also fill text using python-style formatting: \#{}\#.
+\end{table}
+
+Regular placeholders:
 \begin{table}
   \caption{Table caption (e.g. summary stats)}
   \label{tab:example} % name must match label in input1.txt
@@ -9,26 +18,29 @@
     & N
     & Mean
     & (Std.)
-    \
-    Outcomes \#\#\# & \#1,\# & \#1\# & (\#1\#) \
-    Outcomes \#\#\# & \#0,\# & \#1\# & (\#1\#) \
-    Outcomes \#\#\# & \#1,\# & \#1\# & (\#1\#) \
-    Outcomes \#\#\# & \#0,\# & \#1\# & (\#1\#) \
+    \\
+    Outcomes \#\#\# & \#0,\# & \#1\# & (\#2\#) \\
+    Outcomes \#\#\# & \#0,\# & \#1\# & (\#2\#) \\
+    Outcomes \#\#\# & \#0,\# & \#1\# & (\#2\#) \\
+    Outcomes \#\#\# & \#0,\# & \#1\# & (\#2\#) \\
     \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
   \end{tabular}
 \end{table}
 
+Python-style formatting:
 \begin{table}
   \caption{Table caption (e.g. regression results)}
-  \label{tab:anotherExample} % name must match label in input1.txt
+  \label{tab:anotherExample} % must match label in input.txt
   \begin{tabular}{p{4.25cm}c}
     Outcomes
     & Coef
     & (SE)
-    \
-    Variable 1 & \#2\# (\#2\#)\#*\# \
-    Variable 2 & \#2\# (\#2\#)\#*\# \
-    Variable 3 & \#2\# (\#2\#)\#*\# \
+    \\
+    Variable 1 & \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
+    Variable 2 & \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
+    Variable 3 & \#{:.1f}\# (\#{:.2f}\#)\#*\# \\
+    \midrule
+             N & \#{:,.0f}\# \\
     \multicolumn{4}{p{5cm}}{\footnotesize Footnotes!}
   \end{tabular}
 \end{table}
