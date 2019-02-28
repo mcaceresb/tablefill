@@ -1,6 +1,6 @@
 # Project information
 site_name:        'tablefill'
-site_description: 'Atimated system for LaTeX and LyX table updating'
+site_description: 'Automated system for LaTeX and LyX table updating'
 
 nav:
     - Home: index.md

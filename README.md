@@ -3,7 +3,8 @@ tablefill
 
 Automatically update LaTeX, LyX, and Markdown tables using a placeholder system.
 
-__*Quickstart*__
+Quickstart
+----------
 
 ```bash
 pip install git+https://github.com/mcaceresb/tablefill
@@ -17,14 +18,14 @@ Documentation
 fill LaTeX, LyX, and Markdown tables using formatted output from any
 programming language.
 
-- The [getting started](https://mcaceresb.github.io/tablefill/getting-started.html) gives a a basic example of
+- [Getting Started](https://mcaceresb.github.io/tablefill/getting-started.html) gives a a basic example of
   how the system works.
 
-- [Sample workflow](https://mcaceresb.github.io/tablefill/sample-workflow.html) guides the user on how to
+- [Sample Workflow](https://mcaceresb.github.io/tablefill/sample-workflow.html) guides the user on how to
   automate LaTeX table updating.
 
 - The usage section details the [input](https://mcaceresb.github.io/tablefill/usage/02matrix-input.html)
-  required by `tablefill`, the format of the [paceholders](https://mcaceresb.github.io/tablefill/usage/03placeholders.html)
+  required by `tablefill`, the format of the [placeholders](https://mcaceresb.github.io/tablefill/usage/03placeholders.html)
   that are allowed, and documents the `tablefill` usage options.
 
 - Last, we provide examples of how to generate the type of input
@@ -38,7 +39,7 @@ The original idea for this workflow comes from [GSLab](https://github.com/gslab-
 [The original tablefill](https://github.com/gslab-econ/gslab_python/blob/master/gslab_fill/tablefill.py)
 in particular was made to automatically update LyX files with Stata output.
 However, I expanded this system to work with LaTeX and added several features.
-The workflow for the is as follows:
+The workflow is as follows:
 
 1. Create a LaTeX, LyX, or Markdown document using placeholders in your tables.
    Label or tab each table appropriately.

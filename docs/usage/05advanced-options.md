@@ -49,7 +49,7 @@ flags:
 Python use
 ----------
 
-Options are analogous to their command-lien counterparts:
+Options are analogous to their command-line counterparts:
 
 ```python
 from tablefill import tablefill
