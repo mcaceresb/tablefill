@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\begin{document}
+\begin{table}
+    \caption{Table caption}
+    \label{tab:example_matrix}
+    \begin{tabular}{
+            p{4.25cm}@{\hskip 6pt}c
+            @{\hskip 15pt}
+            r@{\hskip 3pt}c
+            @{\hskip 15pt}
+        c}
+        Outcomes
+        & N
+        & Mean
+        & (Std.)
+        \\
+        Outcomes 1 & \#0,\# & \#2,\# & (\#2,\#) \\
+        Outcomes 2 & \#0,\# & \#2,\# & (\#2,\#) \\
+        Outcomes 3 & \#0,\# & \#2,\# & (\#2,\#) \\
+        Outcomes 4 & \#0,\# & \#2,\# & (\#2,\#) \\
+        \multicolumn{4}{p{5cm}}{\footnotesize Footnotes here!}
+    \end{tabular}
+\end{table}
+\end{document}
+% python2 ../../tablefill/tablefill.py -i pnystrup-matrix.txt -o pnystrup-output.tex pnystrup-template.tex

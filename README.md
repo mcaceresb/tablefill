@@ -14,7 +14,7 @@ tablefill --help
 Documentation
 -------------
 
-`tablefill` is a program that uses a generic placeholder system to update LaTeX, LyX, and Markdown documents. While it's primary use is to fill in tables (hance the name) placeholders are replaced anywhere in a table environment or within commented-out tablefill tags.
+`tablefill` is a program that uses a generic placeholder system to update LaTeX, LyX, and Markdown documents.  The name and idea for this workflow comes from [GSLab](https://github.com/gslab-econ/gslab_python).  This version was written to update LaTeX files in the same fashion, and later expanded to include Markdown and (several features)[#features].  While it's primary use is to fill in tables (hence the name) placeholders are replaced anywhere in a table environment or within commented-out `tablefill` tags.
 
 - [Getting Started](https://mcaceresb.github.io/tablefill/getting-started.html) gives a basic example of how the system works, and guides the user through updating a template using Stata-generated input files (this example can be replicated with any programming language, however, not just Stata).
 
@@ -25,15 +25,13 @@ Documentation
 Background
 ----------
 
-The original idea for this workflow comes from [GSLab](https://github.com/gslab-econ).  [The original tablefill](https://github.com/gslab-econ/gslab_python/blob/master/gslab_fill/tablefill.py) in particular was made to automatically update LyX files with Stata output.  However, I expanded this system to work with LaTeX and added several features.  The workflow is as follows:
+When I came across [the original `tablefill`](https://github.com/gslab-econ/gslab_python/blob/master/gslab_fill/tablefill.py) it could only update LyX files with Stata output (though I believe LaTeX support has been added in the time since). The idea was to expand the system to work with LaTeX, but over time I re-wrote the code base and added (several features)[#features], including Markdown support.  For compatibility with scripts using GSLab's `tablefill`, the script can be run from the command line or imported as a python module.  The workflow is as follows:
 
 1. Create a LaTeX, LyX, or Markdown document using placeholders. Label or tag each table appropriately.
 
 2. Print a matrix (or any array) into a tab-delimited text file. The output is preceded by the label or tag of the table you want to fill, and the matrix or array entries correspond to the placeholders.
 
 3. Run `tablefill` to update the placeholders in the template document.
-
-The original tablefill only worked with LyX and assumed the tables came from Stata (or Matlab). This project initially aimed to extend the system to work with LaTeX, but over time it re-wrote the entire code base and added (several features)[#features]. For compatibility with scripts using GSLab's tablefill, the script can be run from the command line or imported as a python module.
 
 Installation
 ------------

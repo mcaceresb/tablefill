@@ -12,7 +12,8 @@ Command-line use
 ```
 tablefill [-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
           [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
-          [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex}]
+          [--na-filters [FILTER [FILTER ...]]] [-t {auto,lyx,tex,md}]
+          [--xml-tables [INPUT [INPUT ...]]]
           TEMPLATE
 
 positional arguments:
@@ -25,12 +26,14 @@ optional arguments:
                         Input files with tables (default: TEMPLATE_table)
   -o OUTPUT, --output OUTPUT
                         Processed template file (default: TEMPLATE_filled)
-  -t {auto,lyx,tex}, --type {auto,lyx,tex}
+  -t {auto,lyx,tex,md}, --type {auto,lyx,tex,md}
                         Template file type (default: auto)
   --pvals [PVALS [PVALS ...]]
                         Significance thresholds
   --stars [STARS [STARS ...]]
                         Stars for sig thresholds (enclose each entry in quotes)
+  --na-filters [FILTER [FILTER ...]]
+                        Filters for missing values (enclose each entry in quotes)
   --xml-tables [INPUT [INPUT ...]]
                         Files with custom xml combinations.
 
@@ -57,11 +60,12 @@ from tablefill import tablefill
 exit, exit_msg = tablefill(template,     # required
                            input,        # required
                            output,       # required
-                           filetype,     # default: True
-                           verbose,      # default: 'auto'
-                           silent,       # default: [0.1, 0.05, 0.01]
-                           pvals,        # default: ['*', '**', '***']
-                           stars,        # default: False
+                           filetype,     # default: 'auto'
+                           verbose,      # default: True
+                           silent,       # default: False
+                           pvals,        # default: [0.1, 0.05, 0.01]
+                           stars,        # default: ['*', '**', '***']
+                           nafilters,    # default: ['.', '', 'NA', 'nan', 'NaN', 'None']
                            fillc,        # default: False
                            numpy_syntax, # default: False
                            use_floats,   # default: False
@@ -99,6 +103,9 @@ pvals : list
 
 stars : list
     symbols to replace p-values with
+
+nafilters : list
+    filters for missing values
 
 fillc : bool
     whether to fill in commented out lines

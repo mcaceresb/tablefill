@@ -24,7 +24,7 @@ test_requirements = []
 
 setup(
     author       = "Mauricio Cáceres Bravo",
-    author_email = 'caceres@nber.org',
+    author_email = 'mauricio_caceres_bravo@brown.edu',
     classifiers  = [
         'Development Status :: 2 - Pre-Alpha',
         'Intended Audience :: Developers',
@@ -36,6 +36,8 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
     ],
     description  = "Automatically update LaTeX, Markdown, and LyX tables.",
     entry_points = {
@@ -52,6 +54,6 @@ setup(
     test_suite                    = 'tests',
     tests_require                 = test_requirements,
     url                           = 'https://github.com/mcaceresb/tablefill',
-    version                       = '0.9.5',
+    version                       = '0.9.6',
     zip_safe                      = False,
 )

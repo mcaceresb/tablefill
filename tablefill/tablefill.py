@@ -21,7 +21,8 @@ Usage
 
 tablefill [-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
           [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
-          [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex,md}]
+          [--na-filters [FILTER [FILTER ...]]] [-t {auto,lyx,tex,md}]
+          [--xml-tables [INPUT [INPUT ...]]]
           TEMPLATE
 
 Fill tagged tables in LaTeX, LyX, and Markdown files with external text tables
@@ -42,6 +43,8 @@ optional arguments:
                         Significance thresholds
   --stars [STARS [STARS ...]]
                         Stars for sig thresholds (enclose each entry in quotes)
+  --na-filters [FILTER [FILTER ...]]
+                        Filters for missing values (enclose each entry in quotes)
   --xml-tables [INPUT [INPUT ...]]
                         Files with custom xml combinations.
 
@@ -122,13 +125,14 @@ except:
 __program__   = "tablefill.py"
 __usage__     = """[-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
                     [--pvals [PVALS [PVALS ...]]] [--stars [STARS [STARS ...]]]
-                    [--xml-tables [INPUT [INPUT ...]]] [-t {auto,lyx,tex,md}]
+                    [--na-filters [FILTER [FILTER ...]]] [-t {auto,lyx,tex,md}]
+                    [--xml-tables [INPUT [INPUT ...]]]
                     TEMPLATE"""
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
-__updated__   = "Tue Feb 26, 2019"
-__version__   = __program__ + " version 0.9.5 updated " + __updated__
+__updated__   = "Mon Sep 07, 2020"
+__version__   = __program__ + " version 0.9.6 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -157,6 +161,7 @@ def main():
                                silent         = fill.silent,
                                pvals          = fill.pvals,
                                stars          = fill.stars,
+                               nafilters      = fill.nafilters,
                                fillc          = fill.fillc,
                                legacy_parsing = fill.legacy_parsing,
                                numpy_syntax   = fill.numpy_syntax,
@@ -263,6 +268,7 @@ def tablefill(silent         = False,
               filetype       = 'auto',
               pvals          = [0.1, 0.05, 0.01],
               stars          = ['*', '**', '***'],
+              nafilters      = ['.', '', 'NA', 'nan', 'NaN', 'None'],
               fillc          = False,
               legacy_parsing = False,
               numpy_syntax   = False,
@@ -326,6 +332,7 @@ def tablefill(silent         = False,
                                                  silent,
                                                  pvals,
                                                  stars,
+                                                 nafilters,
                                                  fillc,
                                                  legacy_parsing,
                                                  numpy_syntax,
@@ -444,6 +451,14 @@ class tablefill_internals_cliparse:
                             help     = "Stars for sig thresholds "
                                        "(enclose each in quotes)",
                             required = False)
+        parser.add_argument('--na-filters',
+                            dest     = 'nafilters',
+                            type     = str,
+                            nargs    = '*',
+                            default  = ['.', '', 'NA', 'nan', 'NaN', 'None'],
+                            help     = "Filters for missing values"
+                                       "(enclose each in quotes)",
+                            required = False)
         parser.add_argument('-f', '--force',
                             dest     = 'force',
                             action   = 'store_true',
@@ -539,13 +554,14 @@ class tablefill_internals_cliparse:
         """
         Get arguments as strings to pass to tablefill
         """
-        self.template = path.abspath(self.args.template[0])
-        self.input    = ' '.join([path.abspath(f) for f in self.args.input])
-        self.output   = path.abspath(self.args.output[0])
-        self.silent   = self.args.silent
-        self.verbose  = self.args.verbose and not self.args.silent
-        self.stars    = self.args.stars
-        self.fillc    = self.args.fill_comments
+        self.template  = path.abspath(self.args.template[0])
+        self.input     = ' '.join([path.abspath(f) for f in self.args.input])
+        self.output    = path.abspath(self.args.output[0])
+        self.silent    = self.args.silent
+        self.verbose   = self.args.verbose and not self.args.silent
+        self.stars     = self.args.stars
+        self.nafilters = self.args.nafilters
+        self.fillc     = self.args.fill_comments
         self.legacy_parsing = self.args.legacy_parsing
         self.numpy_syntax   = self.args.numpy_syntax
         self.use_floats     = self.args.use_floats
@@ -634,6 +650,7 @@ class tablefill_internals_engine:
                  silent         = False,
                  pvals          = [0.1, 0.05, 0.01],
                  stars          = ['*', '**', '***'],
+                 nafilters      = ['.', '', 'NA', 'nan', 'NaN', 'None'],
                  fillc          = False,
                  legacy_parsing = False,
                  numpy_syntax   = False,
@@ -672,6 +689,7 @@ class tablefill_internals_engine:
         starlist.sort(key = lambda p: p[0], reverse = True)
         self.pvals          = [p for (p, s) in starlist]
         self.stars          = [s for (p, s) in starlist]
+        self.nafilters      = nafilters
         self.fillc          = fillc
         self.legacy_parsing = legacy_parsing
         self.numpy_syntax   = numpy_syntax
@@ -1163,7 +1181,7 @@ class tablefill_internals_engine:
                 ctables[tag] = list(flatten(table_tag))
 
     def filter_missing(self, string_list):
-        filters = ['.', '', 'NA', 'nan', 'NaN', 'None']
+        filters = self.nafilters
         return list(filter(lambda a: a not in filters, string_list))
 
     def get_filled_template(self):

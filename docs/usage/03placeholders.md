@@ -112,6 +112,11 @@ Output:
 
 ### Missing Values
 
+!!! note "Note"
+    Missing values are entries ignored by the parser. This is customized
+    via `--na-filters` (CLI) or `nafilters` (function). Default values
+    ignored are `--na-filters "." "" "NA" "nan" "NaN" "None"`.
+
 Input:
 
 ```

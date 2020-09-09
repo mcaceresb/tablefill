@@ -1,5 +1,11 @@
 # Changelog
 
+## tablefill-0.9.6 (2020-09-07)
+
+### Features
+
+- Allow `--na-filters` (`nafilters`) to customize missing value filters.
+
 ## tablefill-0.9.5 (2019-02-27)
 
 ### Features
