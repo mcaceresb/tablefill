@@ -1,7 +1,7 @@
 tablefill
 =========
 
-Automatically update LaTeX, LyX, and Markdown tables using a placeholder system.
+Automatically update LaTeX, LyX, and Markdown tables and numbers using a placeholder system.
 
 Quickstart
 ----------
@@ -14,7 +14,9 @@ tablefill --help
 Documentation
 -------------
 
-`tablefill` is a program that uses a generic placeholder system to update LaTeX, LyX, and Markdown documents.  The name and idea for this workflow comes from [GSLab](https://github.com/gslab-econ/gslab_python).  This version was written to update LaTeX files in the same fashion, and later expanded to include Markdown and [several features](#features).  While it's primary use is to fill in tables (hence the name) placeholders are replaced anywhere in a table environment or within commented-out `tablefill` tags.
+`tablefill` is a program that uses a generic placeholder system to update LaTeX, LyX, and Markdown documents.  While it's original use was to fill in tables (hence the name) placeholders are replaced anywhere in a table environment or anywhere within commented-out `tablefill` tags. Hence any text or numbers anywhere in the document can be updated using this system.
+
+The name and idea for this workflow comes from [GSLab](https://github.com/gslab-econ/gslab_python).  This version was written to update LaTeX files in the same fashion, and later expanded to include Markdown and [several features](#features).
 
 - [Getting Started](https://mcaceresb.github.io/tablefill/getting-started.html) gives a basic example of how the system works, and guides the user through updating a template using Stata-generated input files (this example can be replicated with any programming language, however, not just Stata).
 
@@ -49,9 +51,9 @@ Features
 As mentioned above, the original idea for tablefill comes from [GSLab](https://github.com/gslab-econ). However, this version has enough distinct features to merit calling itself a separate program. These include:
 
 - Ability to fill LaTeX and Markdown templates
+    - Placeholders can also be placed between commented-out tablefill tags, so updating is not restricted to literal tables.
     - There can be several placeholders in one line (however, there must be at most one table line per code line).
     - Labels in LaTeX can be anywhere in the table environment.
-    - Placeholders can also be placed between commented-out tablefill tags, so updating is not restricted to literal tables.
     - Placeholders can be either `#` or `\#` (note the former is a special character in LaTeX so while the filled output will compile, the template will not).
     - Can have several matches of the pattern in the same line.
     - LaTeX tables can be filled inside Markdown documents.
@@ -84,7 +86,7 @@ Contributors
 ------------
 
 - [Kyle Barron](https://github.com/kylebarron) has made several additions and improvements to this projects.
-- [GSLab](https://github.com/gslab-econ)'s [tablefill](https://github.com/gslab-econ/gslab_python/blob/master/gslab_fill/tablefill.py).
+- The idea behind this system came from from [GSLab](https://github.com/gslab-econ)'s [tablefill](https://github.com/gslab-econ/gslab_python/blob/master/gslab_fill/tablefill.py).
 
 License
 -------

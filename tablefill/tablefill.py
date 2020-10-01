@@ -790,7 +790,7 @@ class tablefill_internals_engine:
         #   - matchd:   absolute value
         #   - matchf:   python formatting
         #   - comments: comment
-        self.tags      = '^<Tab:(.+)>' + linesep
+        self.tags      = '^<Tab:(.+)>[\r\n' + linesep + ']'
         self.matche    = r'[^\\](%|&)'
         self.match0    = r'\\?#\|?((\d+)(,?|\\?%)?|\\?(#|\*)|{0?(:.*?)?})\|?\\?#'
         self.matcha    = r'\\?#\\?(#|\*)\\?#'
