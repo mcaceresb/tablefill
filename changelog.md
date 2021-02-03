@@ -1,5 +1,12 @@
 # Changelog
 
+## tablefill-0.9.7 (2021-02-02)
+
+### Features
+
+- `--no-header` option to supress header.
+- `--log-file` and `--log-only` options to redirect logging info.
+
 ## tablefill-0.9.6 (2020-09-07)
 
 ### Features

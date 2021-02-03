@@ -53,6 +53,9 @@ flags:
   -c, --compile         Compile output
   -b, --bibtex          Run bibtex on .aux file and re-compile
   -fc, --fill-comments  Fill in commented out placeholders.
+  -nc, --no-header      Supress header for filled template.
+  --log-only            Print results to log file only.
+  --log-file            Print results to log file.
   --numpy-syntax        Numpy syntax for custom XML tables.
   --use-floats          Force floats when passing objects to custom XML python.
   --ignore-xml          Ignore XML in template comments.
@@ -113,8 +116,10 @@ from operator import itemgetter
 from sys import exit as sysexit
 from sys import version_info
 from tempfile import mktemp
+
 import xml.etree.ElementTree as xml
 import argparse
+import sys
 import re
 try:
     import numpy
@@ -151,7 +156,6 @@ def main():
     fill.get_parsed_arguments()
     fill.get_argument_strings()
     fill.get_file_type()
-    print_verbose(fill.verbose, "Arguments look OK. Will run tablefill.")
 
     exit, exit_msg = tablefill(template       = fill.template,
                                input          = fill.input,
@@ -163,6 +167,9 @@ def main():
                                stars          = fill.stars,
                                nafilters      = fill.nafilters,
                                fillc          = fill.fillc,
+                               nohead         = fill.nohead,
+                               log_file       = fill.log_file,
+                               log_only       = fill.log_only,
                                legacy_parsing = fill.legacy_parsing,
                                numpy_syntax   = fill.numpy_syntax,
                                use_floats     = fill.use_floats,
@@ -270,6 +277,9 @@ def tablefill(silent         = False,
               stars          = ['*', '**', '***'],
               nafilters      = ['.', '', 'NA', 'nan', 'NaN', 'None'],
               fillc          = False,
+              nohead         = False,
+              log_file       = None,
+              log_only       = False,
               legacy_parsing = False,
               numpy_syntax   = False,
               use_floats     = False,
@@ -323,6 +333,10 @@ def tablefill(silent         = False,
                                input    = 'input_file(s)',
                                output   = 'output_file')
     """
+    if log_file:
+        sys.stdout = Logger(log_file, log_only)
+
+    print_verbose(verbose, "Arguments look OK. Will run tablefill.")
     try:
         verbose = verbose and not silent
         logmsg  = "Parsing arguments..."
@@ -334,6 +348,7 @@ def tablefill(silent         = False,
                                                  stars,
                                                  nafilters,
                                                  fillc,
+                                                 nohead,
                                                  legacy_parsing,
                                                  numpy_syntax,
                                                  use_floats,
@@ -479,6 +494,11 @@ class tablefill_internals_cliparse:
                             action   = 'store_true',
                             help     = "Fill placeholders in comments",
                             required = False)
+        parser.add_argument('-nc', '--no-header',
+                            dest     = 'no_header',
+                            action   = 'store_true',
+                            help     = "Supress header for filled template.",
+                            required = False)
         parser.add_argument('--ignore-xml',
                             dest     = 'ignore_xml',
                             action   = 'store_true',
@@ -507,6 +527,19 @@ class tablefill_internals_cliparse:
                             default  = None,
                             help     = "Files with custom XML combinations.",
                             required = False),
+        parser.add_argument('--log-file',
+                            dest     = 'log_file',
+                            type     = str,
+                            nargs    = 1,
+                            metavar  = 'LOG_FILE',
+                            default  = None,
+                            help     = "Print results to log file",
+                            required = False),
+        parser.add_argument('--log-only',
+                            dest     = 'log_only',
+                            action   = 'store_true',
+                            help     = "Print results to log file only.",
+                            required = False)
         parser.add_argument('--verbose',
                             dest     = 'verbose',
                             action   = 'store_true',
@@ -562,6 +595,7 @@ class tablefill_internals_cliparse:
         self.stars     = self.args.stars
         self.nafilters = self.args.nafilters
         self.fillc     = self.args.fill_comments
+        self.nohead    = self.args.no_header
         self.legacy_parsing = self.args.legacy_parsing
         self.numpy_syntax   = self.args.numpy_syntax
         self.use_floats     = self.args.use_floats
@@ -652,6 +686,7 @@ class tablefill_internals_engine:
                  stars          = ['*', '**', '***'],
                  nafilters      = ['.', '', 'NA', 'nan', 'NaN', 'None'],
                  fillc          = False,
+                 nohead         = False,
                  legacy_parsing = False,
                  numpy_syntax   = False,
                  use_floats     = False,
@@ -691,6 +726,7 @@ class tablefill_internals_engine:
         self.stars          = [s for (p, s) in starlist]
         self.nafilters      = nafilters
         self.fillc          = fillc
+        self.nohead         = nohead
         self.legacy_parsing = legacy_parsing
         self.numpy_syntax   = numpy_syntax
         self.use_floats     = use_floats
@@ -1490,6 +1526,9 @@ class tablefill_internals_engine:
         else:
             msg += ["DO NOT EDIT THIS FILE DIRECTLY."]
 
+        if self.nohead:
+            return
+
         msg = [pre + m + after for m in msg]
         self.filled_template[n:n] = head + msg + tail
 
@@ -1509,6 +1548,22 @@ class tablefill_internals_engine:
             msg += linesep + "Output can be found in '%s'" + linesep
             self.exit_msg = msg % (self.template, self.output)
             self.exit     = 'SUCCESS'
+
+
+class Logger(object):
+    def __init__(self, logfile, log_only):
+        self.log_only = log_only
+        if not self.log_only:
+            self.terminal = sys.stdout
+        self.log = open(logfile, "w")
+
+    def write(self, message):
+        if not self.log_only:
+            self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        pass
 
 
 # ---------------------------------------------------------------------
