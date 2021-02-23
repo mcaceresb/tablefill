@@ -1,5 +1,17 @@
 # Changelog
 
+## tablefill-0.9.9 (2021-02-20)
+
+### Features
+
+- Support subtable environment
+
+## tablefill-0.9.8 (2021-02-08)
+
+### Bug fixes
+
+- Fixed log typos
+
 ## tablefill-0.9.7 (2021-02-02)
 
 ### Features

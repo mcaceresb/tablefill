@@ -137,7 +137,7 @@ __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Mon Sep 07, 2020"
-__version__   = __program__ + " version 0.9.6 updated " + __updated__
+__version__   = __program__ + " version 0.9.9 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -596,6 +596,8 @@ class tablefill_internals_cliparse:
         self.nafilters = self.args.nafilters
         self.fillc     = self.args.fill_comments
         self.nohead    = self.args.no_header
+        self.log_file  = self.args.log_file
+        self.log_only  = self.args.log_only
         self.legacy_parsing = self.args.legacy_parsing
         self.numpy_syntax   = self.args.numpy_syntax
         self.use_floats     = self.args.use_floats
@@ -847,8 +849,8 @@ class tablefill_internals_engine:
                 # 'end':   r'.*\\end{table}.*',
                 # 'label': r'.*\\label{tab:(.+)}'
                 # 'label': r'(.*\\label{tab:(.+)})|(^\s*%\s*tablefill:start\s+tab:(.+)\b)'
-                'begin': r'(^\s*%\s*tablefill:start\s+tab:.+$)|(.*\\begin{table}.*)',
-                'end':   r'(^\s*%\s*tablefill:end.*$)|(.*\\end{table}.*)',
+                'begin': r'(^\s*%\s*tablefill:start\s+tab:.+$)|(.*\\begin{(sub)?table}.*)',
+                'end':   r'(^\s*%\s*tablefill:end.*$)|(.*\\end{(sub)?table}.*)',
                 'label': r'(?:^\s*%\s*tablefill:start\s+|.*\\label{)tab:(.+?)(?:}|\b)'
             },
             'lyx': {
@@ -1551,11 +1553,11 @@ class tablefill_internals_engine:
 
 
 class Logger(object):
-    def __init__(self, logfile, log_only):
+    def __init__(self, log_file, log_only):
         self.log_only = log_only
         if not self.log_only:
             self.terminal = sys.stdout
-        self.log = open(logfile, "w")
+        self.log = open(log_file, "w")
 
     def write(self, message):
         if not self.log_only:

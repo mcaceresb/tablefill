@@ -3,6 +3,6 @@
 
 __author__  = """Mauricio Cáceres Bravo"""
 __email__   = 'caceres@nber.org'
-__version__ = '0.9.6'
+__version__ = '0.9.9'
 
 from .tablefill import tablefill
