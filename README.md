@@ -11,6 +11,8 @@ pip install git+https://github.com/mcaceresb/tablefill
 tablefill --help
 ```
 
+See the [getting started](https://mcaceresb.github.io/tablefill/getting-started.html) section of the documentation for an example in LaTeX of how to use this system.
+
 Documentation
 -------------
 
