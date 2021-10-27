@@ -1397,18 +1397,18 @@ class tablefill_internals_engine:
                 # Replace all pattern F matches ({} arbitrary python formatting)
                 if matchf:
                     entry = re.sub(self.matche, '\\\\\\1', table[tablen])
-                    if matchf.group(2) in ['date', 'time']:
+                    if matchf.group(3) in ['date', 'time']:
                         try:
                             d = datetime(1960, 1, 1)
-                            if matchf.group(2) == 'date':
-                                d += timedelta(days = int(entry))
+                            if matchf.group(3) == 'date':
+                                d += timedelta(days = int(float(entry)))
                             else:
-                                d += timedelta(seconds = int(entry))
+                                d += timedelta(seconds = int(float(entry)))
 
                             fmt = matchf.group(1).replace('\\', '').format(d)
                         except:
                             msg = "Unable to apply datetime format '%s' to entry '%s'"
-                            raise Warning(msg % (matchf.group(1), entry))
+                            raise Warning(msg % (matchf.group(1).replace('\\', ''), int(float(entry))))
                     else:
                         try:
                             try:
