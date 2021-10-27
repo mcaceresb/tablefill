@@ -1,5 +1,12 @@
 # Changelog
 
+## tablefill-0.9.10 (2021-10-27)
+
+### Features
+
+- Default NaN filders include Inf and INF
+- Datetime format
+
 ## tablefill-0.9.9 (2021-02-20)
 
 ### Features

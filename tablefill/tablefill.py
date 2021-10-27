@@ -111,6 +111,7 @@ from __future__ import division, print_function
 from os import linesep, path, access, W_OK, system, chdir, remove
 from decimal import Decimal, ROUND_HALF_UP
 from collections import Iterable as Iter
+from datetime import datetime, timedelta
 from traceback import format_exc
 from operator import itemgetter
 from sys import exit as sysexit
@@ -137,7 +138,7 @@ __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Mon Sep 07, 2020"
-__version__   = __program__ + " version 0.9.9 updated " + __updated__
+__version__   = __program__ + " version 0.9.10 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -275,7 +276,7 @@ def tablefill(silent         = False,
               filetype       = 'auto',
               pvals          = [0.1, 0.05, 0.01],
               stars          = ['*', '**', '***'],
-              nafilters      = ['.', '', 'NA', 'nan', 'NaN', 'None'],
+              nafilters      = ['.', '', 'NA', 'nan', 'NaN', 'None', 'Inf', 'INF'],
               fillc          = False,
               nohead         = False,
               log_file       = None,
@@ -470,7 +471,7 @@ class tablefill_internals_cliparse:
                             dest     = 'nafilters',
                             type     = str,
                             nargs    = '*',
-                            default  = ['.', '', 'NA', 'nan', 'NaN', 'None'],
+                            default  = ['.', '', 'NA', 'nan', 'NaN', 'None', 'Inf', 'INF'],
                             help     = "Filters for missing values"
                                        "(enclose each in quotes)",
                             required = False)
@@ -686,7 +687,7 @@ class tablefill_internals_engine:
                  silent         = False,
                  pvals          = [0.1, 0.05, 0.01],
                  stars          = ['*', '**', '***'],
-                 nafilters      = ['.', '', 'NA', 'nan', 'NaN', 'None'],
+                 nafilters      = ['.', '', 'NA', 'nan', 'NaN', 'None', 'Inf', 'INF'],
                  fillc          = False,
                  nohead         = False,
                  legacy_parsing = False,
@@ -835,7 +836,7 @@ class tablefill_internals_engine:
         self.matchb    = r'\\?#\|?(\d+)(,?|\\?%)\|?\\?#'
         self.matchc    = '(-?\d+)(\.?\d*)'
         self.matchd    = r'\\?#\|.{1,4}\|\\?#'
-        self.matchf    = r'\\?#({0?(:.*?)?})\\?#'
+        self.matchf    = r'\\?#({0?(:.*?)?})(date|time)?\\?#'
         self.comments  = '^\s*%'
 
         # TODO: Allow custom regexes!
@@ -1396,14 +1397,27 @@ class tablefill_internals_engine:
                 # Replace all pattern F matches ({} arbitrary python formatting)
                 if matchf:
                     entry = re.sub(self.matche, '\\\\\\1', table[tablen])
-                    try:
+                    if matchf.group(2) in ['date', 'time']:
                         try:
-                            fmt = matchf.group(1).format(entry)
+                            d = datetime(1960, 1, 1)
+                            if matchf.group(2) == 'date'
+                                d += timedelta(days = int(entry))
+                            else:
+                                d += timedelta(seconds = int(entry))
+
+                            fmt = matchf.group(1).replace('\\', '').format(d)
                         except:
-                            fmt = matchf.group(1).format(float(entry))
-                    except:
-                        msg = "Unable to apply python format '%s' to entry '%s'"
-                        raise Warning(msg % (matchf.group(1), entry))
+                            msg = "Unable to apply datetime format '%s' to entry '%s'"
+                            raise Warning(msg % (matchf.group(1), entry))
+                    else:
+                        try:
+                            try:
+                                fmt = matchf.group(1).format(entry)
+                            except:
+                                fmt = matchf.group(1).format(float(entry))
+                        except:
+                            msg = "Unable to apply python format '%s' to entry '%s'"
+                            raise Warning(msg % (matchf.group(1), entry))
 
                     cell    = re.sub(self.matchf, fmt,  cell, count = 1)
                     line    = re.sub(self.matchf, cell, line, count = 1)
