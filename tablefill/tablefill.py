@@ -831,7 +831,7 @@ class tablefill_internals_engine:
         #   - comments: comment
         self.tags      = '^<Tab:(.+)>[\r\n' + linesep + ']'
         self.matche    = r'[^\\](%|&)'
-        self.match0    = r'\\?#\|?((\d+)(,?|\\?%)?|\\?(#|\*)|{0?(:.*?)?})\|?\\?#'
+        self.match0    = r'\\?#\|?((\d+)(,?|\\?%)?|\\?(#|\*)|{0?(:.*?)?}(date|time)?)\|?\\?#'
         self.matcha    = r'\\?#\\?(#|\*)\\?#'
         self.matchb    = r'\\?#\|?(\d+)(,?|\\?%)\|?\\?#'
         self.matchc    = '(-?\d+)(\.?\d*)'
@@ -1262,7 +1262,7 @@ class tablefill_internals_engine:
 
             if found:
                 if re.search(self.comments, line.strip()) and not self.fillc:
-                    warn_incomments  = "Line %d matches #(#|\d+,*|{.*})#"
+                    warn_incomments  = r"Line %d matches #(#|\d+,*|{.*})#"
                     warn_incomments += " but it appears to be commented out."
                     warn_incomments += " Skipping..."
                     print_verbose(self.verbose, warn + warn_incomments % n)
@@ -1288,14 +1288,14 @@ class tablefill_internals_engine:
                 elif table_start == -1:
                     self.warnings['notable'] += [str(n)]
 
-                    warn_notable  = "Line %d matches #(#|\d+,*|{.*})# but"
+                    warn_notable  = r"Line %d matches #(#|\d+,*|{.*})# but"
                     warn_notable += " is not in begin/end table statements."
                     warn_notable += " Skipping..."
 
                     print_verbose(self.verbose, warn + warn_notable % n)
                 elif table_tag == '':
                     self.warnings['nolabel'] += [str(n)]
-                    warn_nolabel  = "Line %d matches #(#|\d+,*|{.*})#" %n
+                    warn_nolabel  = r"Line %d matches #(#|\d+,*|{.*})#" % n
                     warn_nolabel += " but couldn't find " + self.label
                     warn_nolabel += " Skipping..."
                     print_verbose(self.verbose, warn + warn_nolabel)
@@ -1314,7 +1314,7 @@ class tablefill_internals_engine:
         self.filled_template = read_template
 
     def search_label(self, intext, start):
-        """
+        r"""
         Search for label in list 'intext' from position 'start' until an
         \end{table} statement. Returns label value ('' if none is found)
         and whether it matches a tag in the tables file
@@ -1359,7 +1359,7 @@ class tablefill_internals_engine:
         return search_msg + warn_nomatch
 
     def replace_line(self, line, table, tablen):
-        """
+        r"""
         Replaces all matches of #(#|\d+,*|{.*})#. Splits by & because
         that's how LaTeX delimits tables. Returns how many values it
         replaced because LaTeX can have any number of entries per line.
@@ -1466,7 +1466,7 @@ class tablefill_internals_engine:
         return re.sub(self.matcha, star, cell, count = 1)
 
     def get_notification_message(self):
-        """
+        r"""
         Inserts a message atop the LaTeX file that this was created by
         tablefill_tex. includes the following warnings, when applicable
             - #(#|\d+,*)# is found on a line outside a table environment
