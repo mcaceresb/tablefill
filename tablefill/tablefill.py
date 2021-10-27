@@ -1400,7 +1400,7 @@ class tablefill_internals_engine:
                     if matchf.group(2) in ['date', 'time']:
                         try:
                             d = datetime(1960, 1, 1)
-                            if matchf.group(2) == 'date'
+                            if matchf.group(2) == 'date':
                                 d += timedelta(days = int(entry))
                             else:
                                 d += timedelta(seconds = int(entry))
