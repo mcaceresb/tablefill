@@ -1,5 +1,11 @@
 # Changelog
 
+## tablefill-0.9.11 (2022-02-15)
+
+### Bug fixes
+
+- Fixed collections.Iterabble import
+
 ## tablefill-0.9.10 (2021-10-27)
 
 ### Features

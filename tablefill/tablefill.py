@@ -110,7 +110,6 @@ available to me come with python 2.6).
 from __future__ import division, print_function
 from os import linesep, path, access, W_OK, system, chdir, remove
 from decimal import Decimal, ROUND_HALF_UP
-from collections import Iterable as Iter
 from datetime import datetime, timedelta
 from traceback import format_exc
 from operator import itemgetter
@@ -122,6 +121,14 @@ import xml.etree.ElementTree as xml
 import argparse
 import sys
 import re
+
+try:
+    # Python <= 3.9
+    from collections import Iterable as Iter
+except ImportError:
+    # Python > 3.9
+    from collections.abc import Iterable as Iter
+
 try:
     import numpy
     numpyok = True
@@ -137,8 +144,8 @@ __usage__     = """[-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
-__updated__   = "Mon Sep 07, 2020"
-__version__   = __program__ + " version 0.9.10 updated " + __updated__
+__updated__   = "Tue Feb 15, 2022"
+__version__   = __program__ + " version 0.9.11 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:

@@ -54,6 +54,6 @@ setup(
     test_suite                    = 'tests',
     tests_require                 = test_requirements,
     url                           = 'https://github.com/mcaceresb/tablefill',
-    version                       = '0.9.10',
+    version                       = '0.9.11',
     zip_safe                      = False,
 )
