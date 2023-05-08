@@ -1,5 +1,11 @@
 # Changelog
 
+## tablefill-0.9.12 (2022-05-19)
+
+### Bug fixes
+
+- Fixed numpy concatenation of individual elements
+
 ## tablefill-0.9.11 (2022-02-15)
 
 ### Bug fixes
