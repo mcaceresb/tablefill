@@ -145,7 +145,7 @@ __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Tue Feb 15, 2022"
-__version__   = __program__ + " version 0.9.12 updated " + __updated__
+__version__   = __program__ + " version 0.9.13 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -1247,7 +1247,10 @@ class tablefill_internals_engine:
             - Token outside of begin/end table statement.
             - Table label does not match tag in inputs.
         """
-        read_template = open(self.template, 'rU').readlines()
+        if version_info >= (3, 0):
+            read_template = open(self.template, 'r').readlines()
+        else:
+            read_template = open(self.template, 'rU').readlines()
         table_start   = -1
         table_search  = False
         table_tag     = ''

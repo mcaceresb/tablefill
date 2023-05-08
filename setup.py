@@ -26,7 +26,7 @@ setup(
     author       = "Mauricio Cáceres Bravo",
     author_email = 'mauricio_caceres_bravo@brown.edu',
     classifiers  = [
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
@@ -38,6 +38,9 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     description  = "Automatically update LaTeX, Markdown, and LyX tables.",
     entry_points = {
@@ -54,6 +57,6 @@ setup(
     test_suite                    = 'tests',
     tests_require                 = test_requirements,
     url                           = 'https://github.com/mcaceresb/tablefill',
-    version                       = '0.9.12',
+    version                       = '0.9.13',
     zip_safe                      = False,
 )

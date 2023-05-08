@@ -1,5 +1,11 @@
 # Changelog
 
+## tablefill-0.9.13 (2023-05-09)
+
+### Bug fixes
+
+- Fixed 'rU' reading mode (change to 'r' in Python3)
+
 ## tablefill-0.9.12 (2022-05-19)
 
 ### Bug fixes
