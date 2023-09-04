@@ -145,7 +145,7 @@ __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
 __updated__   = "Tue Feb 15, 2022"
-__version__   = __program__ + " version 0.9.13 updated " + __updated__
+__version__   = __program__ + " version 0.9.14 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -1010,8 +1010,9 @@ class tablefill_internals_engine:
                 numpy_numdict[tag] = numpy.asmatrix(table)
 
         # Create all the custom tables using python/numpy slicing
+        print_verbose(self.verbose, linesep + "Creating custom tables")
         for tag, cxml in cdict.items():
-            print_verbose(self.verbose, "\tcreating custom tab:%s" % (tag))
+            print_verbose(self.verbose, "\ttab:%s" % (tag))
 
             csyntax = cxml.get('syntax')
             if csyntax not in [None, 'python', 'numpy']:
@@ -1037,8 +1038,12 @@ class tablefill_internals_engine:
             else:
                 usedict = numpy_strdict if numpyok and usenumpy else strdict
 
+            if numpyok and usenumpy:
+                usedict.update({'numpy': numpy})
+
             try:
                 clean_text = re.subn('\s|' + linesep, '', cxml.text)[0]
+                print_verbose(self.verbose, "\t\t%s" % clean_text)
                 ceval = eval(clean_text, usedict)
                 if numpyok and usenumpy:
                     if usetype in ['float', 'numeric']:
@@ -1050,6 +1055,7 @@ class tablefill_internals_engine:
                     toadd = list(flatten([numpy.array([l]) for l in ceval]))
                     strdict[tag] = nested_convert(toadd, str)
                     numdict[tag] = nested_convert(toadd, float)
+
                 else:
                     ceval = tolist2(ceval)
                     toadd = list(flatten(ceval))
@@ -1058,11 +1064,13 @@ class tablefill_internals_engine:
                     if numpyok:
                         numpy_strdict[tag] = numpy.asmatrix(strdict[tag])
                         numpy_numdict[tag] = numpy.asmatrix(numdict[tag])
-
-            except:
+            except Exception:
                 warn_custom = "custom 'tab:%s' failed to parse." % tag
                 print_verbose(self.verbose, '\t' + warn_custom)
-                continue
+                print_verbose(self.verbose, sys.exec_info()[2])
+
+            if numpyok and usenumpy:
+                usedict.pop('numpy')
 
             ctables[tag] = list(nested_convert(toadd, str))
 

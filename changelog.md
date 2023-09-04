@@ -1,5 +1,11 @@
 # Changelog
 
+## tablefill-0.9.14 (2023-09-04)
+
+### Improvements
+
+- Improved debugging messages
+
 ## tablefill-0.9.13 (2023-05-09)
 
 ### Bug fixes
