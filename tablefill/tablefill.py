@@ -144,8 +144,8 @@ __usage__     = """[-h] [-v] [FLAGS] [-i [INPUT [INPUT ...]]] [-o OUTPUT]
 __purpose__   = "Fill tagged tables in LaTeX files with external text tables"
 __author__    = "Mauricio Caceres <caceres@nber.org>"
 __created__   = "Thu Jun 18, 2015"
-__updated__   = "Tue Feb 15, 2022"
-__version__   = __program__ + " version 0.9.14 updated " + __updated__
+__updated__   = "Sat Sep 14, 2024"
+__version__   = __program__ + " version 0.9.15 updated " + __updated__
 
 # Define basestring in a backwards-compatible way
 try:
@@ -1044,6 +1044,7 @@ class tablefill_internals_engine:
             if numpyok and usenumpy:
                 usedict.update({'numpy': numpy})
 
+            addok = False
             try:
                 clean_text = re.subn('\s|' + linesep, '', cxml.text)[0]
                 print_verbose(self.verbose, "\t\t%s" % clean_text)
@@ -1059,6 +1060,7 @@ class tablefill_internals_engine:
                     toadd = list(flatten([numpy.array([l]) for l in ceval]))
                     strdict[tag] = nested_convert(toadd, str)
                     numdict[tag] = nested_convert(toadd, float)
+                    addok = True
 
                 else:
                     ceval = tolist2(ceval)
@@ -1068,6 +1070,8 @@ class tablefill_internals_engine:
                     if numpyok:
                         numpy_strdict[tag] = numpy.asmatrix(strdict[tag])
                         numpy_numdict[tag] = numpy.asmatrix(numdict[tag])
+
+                    addok = True
             except Exception:
                 warn_custom = "custom 'tab:%s' failed to parse." % tag
                 print_verbose(self.verbose, '\t' + warn_custom)
@@ -1076,7 +1080,8 @@ class tablefill_internals_engine:
             if numpyok and usenumpy:
                 usedict.pop('numpy')
 
-            ctables[tag] = list(nested_convert(toadd, str))
+            if addok:
+                ctables[tag] = list(nested_convert(toadd, str))
 
     def parse_xml_file_legacy(self, ctables, xml_input, prefix = ''):
         """Parse custom tabs in comments/XML files

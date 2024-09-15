@@ -1,5 +1,11 @@
 # Changelog
 
+## tablefill-0.9.15 (2024-09-14)
+
+### Bug fixes
+
+- Bump version because `exec_info` isn't updated
+
 ## tablefill-0.9.14 (2023-09-04)
 
 ### Improvements
