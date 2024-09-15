@@ -211,8 +211,8 @@ class testTableFillFunction(unittest.TestCase):
 
         self.assertEqual('SUCCESS', statustex)
         self.assertEqual('SUCCESS', statuslyx)
-        texfilled_data_args1 = open(self.texoutput, 'rU').readlines()
-        lyxfilled_data_args1 = open(self.lyxoutput, 'rU').readlines()
+        texfilled_data_args1 = open(self.texoutput, 'r').readlines()
+        lyxfilled_data_args1 = open(self.lyxoutput, 'r').readlines()
 
         with nostderrout():
             statuslyx, msglyx = tablefill(output   = self.lyxoutput,
@@ -224,8 +224,8 @@ class testTableFillFunction(unittest.TestCase):
 
         self.assertEqual('SUCCESS', statustex)
         self.assertEqual('SUCCESS', statuslyx)
-        texfilled_data_args2 = open(self.texoutput, 'rU').readlines()
-        lyxfilled_data_args2 = open(self.lyxoutput, 'rU').readlines()
+        texfilled_data_args2 = open(self.texoutput, 'r').readlines()
+        lyxfilled_data_args2 = open(self.lyxoutput, 'r').readlines()
 
         self.assertEqual(texfilled_data_args1, texfilled_data_args2)
         self.assertEqual(lyxfilled_data_args1, lyxfilled_data_args2)
@@ -398,8 +398,8 @@ class testTableFillCLI(unittest.TestCase):
         texinout_status = tfcall('%s %s --output %s --input %s' % texinout)
         self.assertEqual(0, lyxinout_status)
         self.assertEqual(0, texinout_status)
-        texfilled_data_args1 = open(self.texoutput, 'rU').readlines()
-        lyxfilled_data_args1 = open(self.lyxoutput, 'rU').readlines()
+        texfilled_data_args1 = open(self.texoutput, 'r').readlines()
+        lyxfilled_data_args1 = open(self.lyxoutput, 'r').readlines()
 
         # Since input takes multiple inputs, this actually fails
         lyxinout = (program, self.lyxoutput, self.input_appendix, self.lyxtemplate)
@@ -417,8 +417,8 @@ class testTableFillCLI(unittest.TestCase):
         self.assertEqual(0, lyxinout_status)
         self.assertEqual(0, texinout_status)
 
-        texfilled_data_args2 = open(self.texoutput, 'rU').readlines()
-        lyxfilled_data_args2 = open(self.lyxoutput, 'rU').readlines()
+        texfilled_data_args2 = open(self.texoutput, 'r').readlines()
+        lyxfilled_data_args2 = open(self.lyxoutput, 'r').readlines()
 
         self.assertEqual(texfilled_data_args1, texfilled_data_args2)
         self.assertEqual(lyxfilled_data_args1, lyxfilled_data_args2)

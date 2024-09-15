@@ -5,6 +5,7 @@
 ### Improvements
 
 - Improved debugging messages
+- Allow numpy evaluation
 
 ## tablefill-0.9.13 (2023-05-09)
 

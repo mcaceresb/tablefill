@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # encoding: utf-8
 
 """Fill LaTeX template files with external inputs
@@ -897,6 +897,9 @@ class tablefill_internals_engine:
         lists of table entries as values
         """
 
+        # TODO: I cannot believe the case-insensitivity here (i.e. the lower)
+        # TODO: is the cause of all the evil in the world.
+
         # Read in all the tables
         parse_data = concat_files(self.input)
         ctables    = {}
@@ -1045,6 +1048,7 @@ class tablefill_internals_engine:
                 clean_text = re.subn('\s|' + linesep, '', cxml.text)[0]
                 print_verbose(self.verbose, "\t\t%s" % clean_text)
                 ceval = eval(clean_text, usedict)
+
                 if numpyok and usenumpy:
                     if usetype in ['float', 'numeric']:
                         numpy_numdict[tag] = ceval
@@ -1067,7 +1071,7 @@ class tablefill_internals_engine:
             except Exception:
                 warn_custom = "custom 'tab:%s' failed to parse." % tag
                 print_verbose(self.verbose, '\t' + warn_custom)
-                print_verbose(self.verbose, sys.exec_info()[2])
+                print_verbose(self.verbose, sys.exc_info()[2])
 
             if numpyok and usenumpy:
                 usedict.pop('numpy')
